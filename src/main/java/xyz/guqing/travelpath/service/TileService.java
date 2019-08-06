@@ -31,6 +31,6 @@ public class TileService {
 			return tiles.get(0);
 		}
 
-		return null;
+		return new Tiles();
 	}
 }

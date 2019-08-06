@@ -1,5 +1,7 @@
 package xyz.guqing.travelpath.controller;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,14 +32,17 @@ public class TileController {
 						@PathVariable("z") Integer z,
 						@PathVariable("x") Integer x,
 						@PathVariable("y") Integer y) {
-		Tiles tile = tileService.getTile(z, x, y);
 		try {
+			Tiles tile = tileService.getTile(z, x, y);
 			byte[] bytes = tile.getTileData();
-			ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-			BufferedImage read = ImageIO.read(byteArrayInputStream);
-			ImageIO.write(read, "png", response.getOutputStream());
+			if(ArrayUtils.isNotEmpty(bytes)) {
+				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+				BufferedImage read = ImageIO.read(byteArrayInputStream);
+				ImageIO.write(read, "png", response.getOutputStream());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			throw new RuntimeException("加载地图瓦片出错，errors:"+e.getMessage());
 		}
 	}
 }
