@@ -2,8 +2,8 @@ package xyz.guqing.travelpath.mapper;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
-import xyz.guqing.travelpath.entity.Tiles;
-import xyz.guqing.travelpath.entity.TilesExample;
+import xyz.guqing.travelpath.entity.model.Tiles;
+import xyz.guqing.travelpath.entity.model.TilesExample;
 
 public interface TilesMapper {
     int countByExample(TilesExample example);

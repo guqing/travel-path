@@ -1,4 +1,4 @@
-package xyz.guqing.travelpath.entity;
+package xyz.guqing.travelpath.entity.model;
 
 import java.util.Arrays;
 

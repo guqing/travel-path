@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="xyz.guqing.travelpath.mapper.TilesMapper" >
-  <resultMap id="BaseResultMap" type="xyz.guqing.travelpath.entity.Tiles" >
+  <resultMap id="BaseResultMap" type="xyz.guqing.travelpath.entity.model.Tiles" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="zoom_level" property="zoomLevel" jdbcType="INTEGER" />
     <result column="tile_column" property="tileColumn" jdbcType="INTEGER" />
     <result column="tile_row" property="tileRow" jdbcType="INTEGER" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="xyz.guqing.travelpath.entity.Tiles" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="xyz.guqing.travelpath.entity.model.Tiles" extends="BaseResultMap" >
     <result column="tile_data" property="tileData" jdbcType="LONGVARBINARY" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -74,7 +74,7 @@
   <sql id="Blob_Column_List" >
     tile_data
   </sql>
-  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="xyz.guqing.travelpath.entity.TilesExample" >
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="xyz.guqing.travelpath.entity.model.TilesExample" >
     select
     <if test="distinct" >
       distinct
@@ -90,7 +90,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.TilesExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.TilesExample" >
     select
     <if test="distinct" >
       distinct
@@ -116,13 +116,13 @@
     delete from tiles
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="xyz.guqing.travelpath.entity.TilesExample" >
+  <delete id="deleteByExample" parameterType="xyz.guqing.travelpath.entity.model.TilesExample" >
     delete from tiles
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.Tiles" >
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Tiles" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -131,7 +131,7 @@
     values (#{zoomLevel,jdbcType=INTEGER}, #{tileColumn,jdbcType=INTEGER}, #{tileRow,jdbcType=INTEGER}, 
       #{tileData,jdbcType=LONGVARBINARY})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.Tiles" >
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Tiles" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
@@ -165,7 +165,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="xyz.guqing.travelpath.entity.TilesExample" resultType="java.lang.Integer" >
+  <select id="countByExample" parameterType="xyz.guqing.travelpath.entity.model.TilesExample" resultType="java.lang.Integer" >
     select count(*) from tiles
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
@@ -215,7 +215,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="xyz.guqing.travelpath.entity.Tiles" >
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.guqing.travelpath.entity.model.Tiles" >
     update tiles
     <set >
       <if test="zoomLevel != null" >
@@ -233,7 +233,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="xyz.guqing.travelpath.entity.Tiles" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="xyz.guqing.travelpath.entity.model.Tiles" >
     update tiles
     set zoom_level = #{zoomLevel,jdbcType=INTEGER},
       tile_column = #{tileColumn,jdbcType=INTEGER},
@@ -241,7 +241,7 @@
       tile_data = #{tileData,jdbcType=LONGVARBINARY}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.Tiles" >
+  <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.Tiles" >
     update tiles
     set zoom_level = #{zoomLevel,jdbcType=INTEGER},
       tile_column = #{tileColumn,jdbcType=INTEGER},

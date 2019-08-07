@@ -2,11 +2,10 @@ package xyz.guqing.travelpath.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import xyz.guqing.travelpath.entity.Tiles;
-import xyz.guqing.travelpath.entity.TilesExample;
+import xyz.guqing.travelpath.entity.model.Tiles;
+import xyz.guqing.travelpath.entity.model.TilesExample;
 import xyz.guqing.travelpath.mapper.TilesMapper;
 
-import java.awt.*;
 import java.util.List;
 
 /**

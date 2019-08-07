@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="xyz.guqing.travelpath.mapper.StepsMapper" >
+  <resultMap id="BaseResultMap" type="xyz.guqing.travelpath.entity.model.Steps" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="action" property="action" jdbcType="VARCHAR" />
+    <result column="assistant_action" property="assistantAction" jdbcType="VARCHAR" />
+    <result column="cities" property="cities" jdbcType="VARCHAR" />
+    <result column="distance" property="distance" jdbcType="INTEGER" />
+    <result column="instruction" property="instruction" jdbcType="VARCHAR" />
+    <result column="road" property="road" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="INTEGER" />
+    <result column="route_id" property="routeId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="xyz.guqing.travelpath.entity.model.Steps" extends="BaseResultMap" >
+    <result column="path" property="path" jdbcType="LONGVARBINARY" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, action, assistant_action, cities, distance, instruction, road, time, route_id, 
+    create_time, modify_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    path
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="xyz.guqing.travelpath.entity.model.StepsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from steps
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.StepsExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from steps
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from steps
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from steps
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="xyz.guqing.travelpath.entity.model.StepsExample" >
+    delete from steps
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Steps" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into steps (action, assistant_action, cities, 
+      distance, instruction, road, 
+      time, route_id, create_time, 
+      modify_time, path)
+    values (#{action,jdbcType=VARCHAR}, #{assistantAction,jdbcType=VARCHAR}, #{cities,jdbcType=VARCHAR}, 
+      #{distance,jdbcType=INTEGER}, #{instruction,jdbcType=VARCHAR}, #{road,jdbcType=VARCHAR}, 
+      #{time,jdbcType=INTEGER}, #{routeId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyTime,jdbcType=TIMESTAMP}, #{path,jdbcType=LONGVARBINARY})
+  </insert>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Steps" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into steps
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="action != null" >
+        action,
+      </if>
+      <if test="assistantAction != null" >
+        assistant_action,
+      </if>
+      <if test="cities != null" >
+        cities,
+      </if>
+      <if test="distance != null" >
+        distance,
+      </if>
+      <if test="instruction != null" >
+        instruction,
+      </if>
+      <if test="road != null" >
+        road,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="routeId != null" >
+        route_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="path != null" >
+        path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="action != null" >
+        #{action,jdbcType=VARCHAR},
+      </if>
+      <if test="assistantAction != null" >
+        #{assistantAction,jdbcType=VARCHAR},
+      </if>
+      <if test="cities != null" >
+        #{cities,jdbcType=VARCHAR},
+      </if>
+      <if test="distance != null" >
+        #{distance,jdbcType=INTEGER},
+      </if>
+      <if test="instruction != null" >
+        #{instruction,jdbcType=VARCHAR},
+      </if>
+      <if test="road != null" >
+        #{road,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=INTEGER},
+      </if>
+      <if test="routeId != null" >
+        #{routeId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null" >
+        #{path,jdbcType=LONGVARBINARY},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="xyz.guqing.travelpath.entity.model.StepsExample" resultType="java.lang.Integer" >
+    select count(*) from steps
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update steps
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.action != null" >
+        action = #{record.action,jdbcType=VARCHAR},
+      </if>
+      <if test="record.assistantAction != null" >
+        assistant_action = #{record.assistantAction,jdbcType=VARCHAR},
+      </if>
+      <if test="record.cities != null" >
+        cities = #{record.cities,jdbcType=VARCHAR},
+      </if>
+      <if test="record.distance != null" >
+        distance = #{record.distance,jdbcType=INTEGER},
+      </if>
+      <if test="record.instruction != null" >
+        instruction = #{record.instruction,jdbcType=VARCHAR},
+      </if>
+      <if test="record.road != null" >
+        road = #{record.road,jdbcType=VARCHAR},
+      </if>
+      <if test="record.time != null" >
+        time = #{record.time,jdbcType=INTEGER},
+      </if>
+      <if test="record.routeId != null" >
+        route_id = #{record.routeId,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.modifyTime != null" >
+        modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.path != null" >
+        path = #{record.path,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update steps
+    set id = #{record.id,jdbcType=BIGINT},
+      action = #{record.action,jdbcType=VARCHAR},
+      assistant_action = #{record.assistantAction,jdbcType=VARCHAR},
+      cities = #{record.cities,jdbcType=VARCHAR},
+      distance = #{record.distance,jdbcType=INTEGER},
+      instruction = #{record.instruction,jdbcType=VARCHAR},
+      road = #{record.road,jdbcType=VARCHAR},
+      time = #{record.time,jdbcType=INTEGER},
+      route_id = #{record.routeId,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
+      path = #{record.path,jdbcType=LONGVARBINARY}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update steps
+    set id = #{record.id,jdbcType=BIGINT},
+      action = #{record.action,jdbcType=VARCHAR},
+      assistant_action = #{record.assistantAction,jdbcType=VARCHAR},
+      cities = #{record.cities,jdbcType=VARCHAR},
+      distance = #{record.distance,jdbcType=INTEGER},
+      instruction = #{record.instruction,jdbcType=VARCHAR},
+      road = #{record.road,jdbcType=VARCHAR},
+      time = #{record.time,jdbcType=INTEGER},
+      route_id = #{record.routeId,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      modify_time = #{record.modifyTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.guqing.travelpath.entity.model.Steps" >
+    update steps
+    <set >
+      <if test="action != null" >
+        action = #{action,jdbcType=VARCHAR},
+      </if>
+      <if test="assistantAction != null" >
+        assistant_action = #{assistantAction,jdbcType=VARCHAR},
+      </if>
+      <if test="cities != null" >
+        cities = #{cities,jdbcType=VARCHAR},
+      </if>
+      <if test="distance != null" >
+        distance = #{distance,jdbcType=INTEGER},
+      </if>
+      <if test="instruction != null" >
+        instruction = #{instruction,jdbcType=VARCHAR},
+      </if>
+      <if test="road != null" >
+        road = #{road,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=INTEGER},
+      </if>
+      <if test="routeId != null" >
+        route_id = #{routeId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="path != null" >
+        path = #{path,jdbcType=LONGVARBINARY},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="xyz.guqing.travelpath.entity.model.Steps" >
+    update steps
+    set action = #{action,jdbcType=VARCHAR},
+      assistant_action = #{assistantAction,jdbcType=VARCHAR},
+      cities = #{cities,jdbcType=VARCHAR},
+      distance = #{distance,jdbcType=INTEGER},
+      instruction = #{instruction,jdbcType=VARCHAR},
+      road = #{road,jdbcType=VARCHAR},
+      time = #{time,jdbcType=INTEGER},
+      route_id = #{routeId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      path = #{path,jdbcType=LONGVARBINARY}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.Steps" >
+    update steps
+    set action = #{action,jdbcType=VARCHAR},
+      assistant_action = #{assistantAction,jdbcType=VARCHAR},
+      cities = #{cities,jdbcType=VARCHAR},
+      distance = #{distance,jdbcType=INTEGER},
+      instruction = #{instruction,jdbcType=VARCHAR},
+      road = #{road,jdbcType=VARCHAR},
+      time = #{time,jdbcType=INTEGER},
+      route_id = #{routeId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
