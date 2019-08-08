@@ -24,16 +24,16 @@
 </head>
 
 <body>
-<div class="container-scroller">
-  <!-- partial:../../partials/_navbar.html -->
-  <div th:replace="partials/_navbar::navbar"></div>
-  <!-- partial -->
-  <div class="container-fluid page-body-wrapper">
-    <!-- partial:../../partials/_sidebar.html -->
-    <div th:replace="partials/_sidebar::sidebar"></div>
+  <div class="container-scroller">
+    <!-- partial:../../partials/_navbar.html -->
+    <div th:replace="partials/_navbar::navbar"></div>
     <!-- partial -->
-    <div class="main-panel">
-      <div class="content-wrapper">
+
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:../../partials/_sidebar.html -->
+      <div th:replace="partials/_sidebar::sidebar"></div>
+      <!-- partial -->
+      <div class="main-panel">
         <div class="row">
           <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
@@ -82,40 +82,36 @@
             </div>
           </div>
         </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:../../partials/_footer.html -->
+        <div th:replace="partials/_footer::footer"></div>
+        <!-- partial -->
       </div>
+      <!-- main-panel ends -->
     </div>
+    <!-- page-body-wrapper ends -->
   </div>
-  <!-- content-wrapper ends -->
-  <!-- partial:../../partials/_footer.html -->
-  <div th:replace="partials/_footer::footer"></div>
-  <!-- partial -->
-</div>
-<!-- main-panel ends -->
-</div>
-<!-- page-body-wrapper ends -->
-</div>
-<!-- container-scroller -->
-<!-- plugins:js -->
-<script data-th-src="@{/vendors/js/vendor.bundle.base.js}"></script>
-<script data-th-src="@{/vendors/js/vendor.bundle.addons.js}"></script>
-<!-- endinject -->
-<!-- Plugin js for this page-->
-<!-- End plugin js for this page-->
-<!-- inject:js -->
-<script data-th-src="@{/js/off-canvas.js}"></script>
-<script data-th-src="@{/js/misc.js}"></script>
-<!-- endinject -->
-<!-- Custom js for this page-->
-<!-- End custom js for this page-->
+  <!-- container-scroller -->
 
-<!-- 地图所需js -->
-<script data-th-src="@{/js/mine/leaflet-src.js}" type="text/javascript"></script>
-<script data-th-src="/js/mine/HashTable.js" type="text/javascript" charset="utf-8"></script>
-<script data-th-src="@{/js/mine/loadTiles.js}" type="text/javascript" charset="utf-8"></script>
-<!-- 页面使用js -->
-<script data-th-src="@{/js/api/api.js}"></script>
-<script data-th-src="@{/js/mine/common.js}"></script>
-<script data-th-src="@{/js/mine/presetpoint.js}"></script>
+  <!-- plugins:js -->
+  <script data-th-src="@{/vendors/js/vendor.bundle.base.js}"></script>
+  <script data-th-src="@{/vendors/js/vendor.bundle.addons.js}"></script>
+  <!-- endinject -->
+  <!-- inject:js -->
+  <script data-th-src="@{/js/off-canvas.js}"></script>
+  <script data-th-src="@{/js/misc.js}"></script>
+  <!-- endinject -->
+
+  <!-- Custom js for this page-->
+  <!-- 地图所需js -->
+  <script data-th-src="@{/js/mine/leaflet-src.js}" type="text/javascript"></script>
+  <script data-th-src="@{/js/mine/HashTable.js}" type="text/javascript" charset="utf-8"></script>
+  <script data-th-src="@{/js/mine/loadTiles.js}" type="text/javascript" charset="utf-8"></script>
+  <!-- 页面使用js -->
+  <script data-th-src="@{/js/api/api.js}"></script>
+  <script data-th-src="@{/js/mine/common.js}"></script>
+  <script data-th-src="@{/js/mine/presetpoint.js}"></script>
+  <!-- End custom js for this page-->
 </body>
 
 </html>

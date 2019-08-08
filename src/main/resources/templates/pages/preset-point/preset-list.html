@@ -20,7 +20,7 @@
   <!-- Make sure you put this AFTER Leaflet's CSS -->
   <link rel="stylesheet" type="text/css" data-th-href="@{/css/mine/leaflet.css}"/>
   <link rel="stylesheet" data-th-href="@{/css/mine/public.css}">
-  <link rel="stylesheet" data-th-href="@{/css/mine/throuth-bayonet.css}">
+  <link rel="stylesheet" data-th-href="@{/css/mine/presetpoint.css}">
 </head>
 
 <body>
@@ -83,18 +83,17 @@
           </div>
         </div>
       </div>
+      <!-- content-wrapper ends -->
+      <!-- partial:../../partials/_footer.html -->
+      <div th:replace="partials/_footer::footer"></div>
+      <!-- partial -->
     </div>
+    <!--main-panel ends-->
   </div>
-  <!-- content-wrapper ends -->
-  <!-- partial:../../partials/_footer.html -->
-  <div th:replace="partials/_footer::footer"></div>
-  <!-- partial -->
+  <!--page-body-wrapper ends-->
 </div>
-<!-- main-panel ends -->
-</div>
-<!-- page-body-wrapper ends -->
-</div>
-<!-- container-scroller -->
+<!--container-scroller ends-->
+
 <!-- plugins:js -->
 <script data-th-src="@{/vendors/js/vendor.bundle.base.js}"></script>
 <script data-th-src="@{/vendors/js/vendor.bundle.addons.js}"></script>
@@ -105,17 +104,17 @@
 <script data-th-src="@{/js/off-canvas.js}"></script>
 <script data-th-src="@{/js/misc.js}"></script>
 <!-- endinject -->
-<!-- Custom js for this page-->
-<!-- End custom js for this page-->
 
+<!-- Custom js for this page-->
 <!-- 地图所需js -->
 <script data-th-src="@{/js/mine/leaflet-src.js}" type="text/javascript"></script>
-<script data-th-src="/js/mine/HashTable.js" type="text/javascript" charset="utf-8"></script>
+<script data-th-src="@{/js/mine/HashTable.js}" type="text/javascript" charset="utf-8"></script>
 <script data-th-src="@{/js/mine/loadTiles.js}" type="text/javascript" charset="utf-8"></script>
 <!-- 页面使用js -->
 <script data-th-src="@{/js/api/api.js}"></script>
 <script data-th-src="@{/js/mine/common.js}"></script>
-<script data-th-src="@{/js/mine/throuth-bayonet.js}"></script>
-</body>
+<script data-th-src="@{/js/mine/presetpoint.js}"></script>
+<!-- End custom js for this page-->
 
+</body>
 </html>
