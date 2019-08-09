@@ -1,5 +1,6 @@
 server:
   port: 8081
+  connection-timeout: 60000
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/map_tile_sets?useUnicode=true&characterEncoding=UTF-8&&serverTimezone=UTC

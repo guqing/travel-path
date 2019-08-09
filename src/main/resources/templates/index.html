@@ -7,19 +7,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Purple Admin</title>
   <!-- plugins:css -->
-  <link rel="stylesheet" href="vendors/iconfonts/mdi/css/materialdesignicons.min.css">
-  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" th:href="@{/vendors/iconfonts/mdi/css/materialdesignicons.min.css}">
+  <link rel="stylesheet" th:href="@{/vendors/css/vendor.bundle.base.css}">
   <!-- endinject -->
   <!-- inject:css -->
-  <link rel="stylesheet" data-th-href="@{/css/style.css}">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
   <!-- endinject -->
-  <link rel="shortcut icon" data-th-href="@{/images/favicon.png}" />
+  <link rel="shortcut icon" th:href="@{/images/favicon.png}" />
 
   <!-- Make sure you put this AFTER Leaflet's CSS -->
-  <link rel="stylesheet" type="text/css" data-th-href="@{/css/mine/leaflet.css}"/>
-  <script data-th-src="@{/js/mine/leaflet-src.js}" type="text/javascript"></script>
-  <script data-th-src="@{/js/mine/HashTable.js}" type="text/javascript" charset="utf-8"></script>
-  <script data-th-src="@{/js/mine/loadTiles.js}" type="text/javascript" charset="utf-8"></script>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/mine/leaflet.css}"/>
+  <script th:src="@{/js/mine/leaflet-src.js}" type="text/javascript"></script>
+  <script th:src="@{/js/mine/HashTable.js}" type="text/javascript" charset="utf-8"></script>
+  <script th:src="@{/js/mine/loadTiles.js}" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
   <div class="container-scroller">
@@ -52,7 +52,7 @@
             <div class="col-md-4 stretch-card grid-margin">
               <div class="card bg-gradient-danger card-img-holder text-white">
                 <div class="card-body">
-                  <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image"/>
+                  <img th:src="@{/images/dashboard/circle.svg}" class="card-img-absolute" alt="circle-image"/>
                   <h4 class="font-weight-normal mb-3">预设卡口方案
                     <i class="mdi mdi-chart-line mdi-24px float-right"></i>
                   </h4>
@@ -64,7 +64,7 @@
             <div class="col-md-4 stretch-card grid-margin">
               <div class="card bg-gradient-info card-img-holder text-white">
                 <div class="card-body">
-                  <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image"/>                  
+                  <img th:src="@{/images/dashboard/circle.svg}" class="card-img-absolute" alt="circle-image"/>
                   <h4 class="font-weight-normal mb-3">卡口布设方案
                     <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                   </h4>
@@ -76,7 +76,7 @@
             <div class="col-md-4 stretch-card grid-margin">
               <div class="card bg-gradient-success card-img-holder text-white">
                 <div class="card-body">
-                  <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image"/>                                    
+                  <img th:src="@{/images/dashboard/circle.svg}" class="card-img-absolute" alt="circle-image"/>
                   <h4 class="font-weight-normal mb-3">车辆途径卡口方案
                     <i class="mdi mdi-diamond mdi-24px float-right"></i>
                   </h4>
@@ -137,7 +137,7 @@
                       <tbody>
                         <tr>
                           <td>
-                            <img src="images/faces/face1.jpg" class="mr-2" alt="image">
+                            <img th:src="@{/images/faces/face1.jpg}" class="mr-2" alt="image">
                             David Grey
                           </td>
                           <td>
@@ -155,7 +155,7 @@
                         </tr>
                         <tr>
                           <td>
-                            <img src="images/faces/face2.jpg" class="mr-2" alt="image">
+                            <img th:src="@{/images/faces/face2.jpg}" class="mr-2" alt="image">
                             Stella Johnson
                           </td>
                           <td>
@@ -173,7 +173,7 @@
                         </tr>
                         <tr>
                           <td>
-                            <img src="images/faces/face3.jpg" class="mr-2" alt="image">
+                            <img th:src="@{/images/faces/face3.jpg}" class="mr-2" alt="image">
                             Marina Michel
                           </td>
                           <td>
@@ -191,7 +191,7 @@
                         </tr>
                         <tr>
                           <td>
-                            <img src="images/faces/face4.jpg" class="mr-2" alt="image">
+                            <img th:src="@{/images/faces/face4.jpg}" class="mr-2" alt="image">
                             John Doe
                           </td>
                           <td>
@@ -227,17 +227,17 @@
   <!-- container-scroller -->
 
   <!-- plugins:js -->
-  <script src="vendors/js/vendor.bundle.base.js"></script>
-  <script src="vendors/js/vendor.bundle.addons.js"></script>
+  <script th:src="@{/vendors/js/vendor.bundle.base.js}"></script>
+  <script th:src="@{/vendors/js/vendor.bundle.addons.js}"></script>
   <!-- endinject -->
   <!-- Plugin js for this page-->
   <!-- End plugin js for this page-->
   <!-- inject:js -->
-  <script src="js/off-canvas.js"></script>
-  <script src="js/misc.js"></script>
+  <script th:src="@{/js/off-canvas.js}"></script>
+  <script th:src="@{/js/misc.js}"></script>
   <!-- endinject -->
   <!-- Custom js for this page-->
-  <script src="js/dashboard.js"></script>
+  <script th:src="@{/js/dashboard.js}"></script>
   <!-- End custom js for this page-->
 </body>
 

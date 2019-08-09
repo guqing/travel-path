@@ -10,6 +10,7 @@ import xyz.guqing.travelpath.entity.model.Tiles;
 import xyz.guqing.travelpath.service.TileService;
 
 import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -33,11 +34,15 @@ public class TileController {
 						@PathVariable("y") Integer y) {
 		try {
 			Tiles tile = tileService.getTile(z, x, y);
+			ServletOutputStream outputStream = response.getOutputStream();
 			byte[] bytes = tile.getTileData();
 			if(ArrayUtils.isNotEmpty(bytes)) {
 				ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
 				BufferedImage read = ImageIO.read(byteArrayInputStream);
-				ImageIO.write(read, "png", response.getOutputStream());
+				ImageIO.write(read, "png", outputStream);
+
+				byteArrayInputStream.close();
+				outputStream.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

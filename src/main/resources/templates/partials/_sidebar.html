@@ -6,7 +6,7 @@
         <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
                 <div class="nav-profile-image">
-                    <img data-th-src="@{/images/faces/face1.jpg}" alt="profile" src="images/faces/face1.jpg">
+                    <img th:src="@{/images/faces/face1.jpg}" alt="profile">
                     <span class="login-status online"></span> <!--change to offline or busy as needed-->
                 </div>
                 <div class="nav-profile-text d-flex flex-column">
@@ -17,32 +17,32 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-th-href="@{/}" href="#">
+            <a class="nav-link" th:href="@{/pages/index.html}" href="#">
                 <span class="menu-title">Dashboard</span>
                 <i class="mdi mdi-home menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-th-href="@{/pages/preset-point/preset-list.html}">
+            <a class="nav-link" th:href="@{/pages/preset-point/preset-list.html}">
                 <span class="menu-title">预设卡口方案</span>
                 <i class="mdi mdi-crosshairs-gps menu-icon"></i>
             </a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" data-th-href="@{/pages/actual-bayonet/deploy-list.html}">
+            <a class="nav-link" th:href="@{/pages/actual-bayonet/deploy-list.html}">
                 <span class="menu-title">卡口布设方案</span>
                 <i class="mdi mdi-format-list-bulleted menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-th-href="@{/pages/throuth-bayonet/throuth-list.html}">
+            <a class="nav-link" th:href="@{/pages/throuth-bayonet/throuth-list.html}">
                 <span class="menu-title">途经卡口方案</span>
                 <i class="mdi mdi-format-list-bulleted menu-icon"></i>
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-th-href="@{/pages/routes/route-list.html}" href="#">
+            <a class="nav-link" th:href="@{/pages/routes/route-list.html}" href="#">
                 <span class="menu-title">轨迹管理</span>
                 <i class="mdi mdi-table-large menu-icon"></i>
             </a>

@@ -23,4 +23,14 @@ public class PageController {
 	public String pages(@PathVariable("path") String path, @PathVariable("pageName") String pageName) {
 		return "pages/"+path+"/"+pageName;
 	}
+
+	/**
+	 * index 页面的视图跳转方法
+	 * @param indexPage index视图名
+	 * @return 跳转视图
+	 */
+	@RequestMapping("/{indexPage}")
+	public String index(@PathVariable("indexPage") String indexPage) {
+		return indexPage;
+	}
 }
