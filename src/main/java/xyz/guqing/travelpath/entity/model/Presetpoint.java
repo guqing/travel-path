@@ -1,8 +1,9 @@
 package xyz.guqing.travelpath.entity.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Presetpoint {
+public class Presetpoint implements Serializable {
     private Long id;
 
     private String lng;
@@ -16,6 +17,9 @@ public class Presetpoint {
     private Date createTime;
 
     private Date modifyTime;
+
+    public Presetpoint() {
+    }
 
     public Long getId() {
         return id;
