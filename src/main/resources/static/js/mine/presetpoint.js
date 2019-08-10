@@ -100,28 +100,35 @@ function saveScheme(name, description, presetpoints) {
         }
     })
 }
+ajaxPage();
 
-//结合Ajax使用，仅供参考
+/**
+ * Ajax分页
+ * @param page 当前页码
+ */
 function ajaxPage(page){
     var p = page || 1;
     $.ajax({
-        type: "POST",
-        url: "www.test.com/test",
+        type: "get",
+        url: baseUrl + "preset/list",
         data: {
-            page:p,
-            pageSize:10,
-            name:"小明",
-            age:16
+            pageNum: p,
+            pageSize:10
         },
         dataType: "json",
-        success: function(data){
+        success: function(response){
+            var data = response.data;
             //数据处理
-            // ...
+            data.list.forEach(function(item,index){
+                appendSchemeTableDom(item, index);
+            });
             // 调用分页插件
-            $("#dataTable").sPage({
+            $("#paginator").sPage({
                 page:p,//当前页码
                 pageSize:10,//每页显示多少条数据，默认10条
                 total:data.total,//数据总条数,后台返回
+                prevPage:"←",
+                nextPage:"→",
                 backFun:function(page){
                     //点击分页按钮回调函数，返回当前页码
                     ajaxPage(page);
@@ -130,12 +137,107 @@ function ajaxPage(page){
         },
         error:function(e){
             console.log(e);
+            $.Toast("失败", "抱歉，加载预设卡口方案列表失败", "warning");
+        }
+    });
+}
+
+/**
+ * 预设卡口方案数据表格dom追加
+ * @param item 需要显示dom的数据项
+ */
+function appendSchemeTableDom(item, index) {
+    var $tr = $("<tr></tr>");
+    var $idTd = $("<td></td>");
+    $idTd.text(index+1);
+
+    var $nameTd = $("<td></td>");
+    $nameTd.text(item.name);
+
+    var $descriptionTd = $("<td></td>");
+    $descriptionTd.text(item.description);
+
+    var $bayonetCountTd = $("<td></td>");
+    $bayonetCountTd.text(item.bayonetCount);
+
+    var $modifyTimeTd = $("<td></td>");
+    var modifyTime = dateFormat(item.modifyTime,"yyyy-MM-dd");
+    $modifyTimeTd.text(modifyTime);
+
+    // 操作
+    var $opsTd = $("<td></td>");
+    var showSchemeData = $("<label class='badge badge-info showSchemeData' onclick='showSchemeData("+item.id+")'>查看</label>");
+    var editSchemeData = $("<label class='badge badge-primary editSchemeData' onclick='editSchemeData("+item.id+")'>编辑</label>");
+    var deleteSchemeData = $("<label class='badge badge-danger deleteSchemeData' onclick='editSchemeData("+item.id+")'>删除</label>");
+    $opsTd.append(showSchemeData);
+    $opsTd.append(editSchemeData);
+    $opsTd.append(deleteSchemeData);
+
+    // 追加到dom
+    $("#dataTable tbody").append($tr).append($idTd).append($nameTd)
+        .append($descriptionTd).append($bayonetCountTd)
+        .append($modifyTimeTd).append($opsTd);
+}
+
+var markerGroup = [];
+function showSchemeData(id) {
+    // 清除标记物集合
+    removeLayers(markerGroup);
+
+    $.ajax({
+        type: "get",
+        url: baseUrl + "preset/getScheme/"+id,
+        dataType: "json",
+        success: function(response){
+            var data = response.data;
+            data.list.forEach(function(item) {
+                var marker = drawMaker(item.lat, item.lng);
+                markerGroup.push(marker);
+            });
+            // 根据标记点集合自适应地图缩放级别
+            var group = new L.featureGroup(markerGroup);
+            mymap.fitBounds(group.getBounds());
+        },
+        error:function(e){
+            console.log(e);
+            $.Toast("失败", "抱歉，查询预设卡口方案失败", "warning");
+        }
+    });
+}
+
+
+function deleteSchemeData(id) {
+    $.ajax({
+        type: "get",
+        url: baseUrl + "/get-scheme/"+id,
+        dataType: "json",
+        success: function(response){
+
+        },
+        error:function(e){
+            console.log(e);
+            $.Toast("失败", "抱歉，查询预设卡口方案失败", "warning");
         }
     });
 }
 
 
 
+function editSchemeData(id) {
+    $.ajax({
+        type: "get",
+        url: baseUrl + "/get-scheme/"+id,
+        dataType: "json",
+        success: function(response){
+            var data = response.data;
+            console.log(data)
+        },
+        error:function(e){
+            console.log(e);
+            $.Toast("失败", "抱歉，查询预设卡口方案失败", "warning");
+        }
+    });
+}
 
 
 var createSchemeTemplete = '<form class="presetPointForm">\n' +

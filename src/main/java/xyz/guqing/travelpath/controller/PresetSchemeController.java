@@ -54,18 +54,22 @@ public class PresetSchemeController {
 		}
 	}
 
-	@GetMapping("/get/{pageNum}/{pageSize}")
-	public Object listSchemeByPage(@PathVariable("pageNum") Integer pageNum,
-								   @PathVariable("pageSize") Integer pageSize) {
-//		try {
-//
-//		} catch (Exception e) {
-//
-//		}
-		return null;
+	@GetMapping("/list")
+	public Object listSchemeByPage(@RequestParam(value="pageNum",defaultValue = "0") Integer pageNum,
+								   @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize) {
+		try {
+			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+			Integer userId = user.getId();
+			List<PresetScheme> presetSchemes = presetSchemeService.listSechemeByPage(pageNum, pageSize,userId);
+			return Result.okList(presetSchemes);
+		} catch (Exception e) {
+			logger.error("分页查询预设卡口方案失败，入口参数：pageNum={},pageSize={}，错误信息：{}",
+					pageNum, pageSize, e.getMessage());
+			return Result.fail();
+		}
 	}
 
-	@GetMapping("/get-scheme/{preId}")
+	@GetMapping("/getScheme/{preId}")
 	public Object getPresetPointScheme(@PathVariable("preId") Long preId) {
 		try {
 			List<Presetpoint> presetpointList = presetPointService.findListById(preId);
@@ -89,6 +93,38 @@ public class PresetSchemeController {
 		}
 	}
 
+	@PutMapping("/update")
+	public Object updateScheme(@RequestBody PresetSchemeVO presetSchemeVO) {
+		if(presetSchemeVO.getId() == null) {
+			return Result.badArgument();
+		}
+		try {
+			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+			Integer userId = user.getId();
+			presetSchemeService.updateScheme(presetSchemeVO,userId);
+			return Result.ok();
+		} catch (Exception e) {
+			logger.error("更新卡口方案信息出错，入口参数：{}，错误信息：{}",
+					presetSchemeVO, e.getMessage());
+			return Result.fail();
+		}
+	}
+
+	/**
+	 * 逻辑删除
+	 * @return
+	 */
+	@PostMapping("/trash/{id}")
+	public Object throwTrash(@PathVariable("id") Long id) {
+		try {
+			presetSchemeService.logicalDeleted(id);
+			return Result.ok();
+		} catch (Exception e) {
+			logger.error("更新卡口方案信息出错，入口参数：{}，错误信息：{}",
+					id, e.getMessage());
+			return Result.fail();
+		}
+	}
 	/**
 	 * 校验参数是否合法
 	 *

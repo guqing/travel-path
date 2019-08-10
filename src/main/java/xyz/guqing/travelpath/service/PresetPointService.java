@@ -47,4 +47,15 @@ public class PresetPointService {
 
 		return presetpointMapper.selectByExample(example);
 	}
+
+	/**
+	 * 根据方案preid删除方案坐标点记录
+	 * @param peId 方案id
+	 */
+	public void deleteByPreId(Long peId) {
+		PresetpointExample example = new PresetpointExample();
+		PresetpointExample.Criteria criteria = example.createCriteria();
+		criteria.andPreidEqualTo(peId);
+		presetpointMapper.deleteByExample(example);
+	}
 }

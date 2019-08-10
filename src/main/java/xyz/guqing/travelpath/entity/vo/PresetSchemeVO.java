@@ -5,7 +5,6 @@ import xyz.guqing.travelpath.entity.model.Presetpoint;
 import xyz.guqing.travelpath.service.PresetPointService;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,11 +14,17 @@ import java.util.List;
  * @date 2019-08-09 11:09
  */
 public class PresetSchemeVO implements Serializable {
+	private Long id;
 	private String name;
 	private String description;
 	private List<Presetpoint> presetpoints;
 
-	public PresetSchemeVO() {
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
