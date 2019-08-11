@@ -3,9 +3,12 @@ package xyz.guqing.travelpath.entity.dto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import xyz.guqing.travelpath.entity.model.Permission;
+import xyz.guqing.travelpath.entity.model.Role;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,18 +17,18 @@ import java.util.Set;
  */
 public class MyUserDetails implements UserDetails {
     private Integer id;
-
     private String username;
-    
     private String password;
+
+    private List<Permission> permissions;
+    private List<Role> roles;
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        // for (SysRole role : sysRoles) {
-            //authorities.add(new SimpleGrantedAuthority(role.getName()));
-        //}
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
         
         return authorities;
     }
@@ -74,5 +77,21 @@ public class MyUserDetails implements UserDetails {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public List<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
+    }
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
     }
 }
