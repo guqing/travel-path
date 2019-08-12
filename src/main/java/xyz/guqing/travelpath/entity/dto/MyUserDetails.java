@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.entity.dto;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,16 +21,16 @@ public class MyUserDetails implements UserDetails {
     private String username;
     private String password;
 
-    private List<Permission> permissions;
-    private List<Role> roles;
-    
+    private Role role;
+    private Set<String> permissionUrl;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        for (Role role : roles) {
+        if(StringUtils.isNotBlank(role.getName())) {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         }
-        
+
         return authorities;
     }
     
@@ -79,19 +80,19 @@ public class MyUserDetails implements UserDetails {
         this.id = id;
     }
 
-    public List<Permission> getPermissions() {
-        return permissions;
+    public Set<String> getPermissionUrl() {
+        return permissionUrl;
     }
 
-    public void setPermissions(List<Permission> permissions) {
-        this.permissions = permissions;
+    public void setPermissionUrl(Set<String> permissionUrl) {
+        this.permissionUrl = permissionUrl;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

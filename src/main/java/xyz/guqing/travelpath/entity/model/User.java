@@ -37,6 +37,10 @@ public class User {
 
     private Boolean deleted;
 
+    private Integer roleId;
+
+    private String roleName;
+
     public Integer getId() {
         return id;
     }
@@ -171,5 +175,21 @@ public class User {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName == null ? null : roleName.trim();
     }
 }

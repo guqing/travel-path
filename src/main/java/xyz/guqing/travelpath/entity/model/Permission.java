@@ -5,21 +5,13 @@ import java.util.Date;
 public class Permission {
     private Integer id;
 
-    private String action;
+    private String permissionId;
 
-    private String name;
+    private String permissionName;
 
-    private String type;
+    private String description;
 
     private String url;
-
-    private String percode;
-
-    private Long parentId;
-
-    private String parentIds;
-
-    private Boolean defaultCheck;
 
     private String sortIndex;
 
@@ -37,28 +29,28 @@ public class Permission {
         this.id = id;
     }
 
-    public String getAction() {
-        return action;
+    public String getPermissionId() {
+        return permissionId;
     }
 
-    public void setAction(String action) {
-        this.action = action == null ? null : action.trim();
+    public void setPermissionId(String permissionId) {
+        this.permissionId = permissionId == null ? null : permissionId.trim();
     }
 
-    public String getName() {
-        return name;
+    public String getPermissionName() {
+        return permissionName;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setPermissionName(String permissionName) {
+        this.permissionName = permissionName == null ? null : permissionName.trim();
     }
 
-    public String getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
 
-    public void setType(String type) {
-        this.type = type == null ? null : type.trim();
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
     }
 
     public String getUrl() {
@@ -67,38 +59,6 @@ public class Permission {
 
     public void setUrl(String url) {
         this.url = url == null ? null : url.trim();
-    }
-
-    public String getPercode() {
-        return percode;
-    }
-
-    public void setPercode(String percode) {
-        this.percode = percode == null ? null : percode.trim();
-    }
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
-    }
-
-    public String getParentIds() {
-        return parentIds;
-    }
-
-    public void setParentIds(String parentIds) {
-        this.parentIds = parentIds == null ? null : parentIds.trim();
-    }
-
-    public Boolean getDefaultCheck() {
-        return defaultCheck;
-    }
-
-    public void setDefaultCheck(Boolean defaultCheck) {
-        this.defaultCheck = defaultCheck;
     }
 
     public String getSortIndex() {

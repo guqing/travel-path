@@ -5,7 +5,7 @@ import java.util.Date;
 public class Role {
     private Integer id;
 
-    private String describe;
+    private String description;
 
     private String name;
 
@@ -23,12 +23,12 @@ public class Role {
         this.id = id;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe == null ? null : describe.trim();
+    public void setDescription(String description) {
+        this.description = description == null ? null : description.trim();
     }
 
     public String getName() {

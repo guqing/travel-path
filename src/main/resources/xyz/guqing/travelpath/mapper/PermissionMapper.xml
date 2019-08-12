@@ -3,14 +3,10 @@
 <mapper namespace="xyz.guqing.travelpath.mapper.PermissionMapper" >
   <resultMap id="BaseResultMap" type="xyz.guqing.travelpath.entity.model.Permission" >
     <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="action" property="action" jdbcType="VARCHAR" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="permission_id" property="permissionId" jdbcType="VARCHAR" />
+    <result column="permission_name" property="permissionName" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="url" property="url" jdbcType="VARCHAR" />
-    <result column="percode" property="percode" jdbcType="VARCHAR" />
-    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
-    <result column="parent_ids" property="parentIds" jdbcType="VARCHAR" />
-    <result column="default_check" property="defaultCheck" jdbcType="BIT" />
     <result column="sort_index" property="sortIndex" jdbcType="VARCHAR" />
     <result column="available" property="available" jdbcType="CHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -75,8 +71,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, action, name, type, url, percode, parent_id, parent_ids, default_check, sort_index, 
-    available, create_time, modify_time
+    id, permission_id, permission_name, description, url, sort_index, available, create_time, 
+    modify_time
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.PermissionExample" >
     select
@@ -112,16 +108,12 @@
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into permission (action, name, type, 
-      url, percode, parent_id, 
-      parent_ids, default_check, sort_index, 
-      available, create_time, modify_time
-      )
-    values (#{action,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{percode,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT}, 
-      #{parentIds,jdbcType=VARCHAR}, #{defaultCheck,jdbcType=BIT}, #{sortIndex,jdbcType=VARCHAR}, 
-      #{available,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
-      )
+    insert into permission (permission_id, permission_name, description, 
+      url, sort_index, available, 
+      create_time, modify_time)
+    values (#{permissionId,jdbcType=VARCHAR}, #{permissionName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{sortIndex,jdbcType=VARCHAR}, #{available,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Permission" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
@@ -129,29 +121,17 @@
     </selectKey>
     insert into permission
     <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="action != null" >
-        action,
+      <if test="permissionId != null" >
+        permission_id,
       </if>
-      <if test="name != null" >
-        name,
+      <if test="permissionName != null" >
+        permission_name,
       </if>
-      <if test="type != null" >
-        type,
+      <if test="description != null" >
+        description,
       </if>
       <if test="url != null" >
         url,
-      </if>
-      <if test="percode != null" >
-        percode,
-      </if>
-      <if test="parentId != null" >
-        parent_id,
-      </if>
-      <if test="parentIds != null" >
-        parent_ids,
-      </if>
-      <if test="defaultCheck != null" >
-        default_check,
       </if>
       <if test="sortIndex != null" >
         sort_index,
@@ -167,29 +147,17 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="action != null" >
-        #{action,jdbcType=VARCHAR},
+      <if test="permissionId != null" >
+        #{permissionId,jdbcType=VARCHAR},
       </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
+      <if test="permissionName != null" >
+        #{permissionName,jdbcType=VARCHAR},
       </if>
-      <if test="type != null" >
-        #{type,jdbcType=VARCHAR},
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
       </if>
       <if test="url != null" >
         #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="percode != null" >
-        #{percode,jdbcType=VARCHAR},
-      </if>
-      <if test="parentId != null" >
-        #{parentId,jdbcType=BIGINT},
-      </if>
-      <if test="parentIds != null" >
-        #{parentIds,jdbcType=VARCHAR},
-      </if>
-      <if test="defaultCheck != null" >
-        #{defaultCheck,jdbcType=BIT},
       </if>
       <if test="sortIndex != null" >
         #{sortIndex,jdbcType=VARCHAR},
@@ -217,29 +185,17 @@
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.action != null" >
-        action = #{record.action,jdbcType=VARCHAR},
+      <if test="record.permissionId != null" >
+        permission_id = #{record.permissionId,jdbcType=VARCHAR},
       </if>
-      <if test="record.name != null" >
-        name = #{record.name,jdbcType=VARCHAR},
+      <if test="record.permissionName != null" >
+        permission_name = #{record.permissionName,jdbcType=VARCHAR},
       </if>
-      <if test="record.type != null" >
-        type = #{record.type,jdbcType=VARCHAR},
+      <if test="record.description != null" >
+        description = #{record.description,jdbcType=VARCHAR},
       </if>
       <if test="record.url != null" >
         url = #{record.url,jdbcType=VARCHAR},
-      </if>
-      <if test="record.percode != null" >
-        percode = #{record.percode,jdbcType=VARCHAR},
-      </if>
-      <if test="record.parentId != null" >
-        parent_id = #{record.parentId,jdbcType=BIGINT},
-      </if>
-      <if test="record.parentIds != null" >
-        parent_ids = #{record.parentIds,jdbcType=VARCHAR},
-      </if>
-      <if test="record.defaultCheck != null" >
-        default_check = #{record.defaultCheck,jdbcType=BIT},
       </if>
       <if test="record.sortIndex != null" >
         sort_index = #{record.sortIndex,jdbcType=VARCHAR},
@@ -261,14 +217,10 @@
   <update id="updateByExample" parameterType="map" >
     update permission
     set id = #{record.id,jdbcType=INTEGER},
-      action = #{record.action,jdbcType=VARCHAR},
-      name = #{record.name,jdbcType=VARCHAR},
-      type = #{record.type,jdbcType=VARCHAR},
+      permission_id = #{record.permissionId,jdbcType=VARCHAR},
+      permission_name = #{record.permissionName,jdbcType=VARCHAR},
+      description = #{record.description,jdbcType=VARCHAR},
       url = #{record.url,jdbcType=VARCHAR},
-      percode = #{record.percode,jdbcType=VARCHAR},
-      parent_id = #{record.parentId,jdbcType=BIGINT},
-      parent_ids = #{record.parentIds,jdbcType=VARCHAR},
-      default_check = #{record.defaultCheck,jdbcType=BIT},
       sort_index = #{record.sortIndex,jdbcType=VARCHAR},
       available = #{record.available,jdbcType=CHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -280,29 +232,17 @@
   <update id="updateByPrimaryKeySelective" parameterType="xyz.guqing.travelpath.entity.model.Permission" >
     update permission
     <set >
-      <if test="action != null" >
-        action = #{action,jdbcType=VARCHAR},
+      <if test="permissionId != null" >
+        permission_id = #{permissionId,jdbcType=VARCHAR},
       </if>
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
+      <if test="permissionName != null" >
+        permission_name = #{permissionName,jdbcType=VARCHAR},
       </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=VARCHAR},
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="url != null" >
         url = #{url,jdbcType=VARCHAR},
-      </if>
-      <if test="percode != null" >
-        percode = #{percode,jdbcType=VARCHAR},
-      </if>
-      <if test="parentId != null" >
-        parent_id = #{parentId,jdbcType=BIGINT},
-      </if>
-      <if test="parentIds != null" >
-        parent_ids = #{parentIds,jdbcType=VARCHAR},
-      </if>
-      <if test="defaultCheck != null" >
-        default_check = #{defaultCheck,jdbcType=BIT},
       </if>
       <if test="sortIndex != null" >
         sort_index = #{sortIndex,jdbcType=VARCHAR},
@@ -321,14 +261,10 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.Permission" >
     update permission
-    set action = #{action,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      type = #{type,jdbcType=VARCHAR},
+    set permission_id = #{permissionId,jdbcType=VARCHAR},
+      permission_name = #{permissionName,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
       url = #{url,jdbcType=VARCHAR},
-      percode = #{percode,jdbcType=VARCHAR},
-      parent_id = #{parentId,jdbcType=BIGINT},
-      parent_ids = #{parentIds,jdbcType=VARCHAR},
-      default_check = #{defaultCheck,jdbcType=BIT},
       sort_index = #{sortIndex,jdbcType=VARCHAR},
       available = #{available,jdbcType=CHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},

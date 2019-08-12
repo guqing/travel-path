@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.security;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -18,21 +19,16 @@ public class RbacAuthorityService {
 
         Object principal = authentication.getPrincipal();
         boolean hasPermission  = false;
-        
+
         if (principal instanceof MyUserDetails) {
             MyUserDetails myUserDetails = (MyUserDetails)principal;
             String username = ((UserDetails)principal).getUsername();
 
             //获取资源
-            // 这些 url 都是要登录后才能访问，且其他的 url 都不能访问
-            List<Permission> permissionList = myUserDetails.getPermissions();
+            //这些 url 都是要登录后才能访问，且其他的 url 都不能访问
+            Set<String> permissionUrls = myUserDetails.getPermissionUrl();
 
-            //获取权限url
-            Set<String> urls = new HashSet<>();
-            for(Permission permission : permissionList){
-                urls.add(permission.getUrl());
-            }
-            hasPermission = matcherUrl(request, urls);
+            hasPermission = matcherUrl(request, permissionUrls);
     
             return hasPermission;
         }

@@ -19,6 +19,8 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
     <result column="deleted" property="deleted" jdbcType="BIT" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -80,7 +82,8 @@
   </sql>
   <sql id="Base_Column_List" >
     id, username, password, nickname, gender, birthday, mobile, email, avatar, description, 
-    status, user_level, last_login_time, last_login_ip, create_time, modify_time, deleted
+    status, user_level, last_login_time, last_login_ip, create_time, modify_time, deleted, 
+    role_id, role_name
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.UserExample" >
     select
@@ -121,13 +124,15 @@
       email, avatar, description, 
       status, user_level, last_login_time, 
       last_login_ip, create_time, modify_time, 
-      deleted)
+      deleted, role_id, role_name
+      )
     values (#{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, 
       #{gender,jdbcType=TINYINT}, #{birthday,jdbcType=DATE}, #{mobile,jdbcType=VARCHAR}, 
       #{email,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{status,jdbcType=TINYINT}, #{userLevel,jdbcType=TINYINT}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
       #{lastLoginIp,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, 
-      #{deleted,jdbcType=BIT})
+      #{deleted,jdbcType=BIT}, #{roleId,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.User" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
@@ -183,6 +188,12 @@
       <if test="deleted != null" >
         deleted,
       </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="roleName != null" >
+        role_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="username != null" >
@@ -232,6 +243,12 @@
       </if>
       <if test="deleted != null" >
         #{deleted,jdbcType=BIT},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -295,6 +312,12 @@
       <if test="record.deleted != null" >
         deleted = #{record.deleted,jdbcType=BIT},
       </if>
+      <if test="record.roleId != null" >
+        role_id = #{record.roleId,jdbcType=INTEGER},
+      </if>
+      <if test="record.roleName != null" >
+        role_name = #{record.roleName,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -318,7 +341,9 @@
       last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{record.deleted,jdbcType=BIT}
+      deleted = #{record.deleted,jdbcType=BIT},
+      role_id = #{record.roleId,jdbcType=INTEGER},
+      role_name = #{record.roleName,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -374,6 +399,12 @@
       <if test="deleted != null" >
         deleted = #{deleted,jdbcType=BIT},
       </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -394,7 +425,9 @@
       last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{deleted,jdbcType=BIT}
+      deleted = #{deleted,jdbcType=BIT},
+      role_id = #{roleId,jdbcType=INTEGER},
+      role_name = #{roleName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

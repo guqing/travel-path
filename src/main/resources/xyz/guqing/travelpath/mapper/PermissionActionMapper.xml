@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="xyz.guqing.travelpath.mapper.RoleMapper" >
-  <resultMap id="BaseResultMap" type="xyz.guqing.travelpath.entity.model.Role" >
+<mapper namespace="xyz.guqing.travelpath.mapper.PermissionActionMapper" >
+  <resultMap id="BaseResultMap" type="xyz.guqing.travelpath.entity.model.PermissionAction" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="action" property="action" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="available" property="available" jdbcType="CHAR" />
+    <result column="defaultCheck" property="defaultcheck" jdbcType="BIT" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="p_id" property="pId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -68,15 +70,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, description, "name", available, create_time, modify_time
+    id, "action", description, defaultCheck, url, p_id, create_time, modify_time
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.RoleExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.PermissionActionExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from role
+    from permission_action
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -87,42 +89,50 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from role
+    from permission_action
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from role
+    delete from permission_action
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="xyz.guqing.travelpath.entity.model.RoleExample" >
-    delete from role
+  <delete id="deleteByExample" parameterType="xyz.guqing.travelpath.entity.model.PermissionActionExample" >
+    delete from permission_action
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Role" >
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into role (description, "name", available, 
-      create_time, modify_time)
-    values (#{description,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{available,jdbcType=CHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
+    insert into permission_action ("action", description, defaultCheck, 
+      url, p_id, create_time, 
+      modify_time)
+    values (#{action,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{defaultcheck,jdbcType=BIT}, 
+      #{url,jdbcType=VARCHAR}, #{pId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Role" >
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" >
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into role
+    insert into permission_action
     <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="action != null" >
+        "action",
+      </if>
       <if test="description != null" >
         description,
       </if>
-      <if test="name != null" >
-        "name",
+      <if test="defaultcheck != null" >
+        defaultCheck,
       </if>
-      <if test="available != null" >
-        available,
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="pId != null" >
+        p_id,
       </if>
       <if test="createTime != null" >
         create_time,
@@ -132,14 +142,20 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="action != null" >
+        #{action,jdbcType=VARCHAR},
+      </if>
       <if test="description != null" >
         #{description,jdbcType=VARCHAR},
       </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
+      <if test="defaultcheck != null" >
+        #{defaultcheck,jdbcType=BIT},
       </if>
-      <if test="available != null" >
-        #{available,jdbcType=CHAR},
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="pId != null" >
+        #{pId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
@@ -149,26 +165,32 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="xyz.guqing.travelpath.entity.model.RoleExample" resultType="java.lang.Integer" >
-    select count(*) from role
+  <select id="countByExample" parameterType="xyz.guqing.travelpath.entity.model.PermissionActionExample" resultType="java.lang.Integer" >
+    select count(*) from permission_action
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update role
+    update permission_action
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
       </if>
+      <if test="record.action != null" >
+        "action" = #{record.action,jdbcType=VARCHAR},
+      </if>
       <if test="record.description != null" >
         description = #{record.description,jdbcType=VARCHAR},
       </if>
-      <if test="record.name != null" >
-        "name" = #{record.name,jdbcType=VARCHAR},
+      <if test="record.defaultcheck != null" >
+        defaultCheck = #{record.defaultcheck,jdbcType=BIT},
       </if>
-      <if test="record.available != null" >
-        available = #{record.available,jdbcType=CHAR},
+      <if test="record.url != null" >
+        url = #{record.url,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pId != null" >
+        p_id = #{record.pId,jdbcType=INTEGER},
       </if>
       <if test="record.createTime != null" >
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -182,28 +204,36 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update role
+    update permission_action
     set id = #{record.id,jdbcType=INTEGER},
+      "action" = #{record.action,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
-      "name" = #{record.name,jdbcType=VARCHAR},
-      available = #{record.available,jdbcType=CHAR},
+      defaultCheck = #{record.defaultcheck,jdbcType=BIT},
+      url = #{record.url,jdbcType=VARCHAR},
+      p_id = #{record.pId,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="xyz.guqing.travelpath.entity.model.Role" >
-    update role
+  <update id="updateByPrimaryKeySelective" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" >
+    update permission_action
     <set >
+      <if test="action != null" >
+        "action" = #{action,jdbcType=VARCHAR},
+      </if>
       <if test="description != null" >
         description = #{description,jdbcType=VARCHAR},
       </if>
-      <if test="name != null" >
-        "name" = #{name,jdbcType=VARCHAR},
+      <if test="defaultcheck != null" >
+        defaultCheck = #{defaultcheck,jdbcType=BIT},
       </if>
-      <if test="available != null" >
-        available = #{available,jdbcType=CHAR},
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="pId != null" >
+        p_id = #{pId,jdbcType=INTEGER},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -214,11 +244,13 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.Role" >
-    update role
-    set description = #{description,jdbcType=VARCHAR},
-      "name" = #{name,jdbcType=VARCHAR},
-      available = #{available,jdbcType=CHAR},
+  <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" >
+    update permission_action
+    set "action" = #{action,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      defaultCheck = #{defaultcheck,jdbcType=BIT},
+      url = #{url,jdbcType=VARCHAR},
+      p_id = #{pId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

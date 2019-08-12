@@ -23,7 +23,7 @@ public class TokenProperties {
     /**
      * Token前缀
      */
-    private String tokenPrefix = "";
+    private String tokenPrefix = "Bearer ";
     /**
      * 存放Token的Header Key
      */

@@ -55,16 +55,16 @@ public class PresetSchemeController {
 	}
 
 	@GetMapping("/list")
-	public Object listSchemeByPage(@RequestParam(value="pageNum",defaultValue = "0") Integer pageNum,
+	public Object listSchemeByPage(@RequestParam(value="pageNo",defaultValue = "1") Integer pageNo,
 								   @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize) {
 		try {
 			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
 			Integer userId = user.getId();
-			List<PresetScheme> presetSchemes = presetSchemeService.listSechemeByPage(pageNum, pageSize,userId);
+			List<PresetScheme> presetSchemes = presetSchemeService.listSechemeByPage(pageNo, pageSize,userId);
 			return Result.okList(presetSchemes);
 		} catch (Exception e) {
 			logger.error("分页查询预设卡口方案失败，入口参数：pageNum={},pageSize={}，错误信息：{}",
-					pageNum, pageSize, e.getMessage());
+					pageNo, pageSize, e.getMessage());
 			return Result.fail();
 		}
 	}

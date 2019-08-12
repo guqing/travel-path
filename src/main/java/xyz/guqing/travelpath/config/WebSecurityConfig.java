@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 ).permitAll()
 
                 // 对登录注册要允许匿名访问
-                .antMatchers("/auth/login", "/auth/register")
+                .antMatchers("/auth/login", "/auth/register", "/tile/**")
                 .permitAll()
 
                 .anyRequest()

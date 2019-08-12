@@ -37,19 +37,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal (HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
         TokenProperties tokenProperties = securityProperties.getTokenProperties();
 
-        String authHeader = request.getHeader(tokenProperties.getHeaderString());
-        if (authHeader != null && authHeader.startsWith(tokenProperties.getTokenPrefix())) {
-            final String authToken = authHeader.substring(tokenProperties.getTokenPrefix().length() );
-            String username = jwtTokenUtil.getUsernameFromToken(authToken);
+        String authTokenHeader = request.getHeader(tokenProperties.getHeaderString());
+        if (authTokenHeader != null) {
+            String username = jwtTokenUtil.getUsernameFromToken(authTokenHeader);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 MyUserDetails userDetails = this.myUserDetailsService.loadUserByUsername(username);
-                if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+
+                if (jwtTokenUtil.validateToken(authTokenHeader, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             userDetails, null, userDetails.getAuthorities());
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(
                             request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                }else if(jwtTokenUtil.canTokenBeRefreshed(authToken)){
+                }else if(jwtTokenUtil.canTokenBeRefreshed(authTokenHeader)){
                     // token过期了，需要刷新token
                     String newToken = userTokenutil.generateToken(userDetails);
                     response.setHeader(tokenProperties.getHeaderString(), newToken);
