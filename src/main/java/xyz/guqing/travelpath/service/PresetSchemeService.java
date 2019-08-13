@@ -3,6 +3,7 @@ package xyz.guqing.travelpath.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +14,7 @@ import xyz.guqing.travelpath.entity.model.Presetpoint;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeVO;
 import xyz.guqing.travelpath.mapper.PresetSchemeMapper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -44,11 +46,22 @@ public class PresetSchemeService {
 		return presetScheme;
 	}
 
-
+	/**
+	 * 根据id查询预设卡口方案
+	 * @param id 方案id
+	 * @return 返回预设卡口i方案
+	 */
 	public PresetScheme getSchemeById(Long id) {
 		return presetSchemeMapper.selectByPrimaryKey(id);
 	}
 
+	/**
+	 *
+	 * @param pageNum 页码
+	 * @param pageSize 分页大小
+	 * @param userId 用户id
+	 * @return 返回预设卡口方案分页对象PageInfo
+	 */
 	public PageInfo<PresetScheme> listSechemeByPage(Integer pageNum, Integer pageSize, Integer userId) {
 		PageHelper.startPage(pageNum, pageSize);
 		// 查询
@@ -61,6 +74,28 @@ public class PresetSchemeService {
 		return new PageInfo<PresetScheme>(presetSchemes);
 	}
 
+	/**
+	 * 根据预设卡口方案id集合批量查询方案数据
+	 * @param ids 预设卡口方案id集合
+	 * @return 返回预设卡口方案Vo
+	 */
+	public List<PresetSchemeVO> listSchemeByIds(List<Long> ids) {
+		List<PresetSchemeVO> presetSchemeVOList = new ArrayList<>();
+		ids.forEach(preId -> {
+			PresetSchemeVO presetSchemeVO = new PresetSchemeVO();
+
+			PresetScheme presetScheme = presetSchemeMapper.selectByPrimaryKey(preId);
+			// 拷贝属性
+			BeanUtils.copyProperties(presetScheme, presetSchemeVO);
+
+			//设置方案点集合
+			List<Presetpoint> presetpoints = presetPointService.findListById(preId);
+			presetSchemeVO.setPresetpoints(presetpoints);
+
+			presetSchemeVOList.add(presetSchemeVO);
+		});
+		return presetSchemeVOList;
+	}
 
 	/**
 	 * 构建PresetScheme对象，使用已有属性填充

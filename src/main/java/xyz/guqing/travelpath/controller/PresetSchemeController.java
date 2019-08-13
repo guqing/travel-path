@@ -1,15 +1,21 @@
 package xyz.guqing.travelpath.controller;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
+import xyz.guqing.travelpath.entity.vo.PresetPointExcelVO;
+import xyz.guqing.travelpath.entity.vo.PresetSchemeExcelVO;
 import xyz.guqing.travelpath.entity.model.PresetScheme;
 import xyz.guqing.travelpath.entity.model.Presetpoint;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeVO;
@@ -18,7 +24,8 @@ import xyz.guqing.travelpath.service.PresetSchemeService;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
-import javax.validation.constraints.NotNull;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -140,6 +147,66 @@ public class PresetSchemeController {
 					JSONArray.toJSONString(ids), e.getMessage());
 			return Result.fail();
 		}
+	}
+
+	@PostMapping("/download")
+	public void downloadSchemeWithPoints(@RequestBody List<Long> ids, HttpServletResponse response) {
+		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setCharacterEncoding("utf-8");
+		response.setHeader("Content-disposition", "attachment;filename=PresetSchemeWithPoint.xlsx");
+
+		try {
+			List<PresetSchemeVO> presetSchemeVOList = presetSchemeService.listSchemeByIds(ids);
+
+			// 写sheet1
+			ExcelWriter writer = EasyExcelFactory.getWriter(response.getOutputStream());
+			Sheet schemeSheet = new Sheet(1, 1, PresetSchemeExcelVO.class);
+			schemeSheet.setSheetName("预设卡口方案");
+			List<PresetSchemeExcelVO> presetSchemeExcelVOList = transferToSchemeExcelList(presetSchemeVOList);
+			writer.write(presetSchemeExcelVOList, schemeSheet);
+
+			// 写sheet2
+			List<PresetPointExcelVO> presetPointExcelVOS = transferToPresetPointExcelVO(presetSchemeVOList);
+			Sheet presetPointSheet = new Sheet(2, 1, PresetPointExcelVO.class);
+			presetPointSheet.setSheetName("预设卡口坐标点");
+			presetPointSheet.setAutoWidth(true);
+			writer.write(presetPointExcelVOS, presetPointSheet);
+
+			writer.finish();
+		} catch (Exception e) {
+			logger.error("批量下载卡口方案数据出错，入口参数：{}，错误信息：{}",
+					JSONArray.toJSONString(ids), e.getMessage());
+		}
+	}
+
+	/**
+	 * @param presetSchemeVOList 预设卡口方案VO集合
+	 * @return 适合导出Excel的presetSchemeExcelVOList
+	 */
+	public List<PresetSchemeExcelVO> transferToSchemeExcelList(List<PresetSchemeVO> presetSchemeVOList) {
+		List<PresetSchemeExcelVO> presetSchemeExcelVOList = new ArrayList<>();
+		presetSchemeVOList.forEach(presetSchemeVO -> {
+			PresetSchemeExcelVO presetSchemeExcelVO = new PresetSchemeExcelVO();
+			BeanUtils.copyProperties(presetSchemeVO, presetSchemeExcelVO);
+
+			presetSchemeExcelVOList.add(presetSchemeExcelVO);
+		});
+		return presetSchemeExcelVOList;
+	}
+
+	/**
+	 * @param presetSchemeVOList 预设卡口方案VO集合
+	 * @return 适合导出Excel的PresetPointExcelVOList
+	 */
+	public List<PresetPointExcelVO> transferToPresetPointExcelVO(List<PresetSchemeVO> presetSchemeVOList) {
+		List<PresetPointExcelVO> PresetPointExcelVOList = new ArrayList<>();
+		presetSchemeVOList.forEach(presetSchemeVO -> {
+			PresetPointExcelVO presetPointExcelVO = new PresetPointExcelVO();
+			BeanUtils.copyProperties(presetSchemeVO, presetPointExcelVO);
+
+			PresetPointExcelVOList.add(presetPointExcelVO);
+		});
+		return PresetPointExcelVOList;
 	}
 
 	/**
