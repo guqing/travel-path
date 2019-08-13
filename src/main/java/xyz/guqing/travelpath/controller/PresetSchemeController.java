@@ -1,6 +1,7 @@
 package xyz.guqing.travelpath.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,6 @@ import xyz.guqing.travelpath.service.PresetSchemeService;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,8 +45,8 @@ public class PresetSchemeController {
 		Integer userId = user.getId();
 
 		try {
-			presetSchemeService.savePresetScheme(presetSchemeVO, userId);
-			return Result.ok();
+			PresetScheme presetScheme = presetSchemeService.savePresetScheme(presetSchemeVO, userId);
+			return Result.ok(presetScheme);
 		} catch (Exception e) {
 			logger.error("保存预设卡口方案信息出错，入口参数：{}，错误信息：{}",
 					JSONObject.toJSONString(presetSchemeVO), e.getMessage());
@@ -55,12 +55,12 @@ public class PresetSchemeController {
 	}
 
 	@GetMapping("/list")
-	public Object listSchemeByPage(@RequestParam(value="pageNo",defaultValue = "1") Integer pageNo,
+	public Object listSchemeByPage(@RequestParam(value="current",defaultValue = "1") Integer pageNo,
 								   @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize) {
 		try {
 			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
 			Integer userId = user.getId();
-			List<PresetScheme> presetSchemes = presetSchemeService.listSechemeByPage(pageNo, pageSize,userId);
+			PageInfo<PresetScheme> presetSchemes = presetSchemeService.listSechemeByPage(pageNo, pageSize, userId);
 			return Result.okList(presetSchemes);
 		} catch (Exception e) {
 			logger.error("分页查询预设卡口方案失败，入口参数：pageNum={},pageSize={}，错误信息：{}",
@@ -72,8 +72,8 @@ public class PresetSchemeController {
 	@GetMapping("/getScheme/{preId}")
 	public Object getPresetPointScheme(@PathVariable("preId") Long preId) {
 		try {
-			List<Presetpoint> presetpointList = presetPointService.findListById(preId);
-			return Result.okList(presetpointList);
+			List<Presetpoint> presetPointList = presetPointService.findListById(preId);
+			return Result.okList(presetPointList);
 		} catch (Exception e) {
 			logger.error("根据方案Id获取卡口方案坐标点集合信息出错，入口参数：{}，错误信息：{}",
 					preId, e.getMessage());

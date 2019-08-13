@@ -1,7 +1,5 @@
 package xyz.guqing.travelpath.entity.model;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Date;
 
 public class PermissionAction {
@@ -87,33 +85,23 @@ public class PermissionAction {
 
     @Override
     public int hashCode() {
-        return id * 31 + action.hashCode() + pId + url.hashCode();
+        return id + action.hashCode() + url.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj){
-            //地址相等
+        if(this == obj) {
             return true;
         }
 
-        if(obj == null){
-            //非空性：对于任意非空引用x，x.equals(null)应该返回false。
+        if(obj instanceof PermissionAction) {
+            PermissionAction permissionAction = (PermissionAction) obj;
+            if(this.id.equals(permissionAction.id)
+                    && this.action==permissionAction.action
+                    && this.url.equals(permissionAction.url)) {
+                return true;
+            }
             return false;
-        }
-
-        if(obj instanceof PermissionAction){
-            PermissionAction other = (PermissionAction) obj;
-            return isEqual(other);
-        }
-
-        return false;
-    }
-
-    private boolean isEqual(PermissionAction other) {
-        //需要比较的字段相等，则这两个对象相等
-        if(this.id.equals(other.id) && StringUtils.equals(this.action, other.action)) {
-            return true;
         }
 
         return false;

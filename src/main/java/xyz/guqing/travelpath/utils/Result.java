@@ -1,5 +1,8 @@
 package xyz.guqing.travelpath.utils;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +25,18 @@ public class Result {
         obj.put("message", "成功");
         obj.put("data", data);
         return obj;
+    }
+
+    public static Object okList(PageInfo pageInfo) {
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("list", pageInfo.getList());
+
+        data.put("total", pageInfo.getTotal());
+        data.put("pages", pageInfo.getPages());
+        data.put("page", pageInfo.getPageNum());
+        data.put("limit", pageInfo.getPageSize());
+
+        return ok(data);
     }
 
     public static Object okList(List list) {
@@ -98,8 +113,8 @@ public class Result {
 
     /**
      * 判断是否是Page实例，是则获取page数据设置给分页否则就是用list数据
-     * @param list 分页数据
-     * @param data 分页结果对象
+     * @param list
+     * @param data
      */
     private static void listPageModel(List list, Map<String, Object> data) {
         if (list instanceof Page) {
@@ -107,7 +122,7 @@ public class Result {
             data.put("total", page.getTotal());
             data.put("page", page.getPageNum());
             data.put("limit", page.getPageSize());
-            data.put("pages", page.getPageResult());
+            data.put("pages", page.getPages());
         } else {
             data.put("total", list.size());
             data.put("page", 1);
@@ -115,5 +130,4 @@ public class Result {
             data.put("pages", 1);
         }
     }
-
 }

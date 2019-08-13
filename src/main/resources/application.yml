@@ -11,3 +11,6 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+logging:
+  level:
+    xyz.guqing.travelpath: debug

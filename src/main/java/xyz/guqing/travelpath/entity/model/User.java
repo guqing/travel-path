@@ -11,7 +11,7 @@ public class User {
 
     private String nickname;
 
-    private Byte gender;
+    private Integer gender;
 
     private Date birthday;
 
@@ -23,9 +23,9 @@ public class User {
 
     private String description;
 
-    private Byte status;
+    private Integer status;
 
-    private Byte userLevel;
+    private Integer userLevel;
 
     private Date lastLoginTime;
 
@@ -73,11 +73,11 @@ public class User {
         this.nickname = nickname == null ? null : nickname.trim();
     }
 
-    public Byte getGender() {
+    public Integer getGender() {
         return gender;
     }
 
-    public void setGender(Byte gender) {
+    public void setGender(Integer gender) {
         this.gender = gender;
     }
 
@@ -121,19 +121,19 @@ public class User {
         this.description = description == null ? null : description.trim();
     }
 
-    public Byte getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
-    public Byte getUserLevel() {
+    public Integer getUserLevel() {
         return userLevel;
     }
 
-    public void setUserLevel(Byte userLevel) {
+    public void setUserLevel(Integer userLevel) {
         this.userLevel = userLevel;
     }
 

@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, "action", description, defaultCheck, url, p_id, create_time, modify_time
+    id, action, description, defaultCheck, url, p_id, create_time, modify_time
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.PermissionActionExample" >
     select
@@ -106,7 +106,7 @@
     <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into permission_action ("action", description, defaultCheck, 
+    insert into permission_action (action, description, defaultCheck, 
       url, p_id, create_time, 
       modify_time)
     values (#{action,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{defaultcheck,jdbcType=BIT}, 
@@ -120,7 +120,7 @@
     insert into permission_action
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="action != null" >
-        "action",
+        action,
       </if>
       <if test="description != null" >
         description,
@@ -178,7 +178,7 @@
         id = #{record.id,jdbcType=INTEGER},
       </if>
       <if test="record.action != null" >
-        "action" = #{record.action,jdbcType=VARCHAR},
+        action = #{record.action,jdbcType=VARCHAR},
       </if>
       <if test="record.description != null" >
         description = #{record.description,jdbcType=VARCHAR},
@@ -206,7 +206,7 @@
   <update id="updateByExample" parameterType="map" >
     update permission_action
     set id = #{record.id,jdbcType=INTEGER},
-      "action" = #{record.action,jdbcType=VARCHAR},
+      action = #{record.action,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       defaultCheck = #{record.defaultcheck,jdbcType=BIT},
       url = #{record.url,jdbcType=VARCHAR},
@@ -221,7 +221,7 @@
     update permission_action
     <set >
       <if test="action != null" >
-        "action" = #{action,jdbcType=VARCHAR},
+        action = #{action,jdbcType=VARCHAR},
       </if>
       <if test="description != null" >
         description = #{description,jdbcType=VARCHAR},
@@ -246,7 +246,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" >
     update permission_action
-    set "action" = #{action,jdbcType=VARCHAR},
+    set action = #{action,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       defaultCheck = #{defaultcheck,jdbcType=BIT},
       url = #{url,jdbcType=VARCHAR},

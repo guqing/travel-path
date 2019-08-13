@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.service;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class PresetSchemeService {
 	private PresetPointService presetPointService;
 
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
-	public void savePresetScheme(PresetSchemeVO presetSchemeVO, Integer userId) {
+	public PresetScheme savePresetScheme(PresetSchemeVO presetSchemeVO, Integer userId) {
 		List<Presetpoint> presetpoints = presetSchemeVO.getPresetpoints();
 
 		PresetScheme presetScheme = getPresetScheme(presetSchemeVO, userId, presetpoints);
@@ -41,6 +42,8 @@ public class PresetSchemeService {
 			presetpoint.setPreid(presetScheme.getId());
 			presetPointService.savePresetPoint(presetpoint);
 		});
+		// 返回给页面跟新列表
+		return presetScheme;
 	}
 
 
@@ -48,17 +51,16 @@ public class PresetSchemeService {
 		return presetSchemeMapper.selectByPrimaryKey(id);
 	}
 
-	public List<PresetScheme> listSechemeByPage(Integer pageNum, Integer pageSize, Integer userId) {
+	public PageInfo<PresetScheme> listSechemeByPage(Integer pageNum, Integer pageSize, Integer userId) {
 		PageHelper.startPage(pageNum, pageSize);
 		// 查询
 		PresetSchemeExample example = new PresetSchemeExample();
 		PresetSchemeExample.Criteria criteria = example.createCriteria();
 		criteria.andDeletedEqualTo(new Byte("0"));
 		criteria.andUseridEqualTo(userId);
-
 		List<PresetScheme> presetSchemes = presetSchemeMapper.selectByExample(example);
-		PageInfo<PresetScheme> pageInfo = new PageInfo<>(presetSchemes);
-		return pageInfo.getList();
+
+		return new PageInfo<PresetScheme>(presetSchemes);
 	}
 
 

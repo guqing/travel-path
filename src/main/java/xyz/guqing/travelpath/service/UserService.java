@@ -33,7 +33,6 @@ public class UserService {
         UserExample.Criteria criteria = userExample.createCriteria();
         criteria.andUsernameEqualTo(username);
         List<User> userList = userMapper.selectByExample(userExample);
-
         if (CollectionUtils.isEmpty(userList)){
             return null;
         }
@@ -58,9 +57,9 @@ public class UserService {
         userDTO.setId(user.getId());
         userDTO.setName(user.getNickname());
         userDTO.setUsername(user.getUsername());
-        userDTO.setGender(user.getGender().intValue());
+        userDTO.setGender(user.getGender());
         userDTO.setAvatar(user.getAvatar());
-        userDTO.setStatus(user.getStatus().intValue());
+        userDTO.setStatus(user.getStatus());
         userDTO.setLastLoginIp(user.getLastLoginIp());
         userDTO.setLastLoginTime(user.getLastLoginTime());
         userDTO.setTelephone(user.getMobile());

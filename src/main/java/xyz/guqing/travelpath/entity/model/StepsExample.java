@@ -166,72 +166,72 @@ public class StepsExample {
         }
 
         public Criteria andActionIsNull() {
-            addCriterion("action is null");
+            addCriterion("\"action\" is null");
             return (Criteria) this;
         }
 
         public Criteria andActionIsNotNull() {
-            addCriterion("action is not null");
+            addCriterion("\"action\" is not null");
             return (Criteria) this;
         }
 
         public Criteria andActionEqualTo(String value) {
-            addCriterion("action =", value, "action");
+            addCriterion("\"action\" =", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionNotEqualTo(String value) {
-            addCriterion("action <>", value, "action");
+            addCriterion("\"action\" <>", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionGreaterThan(String value) {
-            addCriterion("action >", value, "action");
+            addCriterion("\"action\" >", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionGreaterThanOrEqualTo(String value) {
-            addCriterion("action >=", value, "action");
+            addCriterion("\"action\" >=", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionLessThan(String value) {
-            addCriterion("action <", value, "action");
+            addCriterion("\"action\" <", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionLessThanOrEqualTo(String value) {
-            addCriterion("action <=", value, "action");
+            addCriterion("\"action\" <=", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionLike(String value) {
-            addCriterion("action like", value, "action");
+            addCriterion("\"action\" like", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionNotLike(String value) {
-            addCriterion("action not like", value, "action");
+            addCriterion("\"action\" not like", value, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionIn(List<String> values) {
-            addCriterion("action in", values, "action");
+            addCriterion("\"action\" in", values, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionNotIn(List<String> values) {
-            addCriterion("action not in", values, "action");
+            addCriterion("\"action\" not in", values, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionBetween(String value1, String value2) {
-            addCriterion("action between", value1, value2, "action");
+            addCriterion("\"action\" between", value1, value2, "action");
             return (Criteria) this;
         }
 
         public Criteria andActionNotBetween(String value1, String value2) {
-            addCriterion("action not between", value1, value2, "action");
+            addCriterion("\"action\" not between", value1, value2, "action");
             return (Criteria) this;
         }
 
@@ -576,62 +576,62 @@ public class StepsExample {
         }
 
         public Criteria andTimeIsNull() {
-            addCriterion("time is null");
+            addCriterion("\"time\" is null");
             return (Criteria) this;
         }
 
         public Criteria andTimeIsNotNull() {
-            addCriterion("time is not null");
+            addCriterion("\"time\" is not null");
             return (Criteria) this;
         }
 
         public Criteria andTimeEqualTo(Integer value) {
-            addCriterion("time =", value, "time");
+            addCriterion("\"time\" =", value, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeNotEqualTo(Integer value) {
-            addCriterion("time <>", value, "time");
+            addCriterion("\"time\" <>", value, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeGreaterThan(Integer value) {
-            addCriterion("time >", value, "time");
+            addCriterion("\"time\" >", value, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("time >=", value, "time");
+            addCriterion("\"time\" >=", value, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeLessThan(Integer value) {
-            addCriterion("time <", value, "time");
+            addCriterion("\"time\" <", value, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeLessThanOrEqualTo(Integer value) {
-            addCriterion("time <=", value, "time");
+            addCriterion("\"time\" <=", value, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeIn(List<Integer> values) {
-            addCriterion("time in", values, "time");
+            addCriterion("\"time\" in", values, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeNotIn(List<Integer> values) {
-            addCriterion("time not in", values, "time");
+            addCriterion("\"time\" not in", values, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeBetween(Integer value1, Integer value2) {
-            addCriterion("time between", value1, value2, "time");
+            addCriterion("\"time\" between", value1, value2, "time");
             return (Criteria) this;
         }
 
         public Criteria andTimeNotBetween(Integer value1, Integer value2) {
-            addCriterion("time not between", value1, value2, "time");
+            addCriterion("\"time\" not between", value1, value2, "time");
             return (Criteria) this;
         }
 
