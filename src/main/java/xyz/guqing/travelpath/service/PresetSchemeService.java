@@ -32,16 +32,14 @@ public class PresetSchemeService {
 
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
 	public PresetScheme savePresetScheme(PresetSchemeVO presetSchemeVO, Integer userId) {
-		List<Presetpoint> presetpoints = presetSchemeVO.getPresetpoints();
+		List<Presetpoint> presetPoints = presetSchemeVO.getPresetpoints();
 
-		PresetScheme presetScheme = getPresetScheme(presetSchemeVO, userId, presetpoints);
+		PresetScheme presetScheme = getPresetScheme(presetSchemeVO, userId, presetPoints);
 		presetSchemeMapper.insert(presetScheme);
 
-		//添加方案标记点
-		presetpoints.forEach(presetpoint->{
-			presetpoint.setPreid(presetScheme.getId());
-			presetPointService.savePresetPoint(presetpoint);
-		});
+		//批量保存预设卡口方案坐标点
+		presetPointService.batchSavePresetPoint(presetPoints, presetSchemeVO.getId());
+
 		// 返回给页面跟新列表
 		return presetScheme;
 	}
@@ -84,14 +82,25 @@ public class PresetSchemeService {
 	}
 
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
-	public void updateScheme(PresetSchemeVO presetSchemeVO,Integer userId) {
-		//先删除方案在保存
+	public void updateScheme(PresetSchemeVO presetSchemeVO) {
 		Long preId = presetSchemeVO.getId();
-		this.deleteById(preId);
-		//删除方案坐标点集合
-		presetPointService.deleteByPreId(preId);
 
-		this.savePresetScheme(presetSchemeVO,userId);
+		// 构建预设卡口方案数据
+		PresetScheme scheme = new PresetScheme();
+		scheme.setDeleted(new Byte("0"));
+		scheme.setId(presetSchemeVO.getId());
+		scheme.setModifyTime(new Date());
+		scheme.setName(presetSchemeVO.getName());
+		scheme.setDescription(presetSchemeVO.getDescription());
+		// 更新预设卡口方案
+		this.presetSchemeMapper.updateByPrimaryKeySelective(scheme);
+
+		// 删除方案坐标点集合
+		presetPointService.deleteByPreId(preId);
+		// 保存方案坐标点集合
+		List<Presetpoint> presetPointList = presetSchemeVO.getPresetpoints();
+		// 批量保存预设卡口方案坐标点
+		presetPointService.batchSavePresetPoint(presetPointList, presetSchemeVO.getId());
 	}
 
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)

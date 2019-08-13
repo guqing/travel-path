@@ -24,14 +24,18 @@ public class PresetPointService {
 	private PresetpointMapper presetpointMapper;
 
 	/**
-	 * 添加卡口预设方案坐标点数据
-	 * @param presetpoint 预设卡口坐标点模型对象
+	 * 批量添加预设卡口方案坐标点
+	 * @param presetPoints 预设卡口方案坐标点集合
+	 * @param preId 预设卡口方案Id
 	 */
 	@Transactional(rollbackFor = PresetPointServiceException.class)
-	public void savePresetPoint(Presetpoint presetpoint) {
-		presetpoint.setCreateTime(new Date());
-		presetpoint.setModifyTime(new Date());
-		presetpointMapper.insert(presetpoint);
+	public void batchSavePresetPoint(List<Presetpoint> presetPoints, Long preId) {
+		presetPoints.forEach(presetPoint->{
+			presetPoint.setCreateTime(new Date());
+			presetPoint.setModifyTime(new Date());
+			presetPoint.setPreid(preId);
+			presetpointMapper.insert(presetPoint);
+		});
 	}
 
 	/**

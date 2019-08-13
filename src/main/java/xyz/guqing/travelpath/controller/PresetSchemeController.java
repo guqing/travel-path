@@ -101,9 +101,7 @@ public class PresetSchemeController {
 			return Result.badArgument();
 		}
 		try {
-			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-			Integer userId = user.getId();
-			presetSchemeService.updateScheme(presetSchemeVO,userId);
+			presetSchemeService.updateScheme(presetSchemeVO);
 			return Result.ok();
 		} catch (Exception e) {
 			logger.error("更新卡口方案信息出错，入口参数：{}，错误信息：{}",
