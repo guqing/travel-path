@@ -107,6 +107,14 @@ public class PresetSchemeService {
 		this.updateDeleted(id);
 	}
 
+	/**
+	 * 批量逻辑删除
+	 * @param ids 需要逻辑删除的方案id集合
+	 */
+	public void batchLogicalDeleted(List<Long> ids) {
+		// 方法引用
+		ids.forEach(this::updateDeleted);
+	}
 
 	/**
 	 * 更新deleted字段
@@ -129,4 +137,5 @@ public class PresetSchemeService {
 		this.deleteById(id);
 		presetPointService.deleteByPreId(id);
 	}
+
 }

@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import xyz.guqing.travelpath.service.PresetSchemeService;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -120,11 +122,28 @@ public class PresetSchemeController {
 			presetSchemeService.logicalDeleted(id);
 			return Result.ok();
 		} catch (Exception e) {
-			logger.error("更新卡口方案信息出错，入口参数：{}，错误信息：{}",
+			logger.error("逻辑删除卡口方案出错，入口参数：{}，错误信息：{}",
 					id, e.getMessage());
 			return Result.fail();
 		}
 	}
+
+	/**
+	 * 批量逻辑删除
+	 * @return 返回删除结果信息
+	 */
+	@PostMapping("/batch-trash")
+	public Object batchTrash(@RequestBody List<Long> ids) {
+		try {
+			presetSchemeService.batchLogicalDeleted(ids);
+			return Result.ok();
+		} catch (Exception e) {
+			logger.error("批量逻辑删除卡口方案出错，入口参数：{}，错误信息：{}",
+					JSONArray.toJSONString(ids), e.getMessage());
+			return Result.fail();
+		}
+	}
+
 	/**
 	 * 校验参数是否合法
 	 *
