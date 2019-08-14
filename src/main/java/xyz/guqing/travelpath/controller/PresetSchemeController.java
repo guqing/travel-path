@@ -1,6 +1,7 @@
 package xyz.guqing.travelpath.controller;
 
 import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSONArray;
@@ -13,20 +14,25 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.vo.PresetPointExcelVO;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeExcelVO;
 import xyz.guqing.travelpath.entity.model.PresetScheme;
 import xyz.guqing.travelpath.entity.model.Presetpoint;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeVO;
+import xyz.guqing.travelpath.listener.ExcelListener;
 import xyz.guqing.travelpath.service.PresetPointService;
 import xyz.guqing.travelpath.service.PresetSchemeService;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * 预设卡口方案处理
@@ -180,10 +186,36 @@ public class PresetSchemeController {
 	}
 
 	/**
+	 * 预选卡口方案数据Excel文件上传
+	 * <li>1. 创建excel对应的实体对象
+	 * <li>2. 由于默认异步读取excel，所以需要创建excel一行一行的回调监听器
+	 * <li>3. 直接读即可
+	 */
+	@PostMapping("/upload")
+	public Object upload(MultipartFile file) {
+		try {
+			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+			Integer userId = user.getId();
+
+			// 异步执行任务
+			Callable<Object> callable = () -> {
+				// 读取并保存excel数据
+				presetSchemeService.saveUploadSchemeRecode(file, userId);
+				return Result.ok();
+			};
+
+			return callable;
+		} catch (Exception e) {
+			logger.error("上传卡口方案数据出错，错误信息：{}", e.getMessage());
+			return Result.fail();
+		}
+	}
+
+	/**
 	 * @param presetSchemeVOList 预设卡口方案VO集合
 	 * @return 适合导出Excel的presetSchemeExcelVOList
 	 */
-	public List<PresetSchemeExcelVO> transferToSchemeExcelList(List<PresetSchemeVO> presetSchemeVOList) {
+	private List<PresetSchemeExcelVO> transferToSchemeExcelList(List<PresetSchemeVO> presetSchemeVOList) {
 		List<PresetSchemeExcelVO> presetSchemeExcelVOList = new ArrayList<>();
 		presetSchemeVOList.forEach(presetSchemeVO -> {
 			PresetSchemeExcelVO presetSchemeExcelVO = new PresetSchemeExcelVO();
@@ -198,7 +230,7 @@ public class PresetSchemeController {
 	 * @param presetSchemeVOList 预设卡口方案VO集合
 	 * @return 适合导出Excel的PresetPointExcelVOList
 	 */
-	public List<PresetPointExcelVO> transferToPresetPointExcelVO(List<PresetSchemeVO> presetSchemeVOList) {
+	private List<PresetPointExcelVO> transferToPresetPointExcelVO(List<PresetSchemeVO> presetSchemeVOList) {
 		List<PresetPointExcelVO> PresetPointExcelVOList = new ArrayList<>();
 		presetSchemeVOList.forEach(presetSchemeVO -> {
 			PresetPointExcelVO presetPointExcelVO = new PresetPointExcelVO();

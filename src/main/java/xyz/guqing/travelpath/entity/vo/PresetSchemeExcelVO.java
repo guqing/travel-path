@@ -43,7 +43,7 @@ public class PresetSchemeExcelVO extends BaseRowModel {
 
 	@Override
 	public String toString() {
-		return "PresetSchemeExcelDTO{" +
+		return "PresetSchemeExcelVO{" +
 				"id=" + id +
 				", name='" + name + '\'' +
 				", description='" + description + '\'' +

@@ -82,4 +82,18 @@ public class PresetScheme {
     public void setDeleted(Byte deleted) {
         this.deleted = deleted;
     }
+
+    @Override
+    public String toString() {
+        return "PresetScheme{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", bayonetCount=" + bayonetCount +
+                ", userid=" + userid +
+                ", createTime=" + createTime +
+                ", modifyTime=" + modifyTime +
+                ", deleted=" + deleted +
+                '}';
+    }
 }

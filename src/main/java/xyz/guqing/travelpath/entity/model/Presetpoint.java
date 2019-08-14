@@ -72,4 +72,17 @@ public class Presetpoint {
     public void setModifyTime(Date modifyTime) {
         this.modifyTime = modifyTime;
     }
+
+    @Override
+    public String toString() {
+        return "Presetpoint{" +
+                "id=" + id +
+                ", lng='" + lng + '\'' +
+                ", lat='" + lat + '\'' +
+                ", edgeNumber='" + edgeNumber + '\'' +
+                ", preid=" + preid +
+                ", createTime=" + createTime +
+                ", modifyTime=" + modifyTime +
+                '}';
+    }
 }

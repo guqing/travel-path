@@ -17,7 +17,7 @@ public class PresetPointExcelVO extends BaseRowModel {
 	@ExcelProperty(value = "经度(Lng)", index = 2)
 	private String lng;
 	@ExcelProperty(value = "所属预选卡口方案(preId)", index = 3)
-	private Long preId;
+	private Long preid;
 
 	public Long getId() {
 		return id;
@@ -43,21 +43,21 @@ public class PresetPointExcelVO extends BaseRowModel {
 		this.lng = lng;
 	}
 
-	public Long getPreId() {
-		return preId;
+	public Long getPreid() {
+		return preid;
 	}
 
-	public void setPreId(Long preId) {
-		this.preId = preId;
+	public void setPreid(Long preid) {
+		this.preid = preid;
 	}
 
 	@Override
 	public String toString() {
-		return "PresetPointExcelDTO{" +
+		return "PresetPointExcelVO{" +
 				"id=" + id +
 				", lat='" + lat + '\'' +
 				", lng='" + lng + '\'' +
-				", preId=" + preId +
+				", preid=" + preid +
 				'}';
 	}
 }

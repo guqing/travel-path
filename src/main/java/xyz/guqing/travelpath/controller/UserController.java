@@ -1,6 +1,5 @@
 package xyz.guqing.travelpath.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.User;
-import xyz.guqing.travelpath.properties.TokenProperties;
+import xyz.guqing.travelpath.entity.properties.TokenProperties;
 import xyz.guqing.travelpath.service.MyUserDetailsService;
 import xyz.guqing.travelpath.service.UserService;
 import xyz.guqing.travelpath.utils.JwtTokenUtil;

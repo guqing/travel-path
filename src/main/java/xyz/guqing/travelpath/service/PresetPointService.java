@@ -34,6 +34,7 @@ public class PresetPointService {
 			presetPoint.setCreateTime(new Date());
 			presetPoint.setModifyTime(new Date());
 			presetPoint.setPreid(preId);
+			// 保存到数据库
 			presetpointMapper.insert(presetPoint);
 		});
 	}

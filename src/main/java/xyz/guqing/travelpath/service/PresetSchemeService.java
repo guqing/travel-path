@@ -1,5 +1,7 @@
 package xyz.guqing.travelpath.service;
 
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.metadata.Sheet;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -7,16 +9,20 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.entity.model.PresetSchemeExample;
+import xyz.guqing.travelpath.entity.vo.PresetPointExcelVO;
+import xyz.guqing.travelpath.entity.vo.PresetSchemeExcelVO;
 import xyz.guqing.travelpath.exception.PresetSchemeServiceException;
 import xyz.guqing.travelpath.entity.model.PresetScheme;
 import xyz.guqing.travelpath.entity.model.Presetpoint;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeVO;
+import xyz.guqing.travelpath.listener.ExcelListener;
 import xyz.guqing.travelpath.mapper.PresetSchemeMapper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * 预设卡口方案service
@@ -182,4 +188,110 @@ public class PresetSchemeService {
 		presetPointService.deleteByPreId(id);
 	}
 
+	/**
+	 * 保存从Excel上传的数据
+	 * @param file excel文件流对象
+	 * @param userId 用户id
+	 * @throws IOException 从文件流获取InputStream的IO异常
+	 */
+	public void saveUploadSchemeRecode(MultipartFile file, Integer userId) throws IOException {
+		InputStream inputStream = file.getInputStream();
+		// 解析每行结果在listener中处理，并得到ExcelReader
+		ExcelListener listener = new ExcelListener();
+		ExcelReader excelReader = new ExcelReader(inputStream, null, listener);
+
+		// 读取并保存excel中的方案数据到数据库中
+		Map<Long, PresetScheme> presetSchemeMapList = readSchemeMapListFromExcel(listener, excelReader,userId);
+
+		// 保存方案的坐标点集合数据
+		Map<Long, List<Presetpoint>> pointMapListFromExcel = getPointMapListFromExcel(listener, excelReader);
+
+		// 先保存方案数据
+		for (Map.Entry<Long, PresetScheme> entry : presetSchemeMapList.entrySet()) {
+			// 根据preId取方案坐标点数据的条数count,为方案坐标点数据赋值
+			PresetScheme presetScheme = entry.getValue();
+			List<Presetpoint> presetpointList = pointMapListFromExcel.get(entry.getKey());
+			if(presetpointList != null) {
+				presetScheme.setBayonetCount(presetpointList.size());
+			}
+			// 保存方案数据
+			presetSchemeMapper.insert(presetScheme);
+
+			if(presetpointList != null) {
+				// 保存方案坐标点数据
+				presetPointService.batchSavePresetPoint(presetpointList, presetScheme.getId());
+			}
+		}
+	}
+
+	/**
+	 * 从上传的Excel读取预设卡口方案数据并保存到数据库中
+	 * @param listener 读取excel的监听器
+	 * @param excelReader excel读取器对象
+	 * @param userId 用户id
+	 * @return 返回插入到数据库的方案id集合
+	 */
+	private Map<Long, PresetScheme> readSchemeMapListFromExcel(ExcelListener listener, ExcelReader excelReader, Integer userId) {
+		// 先清空listener中的List容器，安全起见防止脏数据
+		listener.getDataList().clear();
+
+		// 读取sheet1的数据
+		excelReader.read(new Sheet(1, 1, PresetSchemeExcelVO.class));
+		List<Object> presetSchemeExcelList = listener.getDataList();
+
+		Map<Long, PresetScheme> presetSchemeMap = new HashMap<>();
+		presetSchemeExcelList.forEach(presetSchemeExcelVO -> {
+			PresetScheme presetScheme = new PresetScheme();
+			BeanUtils.copyProperties(presetSchemeExcelVO, presetScheme);
+			presetScheme.setCreateTime(new Date());
+			presetScheme.setModifyTime(new Date());
+			presetScheme.setDeleted(new Byte("0"));
+			presetScheme.setUserid(userId);
+
+			presetSchemeMap.put(presetScheme.getId(), presetScheme);
+		});
+
+		return presetSchemeMap;
+	}
+
+	/**
+	 * 从上传的excel文件流中读取方案的坐标点数据集合并保存到数据库中
+	 * @param listener excel读取监听器
+	 * @param excelReader excel读取对象
+	 */
+	private Map<Long, List<Presetpoint>> getPointMapListFromExcel(ExcelListener listener,ExcelReader excelReader) {
+		// 先清空listener中的List容器，安全起见防止脏数据
+		listener.getDataList().clear();
+
+		Map<Long, List<Presetpoint>> preSetPointMapListByPreId = new HashMap<>(8);
+
+		// 读取sheet2的数据
+		excelReader.read(new Sheet(2, 1, PresetPointExcelVO.class));
+		List<Object> presetPointExcelList = listener.getDataList();
+
+		for(Object presetPointExcelVo : presetPointExcelList) {
+			Presetpoint presetpoint = new Presetpoint();
+			BeanUtils.copyProperties(presetPointExcelVo, presetpoint);
+
+			// 获取map得到List
+			Long preId = presetpoint.getPreid();
+			if (preId == null) {
+				// preId不能为空，如果为空就跳过
+				continue;
+			}
+
+			// 根据preId从map中取出List
+			List<Presetpoint> preSetPointList = preSetPointMapListByPreId.get(preId);
+			if (preSetPointList != null) {
+				preSetPointList.add(presetpoint);
+			} else {
+				// 创建
+				List<Presetpoint> newPreSetPointList = new ArrayList<>();
+				newPreSetPointList.add(presetpoint);
+				preSetPointMapListByPreId.put(preId, newPreSetPointList);
+			}
+		}
+
+		return preSetPointMapListByPreId;
+	}
 }

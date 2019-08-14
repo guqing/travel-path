@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
-import xyz.guqing.travelpath.properties.MySecurityAutoConfiguration;
-import xyz.guqing.travelpath.properties.TokenProperties;
+import xyz.guqing.travelpath.entity.properties.MySecurityAutoConfiguration;
+import xyz.guqing.travelpath.entity.properties.TokenProperties;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;

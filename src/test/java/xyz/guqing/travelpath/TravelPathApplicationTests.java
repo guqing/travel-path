@@ -11,10 +11,12 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.vo.PresetPointExcelVO;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeExcelVO;
 import xyz.guqing.travelpath.service.PresetSchemeService;
 import xyz.guqing.travelpath.utils.JwtTokenUtil;
+import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,7 +60,7 @@ public class TravelPathApplicationTests {
 		presetPointExcelDTO.setId(1L);
 		presetPointExcelDTO.setLat("40.03262649351757");
 		presetPointExcelDTO.setLng("116.2124837757744");
-		presetPointExcelDTO.setPreId(4L);
+		presetPointExcelDTO.setPreid(4L);
 		presetPointExcelDTOList.add(presetPointExcelDTO);
 
 		Sheet sheet2 = new Sheet(2, 1, PresetPointExcelVO.class);
@@ -85,5 +87,12 @@ public class TravelPathApplicationTests {
 		// 背景色
 		tableStyle.setTableHeadBackGroundColor(IndexedColors.GREY_25_PERCENT);
 		return tableStyle;
+	}
+
+	@Test
+	public void testSecurityHelper() {
+		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+		Integer userId = user.getId();
+		System.out.println(userId);
 	}
 }

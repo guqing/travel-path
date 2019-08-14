@@ -7,8 +7,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
-import xyz.guqing.travelpath.properties.MySecurityAutoConfiguration;
-import xyz.guqing.travelpath.properties.TokenProperties;
+import xyz.guqing.travelpath.entity.properties.MySecurityAutoConfiguration;
+import xyz.guqing.travelpath.entity.properties.TokenProperties;
 import xyz.guqing.travelpath.service.MyUserDetailsService;
 import xyz.guqing.travelpath.utils.JwtTokenUtil;
 import xyz.guqing.travelpath.utils.UserTokenUtil;

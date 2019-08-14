@@ -1,4 +1,4 @@
-package xyz.guqing.travelpath.properties;
+package xyz.guqing.travelpath.entity.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
