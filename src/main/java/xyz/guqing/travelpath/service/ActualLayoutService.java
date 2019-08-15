@@ -97,10 +97,18 @@ public class ActualLayoutService {
 	}
 
 	/**
+	 * 批量逻辑删除
+	 * @param ids 方案id集合
+	 */
+	public void batchLogicalDelete(List<Long> ids) {
+		ids.forEach(this::updateDeleteStatus);
+	}
+
+	/**
 	 * 根据方案id更新删除状态，逻辑删除
 	 * @param id 布设卡口方案id
 	 */
-	public void updateDeleteStatus(Long id) {
+	private void updateDeleteStatus(Long id) {
 		ActualLayoutScheme layoutScheme = new ActualLayoutScheme();
 		layoutScheme.setId(id);
 		layoutScheme.setModifyTime(new Date());
@@ -108,4 +116,5 @@ public class ActualLayoutService {
 		//更新数据
 		layoutSchemeMapper.updateByPrimaryKeySelective(layoutScheme);
 	}
+
 }

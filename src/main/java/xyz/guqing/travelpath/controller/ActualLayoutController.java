@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -93,6 +94,22 @@ public class ActualLayoutController {
 			return Result.ok();
 		} catch (Exception e) {
 			logger.error("根据方案id逻辑删除方案出错，入口参数：{}，错误信息：{}", id, e.getMessage());
+			return Result.fail();
+		}
+	}
+
+	/**
+	 * 根据布设卡口方案id批量扔进回收站
+	 * @return 返回执行结果对象，成功或失败
+	 */
+	@PostMapping("/batch-trash")
+	public Object batchThrowTrash(@RequestBody List<Long> ids) {
+		try {
+			layoutService.batchLogicalDelete(ids);
+			return Result.ok();
+		} catch (Exception e) {
+			logger.error("根据方案id集合批量逻辑删除方案出错，入口参数：{}，错误信息：{}",
+					JSONArray.toJSONString(ids), e.getMessage());
 			return Result.fail();
 		}
 	}
