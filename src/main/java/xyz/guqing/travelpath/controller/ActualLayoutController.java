@@ -8,13 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
+import xyz.guqing.travelpath.entity.model.ActualBayonetPoint;
 import xyz.guqing.travelpath.entity.model.ActualLayoutScheme;
-import xyz.guqing.travelpath.entity.model.PresetScheme;
 import xyz.guqing.travelpath.entity.vo.ActualLayoutSchemeVO;
 import xyz.guqing.travelpath.service.ActualLayoutService;
-import xyz.guqing.travelpath.service.PresetSchemeService;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
+
+import java.util.List;
 
 /**
  * 卡口实际布设方案Controller
@@ -72,6 +73,19 @@ public class ActualLayoutController {
 			return Result.fail();
 		}
 	}
+
+	@GetMapping("/get/{id}")
+	public Object getSchemePointsById(@PathVariable("id") Long id) {
+		try {
+			List<ActualBayonetPoint> bayonetPoints = layoutService.getSchemePointsById(id);
+			return Result.okList(bayonetPoints);
+		} catch (Exception e) {
+			logger.error("根据id查询布设卡口方案坐标集合数据出错，入口参数：{},错误信息：{}",
+					id, e.getMessage());
+			return Result.fail();
+		}
+	}
+
 
 	/**
 	 * @param layoutSchemeVO 包含基本信息和坐标点数据集

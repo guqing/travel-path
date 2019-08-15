@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.guqing.travelpath.entity.model.ActualBayonetPoint;
+import xyz.guqing.travelpath.entity.model.ActualBayonetPointExample;
 import xyz.guqing.travelpath.exception.ActualBayonetPointException;
 import xyz.guqing.travelpath.mapper.ActualBayonetPointMapper;
 
@@ -34,5 +35,17 @@ public class ActualBayonetPointService {
 			// 保存
 			bayonetPointMapper.insert(bayonetPoint);
 		});
+	}
+
+	/**
+	 * 根据布设方案id查询方案详情，即所有坐标点数据
+	 * @param actualId 布设卡口方案id
+	 * @return 返回方案坐标点集合
+	 */
+	public List<ActualBayonetPoint> queryPointsByActualId(Long actualId) {
+		ActualBayonetPointExample example = new ActualBayonetPointExample();
+		ActualBayonetPointExample.Criteria criteria = example.createCriteria();
+		criteria.andActualIdEqualTo(actualId);
+		return bayonetPointMapper.selectByExample(example);
 	}
 }
