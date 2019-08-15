@@ -86,4 +86,26 @@ public class ActualLayoutService {
 	public List<ActualBayonetPoint> getSchemePointsById(Long id) {
 		return bayonetPointService.queryPointsByActualId(id);
 	}
+
+	/**
+	 * 逻辑删除方案
+	 * @param id 方案id
+	 */
+	public void logicalDelete(Long id) {
+		// 更新删除状态
+		updateDeleteStatus(id);
+	}
+
+	/**
+	 * 根据方案id更新删除状态，逻辑删除
+	 * @param id 布设卡口方案id
+	 */
+	public void updateDeleteStatus(Long id) {
+		ActualLayoutScheme layoutScheme = new ActualLayoutScheme();
+		layoutScheme.setId(id);
+		layoutScheme.setModifyTime(new Date());
+		layoutScheme.setDeleted(DeleteConstant.DELETED);
+		//更新数据
+		layoutSchemeMapper.updateByPrimaryKeySelective(layoutScheme);
+	}
 }

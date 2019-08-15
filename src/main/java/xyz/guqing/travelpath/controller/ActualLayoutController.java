@@ -86,6 +86,16 @@ public class ActualLayoutController {
 		}
 	}
 
+	@PostMapping("/trash/{id}")
+	public Object throwTrash(@PathVariable("id") Long id) {
+		try {
+			layoutService.logicalDelete(id);
+			return Result.ok();
+		} catch (Exception e) {
+			logger.error("根据方案id逻辑删除方案出错，入口参数：{}，错误信息：{}", id, e.getMessage());
+			return Result.fail();
+		}
+	}
 
 	/**
 	 * @param layoutSchemeVO 包含基本信息和坐标点数据集
