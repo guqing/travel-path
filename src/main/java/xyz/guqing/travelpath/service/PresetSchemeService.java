@@ -2,7 +2,6 @@ package xyz.guqing.travelpath.service;
 
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.metadata.Sheet;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.entity.model.PresetSchemeExample;
+import xyz.guqing.travelpath.entity.support.DeleteConstant;
 import xyz.guqing.travelpath.entity.vo.PresetPointExcelVO;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeExcelVO;
 import xyz.guqing.travelpath.exception.PresetSchemeServiceException;
@@ -73,7 +73,7 @@ public class PresetSchemeService {
 		// 查询
 		PresetSchemeExample example = new PresetSchemeExample();
 		PresetSchemeExample.Criteria criteria = example.createCriteria();
-		criteria.andDeletedEqualTo(new Byte("0"));
+		criteria.andDeletedEqualTo(DeleteConstant.RETAIN);
 		criteria.andUseridEqualTo(userId);
 		List<PresetScheme> presetSchemes = presetSchemeMapper.selectByExample(example);
 
@@ -118,7 +118,7 @@ public class PresetSchemeService {
 		presetScheme.setDescription(presetSchemeVO.getDescription());
 		presetScheme.setCreateTime(new Date());
 		presetScheme.setModifyTime(new Date());
-		presetScheme.setDeleted(new Byte("0"));
+		presetScheme.setDeleted(DeleteConstant.RETAIN);
 		return presetScheme;
 	}
 
@@ -128,7 +128,7 @@ public class PresetSchemeService {
 
 		// 构建预设卡口方案数据
 		PresetScheme scheme = new PresetScheme();
-		scheme.setDeleted(new Byte("0"));
+		scheme.setDeleted(DeleteConstant.RETAIN);
 		scheme.setId(presetSchemeVO.getId());
 		scheme.setModifyTime(new Date());
 		scheme.setName(presetSchemeVO.getName());
@@ -174,7 +174,7 @@ public class PresetSchemeService {
 	public void updateDeleted(Long id) {
 		PresetScheme presetScheme = new PresetScheme();
 		presetScheme.setId(id);
-		presetScheme.setDeleted(new Byte("1"));
+		presetScheme.setDeleted(DeleteConstant.DELETED);
 		presetSchemeMapper.updateByPrimaryKeySelective(presetScheme);
 	}
 
@@ -194,6 +194,7 @@ public class PresetSchemeService {
 	 * @param userId 用户id
 	 * @throws IOException 从文件流获取InputStream的IO异常
 	 */
+	@Transactional(rollbackFor = PresetSchemeServiceException.class)
 	public void saveUploadSchemeRecode(MultipartFile file, Integer userId) throws IOException {
 		InputStream inputStream = file.getInputStream();
 		// 解析每行结果在listener中处理，并得到ExcelReader
@@ -225,7 +226,16 @@ public class PresetSchemeService {
 	}
 
 	/**
-	 * 从上传的Excel读取预设卡口方案数据并保存到数据库中
+	 * 从上传的Excel读取预设卡口方案数据,以execl表中填写的id
+	 * 作为key,读取到的数据作为value存储到map中返回
+	 * 预设卡口方案和预设卡口方案坐标数据在同一个excel的不同sheet中
+	 * 存储，保存到数据库时批量的方案数据需要和批量的方案坐标数据关联依靠
+	 * 保存预设卡口方案到数据库后返回的id值，而excel中的方案数据要和方案
+	 * 对应的坐标点数据形成关联就需要靠用户填写的方案id相关联，而用户填写
+	 * 的方案id并不是真正存储到数据库时的id,所以需要以用户填写的方案id作为键
+	 * 数据作为值存储到map形成对应关系，等把预设卡口方案数据存储到数据库后返回
+	 * 真正的方案id时在根据旧id去除对应的方案坐标点数据集合重新赋值对应的方案id即preId
+	 * 而后在保存方案对象的坐标点数据集到数据库中。
 	 * @param listener 读取excel的监听器
 	 * @param excelReader excel读取器对象
 	 * @param userId 用户id
@@ -245,7 +255,7 @@ public class PresetSchemeService {
 			BeanUtils.copyProperties(presetSchemeExcelVO, presetScheme);
 			presetScheme.setCreateTime(new Date());
 			presetScheme.setModifyTime(new Date());
-			presetScheme.setDeleted(new Byte("0"));
+			presetScheme.setDeleted(DeleteConstant.RETAIN);
 			presetScheme.setUserid(userId);
 
 			presetSchemeMap.put(presetScheme.getId(), presetScheme);
@@ -255,9 +265,11 @@ public class PresetSchemeService {
 	}
 
 	/**
-	 * 从上传的excel文件流中读取方案的坐标点数据集合并保存到数据库中
+	 * 从上传的excel文件流中读取方案的坐标点数据集
+	 * 并与用户填写的对应方案id形成map返回
 	 * @param listener excel读取监听器
 	 * @param excelReader excel读取对象
+	 * @return 返回用户填写的方案id与从excel中读取的数据形成对应关系的Map集合
 	 */
 	private Map<Long, List<Presetpoint>> getPointMapListFromExcel(ExcelListener listener,ExcelReader excelReader) {
 		// 先清空listener中的List容器，安全起见防止脏数据
