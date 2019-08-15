@@ -47,6 +47,7 @@ public class ActualBayonetPointService {
 		return bayonetPointMapper.selectByExample(example);
 	}
 
+	@Transactional(rollbackFor = ActualBayonetPointException.class)
 	public void deleteByActualId(Long actualId) {
 		ActualBayonetPointExample example = getExampleByEqualToActualId(actualId);
 		bayonetPointMapper.deleteByExample(example);

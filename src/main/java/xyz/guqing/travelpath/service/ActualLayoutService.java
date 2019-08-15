@@ -108,6 +108,7 @@ public class ActualLayoutService {
 	 * 根据方案id更新删除状态，逻辑删除
 	 * @param id 布设卡口方案id
 	 */
+	@Transactional(rollbackFor = ActualLayoutException.class)
 	private void updateDeleteStatus(Long id) {
 		ActualLayoutScheme layoutScheme = new ActualLayoutScheme();
 		layoutScheme.setId(id);
@@ -121,6 +122,7 @@ public class ActualLayoutService {
 	 * 根据布设卡口方案id删除数据
 	 * @param id 布设卡口方案id
 	 */
+	@Transactional(rollbackFor = ActualLayoutException.class)
 	public void deleteById(Long id) {
 		layoutSchemeMapper.deleteByPrimaryKey(id);
 		bayonetPointService.deleteByActualId(id);
@@ -130,6 +132,7 @@ public class ActualLayoutService {
 	 * 更新方案信息，涉及两张表，方案基本信息表个坐标数据表
 	 * @param actualLayoutSchemeVO 布设卡口方案VO
 	 */
+	@Transactional(rollbackFor = ActualLayoutException.class)
 	public void update(ActualLayoutSchemeVO actualLayoutSchemeVO) {
 		ActualLayoutScheme layoutScheme = getLayoutScheme(actualLayoutSchemeVO);
 		// 不需要创建时间
