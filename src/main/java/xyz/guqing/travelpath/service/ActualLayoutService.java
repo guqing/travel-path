@@ -2,13 +2,19 @@ package xyz.guqing.travelpath.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import xyz.guqing.travelpath.entity.model.ActualBayonetPoint;
 import xyz.guqing.travelpath.entity.model.ActualLayoutScheme;
 import xyz.guqing.travelpath.entity.model.ActualLayoutSchemeExample;
 import xyz.guqing.travelpath.entity.support.DeleteConstant;
+import xyz.guqing.travelpath.entity.vo.ActualLayoutSchemeVO;
+import xyz.guqing.travelpath.exception.ActualLayoutException;
 import xyz.guqing.travelpath.mapper.ActualLayoutSchemeMapper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,5 +52,29 @@ public class ActualLayoutService {
 		return new PageInfo<>(actualLayoutSchemes);
 	}
 
-	
+
+	@Transactional(rollbackFor = ActualLayoutException.class)
+	public void save(ActualLayoutSchemeVO actualLayoutSchemeVO) {
+		// 保存方案名称描述等基本信息
+		ActualLayoutScheme layoutScheme = getLayoutScheme(actualLayoutSchemeVO);
+		layoutSchemeMapper.insert(layoutScheme);
+
+		// 保存方案下的坐标点数据
+		Long schemeId = layoutScheme.getId();
+		bayonetPointService.batchSavePoints(actualLayoutSchemeVO.getBayonetPoints(), schemeId);
+	}
+
+	private ActualLayoutScheme getLayoutScheme(ActualLayoutSchemeVO actualLayoutSchemeVO) {
+		ActualLayoutScheme layoutScheme = new ActualLayoutScheme();
+		BeanUtils.copyProperties(actualLayoutSchemeVO, layoutScheme);
+		List<ActualBayonetPoint> bayonetPoints = actualLayoutSchemeVO.getBayonetPoints();
+		if(bayonetPoints != null) {
+			layoutScheme.setBayonetCount(bayonetPoints.size());
+		}
+		layoutScheme.setDeleted(DeleteConstant.RETAIN);
+		layoutScheme.setCreateTime(new Date());
+		layoutScheme.setModifyTime(new Date());
+
+		return layoutScheme;
+	}
 }
