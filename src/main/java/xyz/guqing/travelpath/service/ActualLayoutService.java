@@ -117,4 +117,30 @@ public class ActualLayoutService {
 		layoutSchemeMapper.updateByPrimaryKeySelective(layoutScheme);
 	}
 
+	/**
+	 * 根据布设卡口方案id删除数据
+	 * @param id 布设卡口方案id
+	 */
+	public void deleteById(Long id) {
+		layoutSchemeMapper.deleteByPrimaryKey(id);
+		bayonetPointService.deleteByActualId(id);
+	}
+
+	/**
+	 * 更新方案信息，涉及两张表，方案基本信息表个坐标数据表
+	 * @param actualLayoutSchemeVO 布设卡口方案VO
+	 */
+	public void update(ActualLayoutSchemeVO actualLayoutSchemeVO) {
+		ActualLayoutScheme layoutScheme = getLayoutScheme(actualLayoutSchemeVO);
+		// 不需要创建时间
+		layoutScheme.setCreateTime(null);
+		// 更新卡口方案基本信息
+		layoutSchemeMapper.updateByPrimaryKeySelective(layoutScheme);
+
+		//先根据方案id删除坐标数据集
+		Long actualId = actualLayoutSchemeVO.getId();
+		bayonetPointService.deleteByActualId(actualId);
+		// 在添加坐标数据集
+		bayonetPointService.batchSavePoints(actualLayoutSchemeVO.getBayonetPoints(), actualId);
+	}
 }

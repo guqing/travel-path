@@ -114,6 +114,22 @@ public class ActualLayoutController {
 		}
 	}
 
+	@PutMapping("/update")
+	public Object update(@RequestBody ActualLayoutSchemeVO actualLayoutSchemeVO) {
+		if(actualLayoutSchemeVO.getId() == null) {
+			return Result.badArgument();
+		}
+
+		try {
+			layoutService.update(actualLayoutSchemeVO);
+			return Result.ok();
+		} catch (Exception e) {
+			logger.error("更新布设卡口方案出错，入口参数：{}，错误信息：{}",
+					JSONObject.toJSONString(actualLayoutSchemeVO), e.getMessage());
+			return Result.fail();
+		}
+	}
+
 	/**
 	 * @param layoutSchemeVO 包含基本信息和坐标点数据集
 	 * @return 校验参数是否合法，合法返回null,不合法返回

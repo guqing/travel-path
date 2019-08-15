@@ -43,9 +43,25 @@ public class ActualBayonetPointService {
 	 * @return 返回方案坐标点集合
 	 */
 	public List<ActualBayonetPoint> queryPointsByActualId(Long actualId) {
+		ActualBayonetPointExample example = getExampleByEqualToActualId(actualId);
+		return bayonetPointMapper.selectByExample(example);
+	}
+
+	public void deleteByActualId(Long actualId) {
+		ActualBayonetPointExample example = getExampleByEqualToActualId(actualId);
+		bayonetPointMapper.deleteByExample(example);
+	}
+
+	/**
+	 * 根据布设卡口方案id创建查询条件
+	 * riteria.andActualIdEqualTo(actualId);
+	 * @param actualId 布设卡口方案id
+	 * @return 返回查询条件example对象
+	 */
+	private ActualBayonetPointExample getExampleByEqualToActualId(Long actualId) {
 		ActualBayonetPointExample example = new ActualBayonetPointExample();
 		ActualBayonetPointExample.Criteria criteria = example.createCriteria();
 		criteria.andActualIdEqualTo(actualId);
-		return bayonetPointMapper.selectByExample(example);
+		return example;
 	}
 }
