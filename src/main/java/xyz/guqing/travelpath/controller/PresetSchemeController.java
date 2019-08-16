@@ -205,7 +205,7 @@ public class PresetSchemeController {
 				@Override
 				public Object call() throws Exception {
 					// 读取并保存excel数据
-					presetSchemeService.saveUploadSchemeRecode(file, userId);
+					presetSchemeService.saveUploadSchemeRecord(file, userId);
 					return Result.ok();
 				}
 			};

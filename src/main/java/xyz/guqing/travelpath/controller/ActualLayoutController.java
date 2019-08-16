@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.model.ActualBayonetPoint;
 import xyz.guqing.travelpath.entity.model.ActualLayoutScheme;
@@ -26,6 +27,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * 卡口实际布设方案Controller
@@ -169,6 +171,28 @@ public class ActualLayoutController {
 					JSONArray.toJSONString(ids), e.getMessage());
 		}
 	}
+
+	@PostMapping("/upload")
+	public Object upload(MultipartFile file) {
+		try {
+			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+			Integer userId = user.getId();
+
+			// 异步执行任务
+			return new Callable<Object>() {
+				@Override
+				public Object call() throws Exception {
+					// 读取并保存excel数据
+					layoutService.saveUploadExcelRecord(file, userId);
+					return Result.ok();
+				}
+			};
+		} catch (Exception e) {
+			logger.error("上传布设卡口方案数据出错，错误信息：{}", e.getMessage());
+			return Result.fail();
+		}
+	}
+
 
 	private List<ActualPointExcelVO> transferToActualPointExcelVO(List<ActualLayoutSchemeVO> actualLayoutSchemeVoList) {
 		List<ActualPointExcelVO> actualPointExcelVoList = new ArrayList<>();

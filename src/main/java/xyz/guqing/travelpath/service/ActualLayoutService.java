@@ -1,22 +1,28 @@
 package xyz.guqing.travelpath.service;
 
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.metadata.Sheet;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.entity.model.ActualBayonetPoint;
 import xyz.guqing.travelpath.entity.model.ActualLayoutScheme;
 import xyz.guqing.travelpath.entity.model.ActualLayoutSchemeExample;
 import xyz.guqing.travelpath.entity.support.DeleteConstant;
+import xyz.guqing.travelpath.entity.vo.ActualLayoutExcelVO;
 import xyz.guqing.travelpath.entity.vo.ActualLayoutSchemeVO;
+import xyz.guqing.travelpath.entity.vo.ActualPointExcelVO;
 import xyz.guqing.travelpath.exception.ActualLayoutException;
+import xyz.guqing.travelpath.listener.ExcelListener;
 import xyz.guqing.travelpath.mapper.ActualLayoutSchemeMapper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * 卡口实际布设方案Service
@@ -170,5 +176,93 @@ public class ActualLayoutService {
 		});
 
 		return actualLayoutSchemeVoList;
+	}
+
+	public void saveUploadExcelRecord(MultipartFile file, Integer userId) throws IOException {
+		InputStream inputStream = file.getInputStream();
+		// 解析每行结果在listener中处理，并得到ExcelReader
+		ExcelListener listener = new ExcelListener();
+		ExcelReader excelReader = new ExcelReader(inputStream, null, listener);
+
+		// 读取并保存excel中的方案数据到数据库中
+		Map<Long, ActualLayoutScheme> actualSchemeMapList = readSchemeMapListFromExcel(listener, excelReader,userId);
+
+		// 保存方案的坐标点集合数据
+		Map<Long, List<ActualBayonetPoint>> pointMapListFromExcel = getPointMapListFromExcel(listener, excelReader);
+
+		// 先保存方案数据
+		for (Map.Entry<Long, ActualLayoutScheme> entry : actualSchemeMapList.entrySet()) {
+			// 根据preId取方案坐标点数据的条数count,为方案坐标点数据赋值
+			ActualLayoutScheme actualLayoutScheme = entry.getValue();
+			List<ActualBayonetPoint> bayonetPointList = pointMapListFromExcel.get(entry.getKey());
+			if(bayonetPointList != null) {
+				actualLayoutScheme.setBayonetCount(bayonetPointList.size());
+			}
+			// 保存方案数据
+			layoutSchemeMapper.insert(actualLayoutScheme);
+
+			if(bayonetPointList != null) {
+				// 保存方案坐标点数据
+				bayonetPointService.batchSavePoints(bayonetPointList, actualLayoutScheme.getId());
+			}
+		}
+	}
+
+	private Map<Long, List<ActualBayonetPoint>> getPointMapListFromExcel(ExcelListener listener, ExcelReader excelReader) {
+		// 先清空listener中的List容器，安全起见防止脏数据
+		listener.getDataList().clear();
+
+		Map<Long, List<ActualBayonetPoint>> bayonetPointMapList = new HashMap<>(8);
+
+		// 读取sheet2的数据
+		excelReader.read(new Sheet(2, 1, ActualPointExcelVO.class));
+		List<Object> actualPointExcelList = listener.getDataList();
+
+		for(Object actualPointExcelVo : actualPointExcelList) {
+			ActualBayonetPoint actualPoint = new ActualBayonetPoint();
+			BeanUtils.copyProperties(actualPointExcelVo, actualPoint);
+
+			// 获取map得到List
+			Long actualId = actualPoint.getActualId();
+			if (actualId == null) {
+				// preId不能为空，如果为空就跳过
+				continue;
+			}
+
+			// 根据preId从map中取出List
+			List<ActualBayonetPoint> actualPointList = bayonetPointMapList.get(actualId);
+			if (actualPointList != null) {
+				actualPointList.add(actualPoint);
+			} else {
+				// 创建
+				List<ActualBayonetPoint> newActualPointList = new ArrayList<>();
+				newActualPointList.add(actualPoint);
+				bayonetPointMapList.put(actualId, newActualPointList);
+			}
+		}
+		return bayonetPointMapList;
+	}
+
+	private Map<Long, ActualLayoutScheme> readSchemeMapListFromExcel(ExcelListener listener, ExcelReader excelReader, Integer userId) {
+		// 先清空listener中的List容器，安全起见防止脏数据
+		listener.getDataList().clear();
+
+		// 读取sheet1的数据
+		excelReader.read(new Sheet(1, 1, ActualLayoutExcelVO.class));
+		List<Object> actualSchemeExcelList = listener.getDataList();
+
+		Map<Long, ActualLayoutScheme> actualSchemeMap = new HashMap<>();
+		actualSchemeExcelList.forEach(actualSchemeExcelVO -> {
+			ActualLayoutScheme actualScheme = new ActualLayoutScheme();
+			BeanUtils.copyProperties(actualSchemeExcelVO, actualScheme);
+			actualScheme.setCreateTime(new Date());
+			actualScheme.setModifyTime(new Date());
+			actualScheme.setDeleted(DeleteConstant.RETAIN);
+			actualScheme.setUserid(userId);
+
+			actualSchemeMap.put(actualScheme.getId(), actualScheme);
+		});
+
+		return actualSchemeMap;
 	}
 }

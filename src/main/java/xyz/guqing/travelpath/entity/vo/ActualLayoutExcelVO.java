@@ -12,12 +12,12 @@ import com.alibaba.excel.metadata.BaseRowModel;
 public class ActualLayoutExcelVO extends BaseRowModel {
 	@ExcelProperty(value = "ID", index = 0)
 	private Long id;
-	@ExcelProperty(value = "纬度(Lat)", index = 1)
-	private String lat;
-	@ExcelProperty(value = "经度(Lng)", index = 2)
-	private String lng;
-	@ExcelProperty(value = "所属布设卡口方案(actualId)", index = 3)
-	private Long actualId;
+	@ExcelProperty(value = "方案名称(name)", index = 1)
+	private String name;
+	@ExcelProperty(value = "方案描述(description)", index = 2)
+	private String description;
+	@ExcelProperty(value="所属预设卡口方案(presetId)", index = 3)
+	private Long presetId;
 
 	public Long getId() {
 		return id;
@@ -27,37 +27,37 @@ public class ActualLayoutExcelVO extends BaseRowModel {
 		this.id = id;
 	}
 
-	public String getLat() {
-		return lat;
+	public String getName() {
+		return name;
 	}
 
-	public void setLat(String lat) {
-		this.lat = lat;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public String getLng() {
-		return lng;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setLng(String lng) {
-		this.lng = lng;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public Long getActualId() {
-		return actualId;
+	public Long getPresetId() {
+		return presetId;
 	}
 
-	public void setActualId(Long actualId) {
-		this.actualId = actualId;
+	public void setPresetId(Long presetId) {
+		this.presetId = presetId;
 	}
 
 	@Override
 	public String toString() {
 		return "ActualLayoutExcelVO{" +
 				"id=" + id +
-				", lat='" + lat + '\'' +
-				", lng='" + lng + '\'' +
-				", actualId=" + actualId +
+				", name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", presetId=" + presetId +
 				'}';
 	}
 }

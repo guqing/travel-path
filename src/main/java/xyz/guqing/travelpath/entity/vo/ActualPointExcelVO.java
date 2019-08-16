@@ -12,10 +12,12 @@ import com.alibaba.excel.metadata.BaseRowModel;
 public class ActualPointExcelVO extends BaseRowModel {
 	@ExcelProperty(value = "ID", index = 0)
 	private Long id;
-	@ExcelProperty(value = "方案名称(name)", index = 1)
-	private String name;
-	@ExcelProperty(value = "方案描述(description)", index = 2)
-	private String description;
+	@ExcelProperty(value = "纬度(Lat)", index = 1)
+	private String lat;
+	@ExcelProperty(value = "经度(Lng)", index = 2)
+	private String lng;
+	@ExcelProperty(value = "所属布设卡口方案(actualId)", index = 3)
+	private Long actualId;
 
 	public Long getId() {
 		return id;
@@ -25,28 +27,37 @@ public class ActualPointExcelVO extends BaseRowModel {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getLat() {
+		return lat;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setLat(String lat) {
+		this.lat = lat;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getLng() {
+		return lng;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setLng(String lng) {
+		this.lng = lng;
+	}
+
+	public Long getActualId() {
+		return actualId;
+	}
+
+	public void setActualId(Long actualId) {
+		this.actualId = actualId;
 	}
 
 	@Override
 	public String toString() {
 		return "ActualPointExcelVO{" +
 				"id=" + id +
-				", name='" + name + '\'' +
-				", description='" + description + '\'' +
+				", lat='" + lat + '\'' +
+				", lng='" + lng + '\'' +
+				", actualId=" + actualId +
 				'}';
 	}
 }

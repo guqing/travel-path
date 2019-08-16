@@ -195,7 +195,7 @@ public class PresetSchemeService {
 	 * @throws IOException 从文件流获取InputStream的IO异常
 	 */
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
-	public void saveUploadSchemeRecode(MultipartFile file, Integer userId) throws IOException {
+	public void saveUploadSchemeRecord(MultipartFile file, Integer userId) throws IOException {
 		InputStream inputStream = file.getInputStream();
 		// 解析每行结果在listener中处理，并得到ExcelReader
 		ExcelListener listener = new ExcelListener();

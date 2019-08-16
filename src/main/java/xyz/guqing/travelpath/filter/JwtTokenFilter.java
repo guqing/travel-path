@@ -52,6 +52,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 }else if(jwtTokenUtil.canTokenBeRefreshed(authTokenHeader)){
                     // token过期了，需要刷新token
                     String newToken = userTokenutil.generateToken(userDetails);
+                    System.out.println("---->颁发了新Token");
                     response.setHeader(tokenProperties.getHeaderString(), newToken);
                 }
             }
