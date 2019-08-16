@@ -14,6 +14,7 @@ import xyz.guqing.travelpath.entity.vo.ActualLayoutSchemeVO;
 import xyz.guqing.travelpath.exception.ActualLayoutException;
 import xyz.guqing.travelpath.mapper.ActualLayoutSchemeMapper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -145,5 +146,29 @@ public class ActualLayoutService {
 		bayonetPointService.deleteByActualId(actualId);
 		// 在添加坐标数据集
 		bayonetPointService.batchSavePoints(actualLayoutSchemeVO.getBayonetPoints(), actualId);
+	}
+
+	/**
+	 * 根据方案id集合批量查询布设卡口方案数据
+	 * @param ids 方案id
+	 * @return 返回方案基本信息和坐标点集合的Vo集合
+	 */
+	public List<ActualLayoutSchemeVO> listSchemeByIds(List<Long> ids) {
+		List<ActualLayoutSchemeVO> actualLayoutSchemeVoList = new ArrayList<>();
+		ids.forEach(id -> {
+			ActualLayoutSchemeVO actualLayoutSchemeVO = new ActualLayoutSchemeVO();
+
+			// 查询
+			ActualLayoutScheme layoutScheme = layoutSchemeMapper.selectByPrimaryKey(id);
+			List<ActualBayonetPoint> bayonetPoints = bayonetPointService.queryPointsByActualId(id);
+
+			// 拷贝属性
+			BeanUtils.copyProperties(layoutScheme, actualLayoutSchemeVO);
+			actualLayoutSchemeVO.setBayonetPoints(bayonetPoints);
+			// 添加到集合
+			actualLayoutSchemeVoList.add(actualLayoutSchemeVO);
+		});
+
+		return actualLayoutSchemeVoList;
 	}
 }

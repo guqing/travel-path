@@ -1,21 +1,30 @@
 package xyz.guqing.travelpath.controller;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.model.ActualBayonetPoint;
 import xyz.guqing.travelpath.entity.model.ActualLayoutScheme;
+import xyz.guqing.travelpath.entity.vo.ActualLayoutExcelVO;
 import xyz.guqing.travelpath.entity.vo.ActualLayoutSchemeVO;
+import xyz.guqing.travelpath.entity.vo.ActualPointExcelVO;
 import xyz.guqing.travelpath.service.ActualLayoutService;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -128,6 +137,63 @@ public class ActualLayoutController {
 					JSONObject.toJSONString(actualLayoutSchemeVO), e.getMessage());
 			return Result.fail();
 		}
+	}
+
+	@PostMapping("/download")
+	public void downloadSchemeWithPoints(@RequestBody List<Long> ids, HttpServletResponse response) {
+		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		response.setCharacterEncoding("utf-8");
+		response.setHeader("Content-disposition", "attachment;filename=布设卡口方案.xlsx");
+		try {
+			ServletOutputStream outputStream = response.getOutputStream();
+			List<ActualLayoutSchemeVO> actualLayoutSchemeVoList = layoutService.listSchemeByIds(ids);
+
+			// 写sheet1
+			ExcelWriter writer = EasyExcelFactory.getWriter(outputStream);
+			Sheet schemeSheet = new Sheet(1, 1, ActualLayoutExcelVO.class);
+			schemeSheet.setSheetName("布设卡口方案");
+			List<ActualLayoutExcelVO> presetSchemeExcelVoList = transferToSchemeExcelList(actualLayoutSchemeVoList);
+			writer.write(presetSchemeExcelVoList, schemeSheet);
+
+			// 写sheet2
+			List<ActualPointExcelVO> actualPointExcelVoList = transferToActualPointExcelVO(actualLayoutSchemeVoList);
+			Sheet presetPointSheet = new Sheet(2, 1, ActualPointExcelVO.class);
+			presetPointSheet.setSheetName("布设卡口坐标点");
+			presetPointSheet.setAutoWidth(true);
+			writer.write(actualPointExcelVoList, presetPointSheet);
+
+			writer.finish();
+			outputStream.flush();
+		} catch (Exception e) {
+			logger.error("批量导出布设卡口方案出错，入口参数：{}，错误信息：{}",
+					JSONArray.toJSONString(ids), e.getMessage());
+		}
+	}
+
+	private List<ActualPointExcelVO> transferToActualPointExcelVO(List<ActualLayoutSchemeVO> actualLayoutSchemeVoList) {
+		List<ActualPointExcelVO> actualPointExcelVoList = new ArrayList<>();
+		actualLayoutSchemeVoList.forEach(actualLayoutSchemeVO -> {
+			List<ActualBayonetPoint> preSetPointList = actualLayoutSchemeVO.getBayonetPoints();
+			preSetPointList.forEach(bayonetPoint -> {
+				ActualPointExcelVO actualPointExcelVO = new ActualPointExcelVO();
+				BeanUtils.copyProperties(bayonetPoint, actualPointExcelVO);
+
+				actualPointExcelVoList.add(actualPointExcelVO);
+			});
+		});
+		return actualPointExcelVoList;
+	}
+
+	private List<ActualLayoutExcelVO> transferToSchemeExcelList(List<ActualLayoutSchemeVO> actualLayoutSchemeVoList) {
+		List<ActualLayoutExcelVO> actualLayoutExcelList = new ArrayList<>();
+		actualLayoutSchemeVoList.forEach(actualSchemeVO -> {
+			ActualLayoutExcelVO actualLayoutExcelVO = new ActualLayoutExcelVO();
+			BeanUtils.copyProperties(actualSchemeVO, actualLayoutExcelVO);
+
+			actualLayoutExcelList.add(actualLayoutExcelVO);
+		});
+
+		return actualLayoutExcelList;
 	}
 
 	/**
