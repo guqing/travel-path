@@ -27,6 +27,7 @@ import xyz.guqing.travelpath.service.PresetSchemeService;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -162,23 +163,25 @@ public class PresetSchemeController {
 		response.setHeader("Content-disposition", "attachment;filename=PresetSchemeWithPoint.xlsx");
 
 		try {
-			List<PresetSchemeVO> presetSchemeVOList = presetSchemeService.listSchemeByIds(ids);
+			ServletOutputStream outputStream = response.getOutputStream();
+			List<PresetSchemeVO> presetSchemeVoList = presetSchemeService.listSchemeByIds(ids);
 
 			// 写sheet1
-			ExcelWriter writer = EasyExcelFactory.getWriter(response.getOutputStream());
+			ExcelWriter writer = EasyExcelFactory.getWriter(outputStream);
 			Sheet schemeSheet = new Sheet(1, 1, PresetSchemeExcelVO.class);
 			schemeSheet.setSheetName("预设卡口方案");
-			List<PresetSchemeExcelVO> presetSchemeExcelVOList = transferToSchemeExcelList(presetSchemeVOList);
-			writer.write(presetSchemeExcelVOList, schemeSheet);
+			List<PresetSchemeExcelVO> presetSchemeExcelVoList = transferToSchemeExcelList(presetSchemeVoList);
+			writer.write(presetSchemeExcelVoList, schemeSheet);
 
 			// 写sheet2
-			List<PresetPointExcelVO> presetPointExcelVOS = transferToPresetPointExcelVO(presetSchemeVOList);
+			List<PresetPointExcelVO> presetPointExcelVoList = transferToPresetPointExcelVO(presetSchemeVoList);
 			Sheet presetPointSheet = new Sheet(2, 1, PresetPointExcelVO.class);
 			presetPointSheet.setSheetName("预设卡口坐标点");
 			presetPointSheet.setAutoWidth(true);
-			writer.write(presetPointExcelVOS, presetPointSheet);
+			writer.write(presetPointExcelVoList, presetPointSheet);
 
 			writer.finish();
+			outputStream.flush();
 		} catch (Exception e) {
 			logger.error("批量下载卡口方案数据出错，入口参数：{}，错误信息：{}",
 					JSONArray.toJSONString(ids), e.getMessage());
@@ -198,13 +201,14 @@ public class PresetSchemeController {
 			Integer userId = user.getId();
 
 			// 异步执行任务
-			Callable<Object> callable = () -> {
-				// 读取并保存excel数据
-				presetSchemeService.saveUploadSchemeRecode(file, userId);
-				return Result.ok();
+			return new Callable<Object>() {
+				@Override
+				public Object call() throws Exception {
+					// 读取并保存excel数据
+					presetSchemeService.saveUploadSchemeRecode(file, userId);
+					return Result.ok();
+				}
 			};
-
-			return callable;
 		} catch (Exception e) {
 			logger.error("上传卡口方案数据出错，错误信息：{}", e.getMessage());
 			return Result.fail();
@@ -212,33 +216,36 @@ public class PresetSchemeController {
 	}
 
 	/**
-	 * @param presetSchemeVOList 预设卡口方案VO集合
+	 * @param presetSchemeVoList 预设卡口方案VO集合
 	 * @return 适合导出Excel的presetSchemeExcelVOList
 	 */
-	private List<PresetSchemeExcelVO> transferToSchemeExcelList(List<PresetSchemeVO> presetSchemeVOList) {
-		List<PresetSchemeExcelVO> presetSchemeExcelVOList = new ArrayList<>();
-		presetSchemeVOList.forEach(presetSchemeVO -> {
+	private List<PresetSchemeExcelVO> transferToSchemeExcelList(List<PresetSchemeVO> presetSchemeVoList) {
+		List<PresetSchemeExcelVO> preSetSchemeExcelList = new ArrayList<>();
+		presetSchemeVoList.forEach(presetSchemeVO -> {
 			PresetSchemeExcelVO presetSchemeExcelVO = new PresetSchemeExcelVO();
 			BeanUtils.copyProperties(presetSchemeVO, presetSchemeExcelVO);
 
-			presetSchemeExcelVOList.add(presetSchemeExcelVO);
+			preSetSchemeExcelList.add(presetSchemeExcelVO);
 		});
-		return presetSchemeExcelVOList;
+		return preSetSchemeExcelList;
 	}
 
 	/**
-	 * @param presetSchemeVOList 预设卡口方案VO集合
+	 * @param presetSchemeVoList 预设卡口方案VO集合
 	 * @return 适合导出Excel的PresetPointExcelVOList
 	 */
-	private List<PresetPointExcelVO> transferToPresetPointExcelVO(List<PresetSchemeVO> presetSchemeVOList) {
-		List<PresetPointExcelVO> PresetPointExcelVOList = new ArrayList<>();
-		presetSchemeVOList.forEach(presetSchemeVO -> {
-			PresetPointExcelVO presetPointExcelVO = new PresetPointExcelVO();
-			BeanUtils.copyProperties(presetSchemeVO, presetPointExcelVO);
+	private List<PresetPointExcelVO> transferToPresetPointExcelVO(List<PresetSchemeVO> presetSchemeVoList) {
+		List<PresetPointExcelVO> presetPointExcelVoList = new ArrayList<>();
+		presetSchemeVoList.forEach(presetSchemeVO -> {
+			List<Presetpoint> preSetPointList = presetSchemeVO.getPresetpoints();
+			preSetPointList.forEach(preSetPoint -> {
+				PresetPointExcelVO presetPointExcelVO = new PresetPointExcelVO();
+				BeanUtils.copyProperties(preSetPoint, presetPointExcelVO);
 
-			PresetPointExcelVOList.add(presetPointExcelVO);
+				presetPointExcelVoList.add(presetPointExcelVO);
+			});
 		});
-		return PresetPointExcelVOList;
+		return presetPointExcelVoList;
 	}
 
 	/**

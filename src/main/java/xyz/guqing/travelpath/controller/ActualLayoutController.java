@@ -22,8 +22,8 @@ import java.util.List;
  * 卡口实际布设方案Controller
  *	list: '/actual/list',
  *  save: '/actual/save',
- *  getScheme: '/actual/getScheme',
- *  trash: '/actual/trash',
+ *  getScheme: '/actual/get/{id}',
+ *  trash: '/trash/{id}',
  *  batchTrash: '/actual/batch-trash',
  *  update: '/actual/update',
  *  downloadScheme: '/actual/download',
