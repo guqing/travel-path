@@ -91,4 +91,12 @@ public class RouteBayonetSchemeService {
 
 		routeBayonetMapper.updateByPrimaryKeySelective(routeBayonetScheme);
 	}
+
+	/**
+	 * 批量逻辑删除
+	 * @param ids 方案id集合
+	 */
+	public void batchLogicalDelete(List<Long> ids) {
+		ids.forEach(this::updateDeleteStatus);
+	}
 }

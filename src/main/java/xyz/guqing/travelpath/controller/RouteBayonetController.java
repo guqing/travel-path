@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -100,6 +101,17 @@ public class RouteBayonetController {
 		}
 	}
 
+	@PostMapping("/batch-trash")
+	public Object batchTrash(@RequestBody List<Long> ids) {
+		try {
+			routeBayonetService.batchLogicalDelete(ids);
+			return Result.ok();
+		} catch (Exception e) {
+		    logger.error("批量逻辑删除途经卡口方案失败，入口参数：{}， 错误信息：{}",
+					JSONArray.toJSONString(ids), e.getMessage());
+		    return Result.fail();
+		}
+	}
 
  	private Object validateRouteBayonet(RouteBayonetVO routeBayonetVO) {
 		if(StringUtils.isBlank(routeBayonetVO.getName())) {
