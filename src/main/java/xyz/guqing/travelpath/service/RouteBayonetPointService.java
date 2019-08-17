@@ -3,6 +3,7 @@ package xyz.guqing.travelpath.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.guqing.travelpath.entity.model.RouteBayonetPoint;
+import xyz.guqing.travelpath.entity.model.RouteBayonetPointExample;
 import xyz.guqing.travelpath.exception.RouteBayonetPointException;
 import xyz.guqing.travelpath.mapper.RouteBayonetPointMapper;
 
@@ -37,5 +38,13 @@ public class RouteBayonetPointService {
 
 			pointMapper.insert(routeBayonetPoint);
 		});
+	}
+
+	public List<RouteBayonetPoint> getPointsByRid(Long id) {
+		RouteBayonetPointExample example = new RouteBayonetPointExample();
+		RouteBayonetPointExample.Criteria criteria = example.createCriteria();
+		criteria.andRidEqualTo(id);
+
+		return pointMapper.selectByExample(example);
 	}
 }

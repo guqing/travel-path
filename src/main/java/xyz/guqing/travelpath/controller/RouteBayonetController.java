@@ -8,11 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
+import xyz.guqing.travelpath.entity.model.RouteBayonetPoint;
 import xyz.guqing.travelpath.entity.model.RouteBayonetScheme;
 import xyz.guqing.travelpath.entity.vo.RouteBayonetVO;
 import xyz.guqing.travelpath.service.RouteBayonetSchemeService;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
+
+import java.util.List;
 
 /**
  * 车辆途径卡口方案controller
@@ -72,6 +75,17 @@ public class RouteBayonetController {
 			logger.error("保存布设卡口方案信息出错，入口参数：{}，错误信息：{}",
 					JSONObject.toJSONString(routeBayonetVO), e.getMessage());
 			return Result.fail();
+		}
+	}
+
+	@GetMapping("/get/{id}")
+	public Object getById(@PathVariable("id") Long id) {
+		try {
+			List<RouteBayonetPoint> routeBayonetPoints = routeBayonetService.getPointById(id);
+			return Result.okList(routeBayonetPoints);
+		} catch (Exception e) {
+			logger.error("查询方案坐标点详情失败，入口参数：{}，错误信息：{}",id, e.getMessage());
+		    return Result.fail();
 		}
 	}
 

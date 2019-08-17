@@ -72,4 +72,9 @@ public class RouteBayonetSchemeService {
 		routeBayonetScheme.setModifyTime(new Date());
 		return routeBayonetScheme;
 	}
+
+	public List<RouteBayonetPoint> getPointById(Long id) {
+
+		return pointService.getPointsByRid(id);
+	}
 }
