@@ -77,4 +77,18 @@ public class RouteBayonetSchemeService {
 
 		return pointService.getPointsByRid(id);
 	}
+
+	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
+	public void logicalDelete(Long id) {
+		updateDeleteStatus(id);
+	}
+
+	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
+	public void updateDeleteStatus(Long id) {
+		RouteBayonetScheme routeBayonetScheme = new RouteBayonetScheme();
+		routeBayonetScheme.setId(id);
+		routeBayonetScheme.setDeleted(DeleteConstant.DELETED);
+
+		routeBayonetMapper.updateByPrimaryKeySelective(routeBayonetScheme);
+	}
 }

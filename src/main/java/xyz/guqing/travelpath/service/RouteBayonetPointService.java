@@ -2,6 +2,7 @@ package xyz.guqing.travelpath.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import xyz.guqing.travelpath.entity.model.RouteBayonetPoint;
 import xyz.guqing.travelpath.entity.model.RouteBayonetPointExample;
 import xyz.guqing.travelpath.exception.RouteBayonetPointException;
@@ -25,6 +26,7 @@ public class RouteBayonetPointService {
 		this.pointMapper = pointMapper;
 	}
 
+	@Transactional(rollbackFor = RouteBayonetPointException.class)
 	public void batchSavePoints(List<RouteBayonetPoint> routeBayonetPointList, Long routeId)
 			throws RouteBayonetPointException {
 		if(routeId == null) {

@@ -89,7 +89,19 @@ public class RouteBayonetController {
 		}
 	}
 
-	private Object validateRouteBayonet(RouteBayonetVO routeBayonetVO) {
+	@PostMapping("/trash/{id}")
+	public Object throwTrash(@PathVariable("id") Long id) {
+		try {
+			routeBayonetService.logicalDelete(id);
+			return Result.ok();
+		} catch (Exception e) {
+			logger.error("删除途经卡口方案到回收站失败，入口参数：{}，错误信息：{}", id, e.getMessage());
+			return Result.fail();
+		}
+	}
+
+
+ 	private Object validateRouteBayonet(RouteBayonetVO routeBayonetVO) {
 		if(StringUtils.isBlank(routeBayonetVO.getName())) {
 			return Result.badArgument();
 		}
