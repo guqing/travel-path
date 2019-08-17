@@ -1,13 +1,12 @@
 package xyz.guqing.travelpath.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.model.RouteBayonetScheme;
 import xyz.guqing.travelpath.entity.vo.RouteBayonetVO;
@@ -55,6 +54,42 @@ public class RouteBayonetController {
 			return Result.fail();
 		}
 
+	}
+
+	@PostMapping("/save")
+	public Object save(@RequestBody RouteBayonetVO routeBayonetVO) {
+		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+		Integer userId = user.getId();
+		routeBayonetVO.setUserId(userId);
+		Object error = validateRouteBayonet(routeBayonetVO);
+		if(error != null) {
+			return error;
+		}
+		try {
+			routeBayonetService.save(routeBayonetVO);
+			return Result.ok();
+		}catch (Exception e) {
+			logger.error("保存布设卡口方案信息出错，入口参数：{}，错误信息：{}",
+					JSONObject.toJSONString(routeBayonetVO), e.getMessage());
+			return Result.fail();
+		}
+	}
+
+	private Object validateRouteBayonet(RouteBayonetVO routeBayonetVO) {
+		if(StringUtils.isBlank(routeBayonetVO.getName())) {
+			return Result.badArgument();
+		}
+		if(routeBayonetVO.getUserId() == null) {
+			return Result.badArgument();
+		}
+		if(routeBayonetVO.getActualId() == null) {
+			return Result.badArgument();
+		}
+		if(StringUtils.isBlank(routeBayonetVO.getCarNumber())) {
+			return Result.badArgument();
+		}
+
+		return null;
 	}
 
 }

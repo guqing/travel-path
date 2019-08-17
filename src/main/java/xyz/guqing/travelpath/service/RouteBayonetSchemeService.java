@@ -2,14 +2,20 @@ package xyz.guqing.travelpath.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import xyz.guqing.travelpath.entity.model.RouteBayonetPoint;
 import xyz.guqing.travelpath.entity.model.RouteBayonetScheme;
 import xyz.guqing.travelpath.entity.model.RouteBayonetSchemeExample;
 import xyz.guqing.travelpath.entity.support.DeleteConstant;
 import xyz.guqing.travelpath.entity.vo.RouteBayonetVO;
+import xyz.guqing.travelpath.exception.RouteBayonetPointException;
+import xyz.guqing.travelpath.exception.RouteBayonetSchemeException;
 import xyz.guqing.travelpath.mapper.RouteBayonetSchemeMapper;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,5 +51,25 @@ public class RouteBayonetSchemeService {
 
 		List<RouteBayonetScheme> routeBayonetSchemes = routeBayonetMapper.selectByExample(example);
 		return new PageInfo<>(routeBayonetSchemes);
+	}
+
+	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
+	public void save(RouteBayonetVO routeBayonetVO) throws RouteBayonetPointException {
+		// 保存方案基本信息
+		RouteBayonetScheme routeScheme = getRouteScheme(routeBayonetVO);
+		routeBayonetMapper.insert(routeScheme);
+
+		// 保存方案坐标信息
+		List<RouteBayonetPoint> routeBayonetPoint = routeBayonetVO.getRouteBayonetPoint();
+		pointService.batchSavePoints(routeBayonetPoint, routeScheme.getId());
+	}
+
+	private RouteBayonetScheme getRouteScheme(RouteBayonetVO routeBayonetVO) {
+		RouteBayonetScheme routeBayonetScheme = new RouteBayonetScheme();
+		BeanUtils.copyProperties(routeBayonetVO, routeBayonetScheme);
+		routeBayonetScheme.setDeleted(DeleteConstant.RETAIN);
+		routeBayonetScheme.setCreateTime(new Date());
+		routeBayonetScheme.setModifyTime(new Date());
+		return routeBayonetScheme;
 	}
 }

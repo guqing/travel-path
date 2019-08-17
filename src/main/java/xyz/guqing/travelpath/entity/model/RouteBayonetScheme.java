@@ -3,7 +3,7 @@ package xyz.guqing.travelpath.entity.model;
 import java.util.Date;
 
 public class RouteBayonetScheme {
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -21,11 +21,11 @@ public class RouteBayonetScheme {
 
     private Byte deleted;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

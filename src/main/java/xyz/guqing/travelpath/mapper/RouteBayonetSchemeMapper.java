@@ -10,7 +10,7 @@ public interface RouteBayonetSchemeMapper {
 
     int deleteByExample(RouteBayonetSchemeExample example);
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(RouteBayonetScheme record);
 
@@ -18,7 +18,7 @@ public interface RouteBayonetSchemeMapper {
 
     List<RouteBayonetScheme> selectByExample(RouteBayonetSchemeExample example);
 
-    RouteBayonetScheme selectByPrimaryKey(Integer id);
+    RouteBayonetScheme selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") RouteBayonetScheme record, @Param("example") RouteBayonetSchemeExample example);
 

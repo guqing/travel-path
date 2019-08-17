@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="xyz.guqing.travelpath.mapper.RouteBayonetSchemeMapper" >
   <resultMap id="BaseResultMap" type="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" >
-    <id column="id" property="id" jdbcType="INTEGER" />
+    <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="car_number" property="carNumber" jdbcType="VARCHAR" />
@@ -88,15 +88,15 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
     from route_bayonet_scheme
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from route_bayonet_scheme
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetSchemeExample" >
     delete from route_bayonet_scheme
@@ -105,7 +105,7 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into route_bayonet_scheme (name, description, car_number, 
@@ -116,7 +116,7 @@
       #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into route_bayonet_scheme
@@ -183,7 +183,7 @@
     update route_bayonet_scheme
     <set >
       <if test="record.id != null" >
-        id = #{record.id,jdbcType=INTEGER},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.name != null" >
         name = #{record.name,jdbcType=VARCHAR},
@@ -216,7 +216,7 @@
   </update>
   <update id="updateByExample" parameterType="map" >
     update route_bayonet_scheme
-    set id = #{record.id,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       car_number = #{record.carNumber,jdbcType=VARCHAR},
@@ -257,7 +257,7 @@
         deleted = #{deleted,jdbcType=TINYINT},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" >
     update route_bayonet_scheme
@@ -269,6 +269,6 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       deleted = #{deleted,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
