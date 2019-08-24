@@ -113,7 +113,22 @@ public class RouteBayonetController {
 		}
 	}
 
- 	private Object validateRouteBayonet(RouteBayonetVO routeBayonetVO) {
+	@PutMapping("/update")
+	public Object update(@RequestBody RouteBayonetVO routeBayonetVO) {
+		if(routeBayonetVO.getId() == null) {
+			return Result.badArgument();
+		}
+		try {
+			routeBayonetService.update(routeBayonetVO);
+			return Result.ok();
+		} catch (Exception e) {
+			logger.error("更新车辆途经卡口方案信息失败, 入口参数: {}, 错误信息: {}",
+					JSONObject.toJSONString(routeBayonetVO), e.getMessage());
+			return Result.fail();
+		}
+	}
+
+	private Object validateRouteBayonet(RouteBayonetVO routeBayonetVO) {
 		if(StringUtils.isBlank(routeBayonetVO.getName())) {
 			return Result.badArgument();
 		}

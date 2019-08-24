@@ -60,7 +60,7 @@ public class RouteBayonetSchemeService {
 		routeBayonetMapper.insert(routeScheme);
 
 		// 保存方案坐标信息
-		List<RouteBayonetPoint> routeBayonetPoint = routeBayonetVO.getRouteBayonetPoint();
+		List<RouteBayonetPoint> routeBayonetPoint = routeBayonetVO.getBayonetPoints();
 		pointService.batchSavePoints(routeBayonetPoint, routeScheme.getId());
 	}
 
@@ -70,6 +70,10 @@ public class RouteBayonetSchemeService {
 		routeBayonetScheme.setDeleted(DeleteConstant.RETAIN);
 		routeBayonetScheme.setCreateTime(new Date());
 		routeBayonetScheme.setModifyTime(new Date());
+		List<RouteBayonetPoint> bayonetPoints = routeBayonetVO.getBayonetPoints();
+		if(bayonetPoints != null) {
+			routeBayonetScheme.setBayonetCount(bayonetPoints.size());
+		}
 		return routeBayonetScheme;
 	}
 
@@ -98,5 +102,24 @@ public class RouteBayonetSchemeService {
 	 */
 	public void batchLogicalDelete(List<Long> ids) {
 		ids.forEach(this::updateDeleteStatus);
+	}
+
+	/**
+	 * 更新数据
+	 * @param routeBayonetVO 数据vo对象
+	 */
+	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
+	public void update(RouteBayonetVO routeBayonetVO) throws RouteBayonetPointException {
+		RouteBayonetScheme routeBayonetScheme = getRouteScheme(routeBayonetVO);
+		// 不需要创建时间
+		routeBayonetScheme.setCreateTime(null);
+		// 更新卡口方案基本信息
+		routeBayonetMapper.updateByPrimaryKeySelective(routeBayonetScheme);
+
+		//先根据方案id删除坐标数据集
+		Long rid = routeBayonetVO.getId();
+		pointService.deleteByRid(rid);
+		// 在添加坐标数据集
+		pointService.batchSavePoints(routeBayonetVO.getBayonetPoints(), rid);
 	}
 }

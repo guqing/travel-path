@@ -375,6 +375,66 @@ public class RouteBayonetSchemeExample {
             return (Criteria) this;
         }
 
+        public Criteria andBayonetCountIsNull() {
+            addCriterion("bayonet_count is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountIsNotNull() {
+            addCriterion("bayonet_count is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountEqualTo(Integer value) {
+            addCriterion("bayonet_count =", value, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountNotEqualTo(Integer value) {
+            addCriterion("bayonet_count <>", value, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountGreaterThan(Integer value) {
+            addCriterion("bayonet_count >", value, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountGreaterThanOrEqualTo(Integer value) {
+            addCriterion("bayonet_count >=", value, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountLessThan(Integer value) {
+            addCriterion("bayonet_count <", value, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountLessThanOrEqualTo(Integer value) {
+            addCriterion("bayonet_count <=", value, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountIn(List<Integer> values) {
+            addCriterion("bayonet_count in", values, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountNotIn(List<Integer> values) {
+            addCriterion("bayonet_count not in", values, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountBetween(Integer value1, Integer value2) {
+            addCriterion("bayonet_count between", value1, value2, "bayonetCount");
+            return (Criteria) this;
+        }
+
+        public Criteria andBayonetCountNotBetween(Integer value1, Integer value2) {
+            addCriterion("bayonet_count not between", value1, value2, "bayonetCount");
+            return (Criteria) this;
+        }
+
         public Criteria andActualIdIsNull() {
             addCriterion("actual_id is null");
             return (Criteria) this;

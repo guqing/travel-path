@@ -11,6 +11,8 @@ public class RouteBayonetScheme {
 
     private String carNumber;
 
+    private Integer bayonetCount;
+
     private Long actualId;
 
     private Integer userId;
@@ -51,6 +53,14 @@ public class RouteBayonetScheme {
 
     public void setCarNumber(String carNumber) {
         this.carNumber = carNumber == null ? null : carNumber.trim();
+    }
+
+    public Integer getBayonetCount() {
+        return bayonetCount;
+    }
+
+    public void setBayonetCount(Integer bayonetCount) {
+        this.bayonetCount = bayonetCount;
     }
 
     public Long getActualId() {

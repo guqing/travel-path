@@ -17,7 +17,8 @@ public class RouteBayonetVO {
 	private String carNumber;
 	private Long actualId;
 	private Integer userId;
-	private List<RouteBayonetPoint> routeBayonetPoint;
+	private Integer bayonetCount;
+	private List<RouteBayonetPoint> bayonetPoints;
 
 	public Long getId() {
 		return id;
@@ -67,12 +68,20 @@ public class RouteBayonetVO {
 		this.userId = userId;
 	}
 
-	public List<RouteBayonetPoint> getRouteBayonetPoint() {
-		return routeBayonetPoint;
+	public List<RouteBayonetPoint> getBayonetPoints() {
+		return bayonetPoints;
 	}
 
-	public void setRouteBayonetPoint(List<RouteBayonetPoint> routeBayonetPoint) {
-		this.routeBayonetPoint = routeBayonetPoint;
+	public void setBayonetPoints(List<RouteBayonetPoint> bayonetPoints) {
+		this.bayonetPoints = bayonetPoints;
+	}
+
+	public Integer getBayonetCount() {
+		return bayonetCount;
+	}
+
+	public void setBayonetCount(Integer bayonetCount) {
+		this.bayonetCount = bayonetCount;
 	}
 
 	@Override
@@ -84,7 +93,8 @@ public class RouteBayonetVO {
 				", carNumber='" + carNumber + '\'' +
 				", actualId=" + actualId +
 				", userId=" + userId +
-				", routeBayonetPoint=" + routeBayonetPoint +
+				", bayonetCount=" + bayonetCount +
+				", bayonetPoints=" + bayonetPoints +
 				'}';
 	}
 }

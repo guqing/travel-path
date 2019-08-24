@@ -6,6 +6,7 @@
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="car_number" property="carNumber" jdbcType="VARCHAR" />
+    <result column="bayonet_count" property="bayonetCount" jdbcType="INTEGER" />
     <result column="actual_id" property="actualId" jdbcType="BIGINT" />
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
@@ -71,8 +72,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, name, description, car_number, actual_id, user_id, create_time, modify_time, 
-    deleted
+    id, name, description, car_number, bayonet_count, actual_id, user_id, create_time, 
+    modify_time, deleted
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetSchemeExample" >
     select
@@ -109,11 +110,13 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into route_bayonet_scheme (name, description, car_number, 
-      actual_id, user_id, create_time, 
-      modify_time, deleted)
+      bayonet_count, actual_id, user_id, 
+      create_time, modify_time, deleted
+      )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{carNumber,jdbcType=VARCHAR}, 
-      #{actualId,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=TINYINT})
+      #{bayonetCount,jdbcType=INTEGER}, #{actualId,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=TINYINT}
+      )
   </insert>
   <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" >
     <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
@@ -129,6 +132,9 @@
       </if>
       <if test="carNumber != null" >
         car_number,
+      </if>
+      <if test="bayonetCount != null" >
+        bayonet_count,
       </if>
       <if test="actualId != null" >
         actual_id,
@@ -155,6 +161,9 @@
       </if>
       <if test="carNumber != null" >
         #{carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="bayonetCount != null" >
+        #{bayonetCount,jdbcType=INTEGER},
       </if>
       <if test="actualId != null" >
         #{actualId,jdbcType=BIGINT},
@@ -194,6 +203,9 @@
       <if test="record.carNumber != null" >
         car_number = #{record.carNumber,jdbcType=VARCHAR},
       </if>
+      <if test="record.bayonetCount != null" >
+        bayonet_count = #{record.bayonetCount,jdbcType=INTEGER},
+      </if>
       <if test="record.actualId != null" >
         actual_id = #{record.actualId,jdbcType=BIGINT},
       </if>
@@ -220,6 +232,7 @@
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
       car_number = #{record.carNumber,jdbcType=VARCHAR},
+      bayonet_count = #{record.bayonetCount,jdbcType=INTEGER},
       actual_id = #{record.actualId,jdbcType=BIGINT},
       user_id = #{record.userId,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -240,6 +253,9 @@
       </if>
       <if test="carNumber != null" >
         car_number = #{carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="bayonetCount != null" >
+        bayonet_count = #{bayonetCount,jdbcType=INTEGER},
       </if>
       <if test="actualId != null" >
         actual_id = #{actualId,jdbcType=BIGINT},
@@ -264,6 +280,7 @@
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       car_number = #{carNumber,jdbcType=VARCHAR},
+      bayonet_count = #{bayonetCount,jdbcType=INTEGER},
       actual_id = #{actualId,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

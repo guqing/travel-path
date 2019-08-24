@@ -49,4 +49,11 @@ public class RouteBayonetPointService {
 
 		return pointMapper.selectByExample(example);
 	}
+
+	public void deleteByRid(Long rid) {
+		RouteBayonetPointExample example = new RouteBayonetPointExample();
+		RouteBayonetPointExample.Criteria criteria = example.createCriteria();
+		criteria.andRidEqualTo(rid);
+		pointMapper.deleteByExample(example);
+	}
 }
