@@ -3,6 +3,8 @@ package xyz.guqing.travelpath.service;
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import xyz.guqing.travelpath.entity.dto.PermissionDTO;
@@ -18,6 +20,7 @@ import java.util.*;
  * @date 2019/8/9
  */
 @Service
+@CacheConfig(cacheNames = "userService")
 public class UserService {
     @Autowired
     private UserMapper userMapper;
@@ -28,6 +31,7 @@ public class UserService {
     @Autowired
     private PermissionActionService actionService;
 
+    @Cacheable
     public User getUserByUsername(String username){
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
@@ -44,6 +48,7 @@ public class UserService {
      * @param userId 用户id
      * @return 用户信息DTO对象
      */
+    @Cacheable
 	public UserDTO getUserInfo(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         Role role = roleService.getRoleById(user.getRoleId());

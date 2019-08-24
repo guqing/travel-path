@@ -1,6 +1,8 @@
 package xyz.guqing.travelpath.controller;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,8 +26,14 @@ import java.io.*;
 @Controller
 @RequestMapping("/tile")
 public class TileController {
-	@Autowired
+	private static final Logger logger = LoggerFactory.getLogger(TileController.class);
+
 	private TileService tileService;
+
+	@Autowired
+	public TileController(TileService tileService) {
+		this.tileService = tileService;
+	}
 
 	@GetMapping("/get/{z}/{x}/{y}")
 	public void getTile(HttpServletResponse response,
@@ -45,8 +53,7 @@ public class TileController {
 				outputStream.close();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("加载地图瓦片出错，errors:"+e.getMessage());
+			logger.error("加载地图瓦片出错，errors:{}", e.getMessage());
 		}
 	}
 }

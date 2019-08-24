@@ -6,6 +6,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +35,7 @@ import java.util.*;
  * @date 2019-08-15 9:58
  */
 @Service
+@CacheConfig(cacheNames = "actualLayoutService")
 public class ActualLayoutService {
 	private final ActualLayoutSchemeMapper layoutSchemeMapper;
 	private final ActualBayonetPointService bayonetPointService;
@@ -90,6 +95,7 @@ public class ActualLayoutService {
 	 * @param id 布设口卡口方案id
 	 * @return 返回查询到的方案id对象集合
 	 */
+	@Cacheable
 	public List<ActualBayonetPoint> getSchemePointsById(Long id) {
 		return bayonetPointService.queryPointsByActualId(id);
 	}
@@ -98,6 +104,7 @@ public class ActualLayoutService {
 	 * 逻辑删除方案
 	 * @param id 方案id
 	 */
+	@CachePut
 	public void logicalDelete(Long id) {
 		// 更新删除状态
 		updateDeleteStatus(id);
@@ -116,7 +123,7 @@ public class ActualLayoutService {
 	 * @param id 布设卡口方案id
 	 */
 	@Transactional(rollbackFor = ActualLayoutException.class)
-	private void updateDeleteStatus(Long id) {
+	public void updateDeleteStatus(Long id) {
 		ActualLayoutScheme layoutScheme = new ActualLayoutScheme();
 		layoutScheme.setId(id);
 		layoutScheme.setModifyTime(new Date());
@@ -130,6 +137,7 @@ public class ActualLayoutService {
 	 * @param id 布设卡口方案id
 	 */
 	@Transactional(rollbackFor = ActualLayoutException.class)
+	@CacheEvict
 	public void deleteById(Long id) {
 		layoutSchemeMapper.deleteByPrimaryKey(id);
 		bayonetPointService.deleteByActualId(id);
@@ -140,6 +148,7 @@ public class ActualLayoutService {
 	 * @param actualLayoutSchemeVO 布设卡口方案VO
 	 */
 	@Transactional(rollbackFor = ActualLayoutException.class)
+	@CachePut
 	public void update(ActualLayoutSchemeVO actualLayoutSchemeVO) {
 		ActualLayoutScheme layoutScheme = getLayoutScheme(actualLayoutSchemeVO);
 		// 不需要创建时间

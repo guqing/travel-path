@@ -4,6 +4,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.guqing.travelpath.entity.model.RouteBayonetPoint;
@@ -25,6 +29,7 @@ import java.util.List;
  * @date 2019-08-15 15:02
  */
 @Service
+@CacheConfig(cacheNames = "routeBayonetSchemeService")
 public class RouteBayonetSchemeService {
 	private final RouteBayonetSchemeMapper routeBayonetMapper;
 	private final RouteBayonetPointService pointService;
@@ -77,17 +82,20 @@ public class RouteBayonetSchemeService {
 		return routeBayonetScheme;
 	}
 
+	@Cacheable
 	public List<RouteBayonetPoint> getPointById(Long id) {
 
 		return pointService.getPointsByRid(id);
 	}
 
 	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
+	@CacheEvict
 	public void logicalDelete(Long id) {
 		updateDeleteStatus(id);
 	}
 
 	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
+	@CachePut
 	public void updateDeleteStatus(Long id) {
 		RouteBayonetScheme routeBayonetScheme = new RouteBayonetScheme();
 		routeBayonetScheme.setId(id);
@@ -109,6 +117,7 @@ public class RouteBayonetSchemeService {
 	 * @param routeBayonetVO 数据vo对象
 	 */
 	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
+	@CachePut
 	public void update(RouteBayonetVO routeBayonetVO) throws RouteBayonetPointException {
 		RouteBayonetScheme routeBayonetScheme = getRouteScheme(routeBayonetVO);
 		// 不需要创建时间

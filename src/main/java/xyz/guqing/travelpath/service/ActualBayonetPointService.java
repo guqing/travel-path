@@ -1,6 +1,9 @@
 package xyz.guqing.travelpath.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.guqing.travelpath.entity.model.ActualBayonetPoint;
@@ -18,6 +21,7 @@ import java.util.List;
  * @date 2019-08-15 10:00
  */
 @Service
+@CacheConfig(cacheNames = "actualBayonetPointService")
 public class ActualBayonetPointService {
 	private final ActualBayonetPointMapper bayonetPointMapper;
 

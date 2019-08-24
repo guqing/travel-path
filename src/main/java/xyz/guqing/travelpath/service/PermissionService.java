@@ -1,6 +1,8 @@
 package xyz.guqing.travelpath.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import xyz.guqing.travelpath.entity.model.Permission;
 import xyz.guqing.travelpath.mapper.CustomPermissionMapper;
@@ -14,6 +16,7 @@ import java.util.List;
  * @date 2019-08-11 10:03
  */
 @Service
+@CacheConfig(cacheNames = "permissionService")
 public class PermissionService {
 	@Autowired
 	private CustomPermissionMapper customPermissionMapper;
@@ -23,6 +26,7 @@ public class PermissionService {
 	 * @param roleId 角色Id
 	 * @return 用户权限集合
 	 */
+	@Cacheable
 	public List<Permission> listPermissionByRoleId(Integer roleId) {
 		return customPermissionMapper.queryPermissionByRoleIds(roleId);
 	}

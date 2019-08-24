@@ -6,6 +6,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +35,7 @@ import java.util.*;
  * @date 2019-08-09 11:07
  */
 @Service
+@CacheConfig(cacheNames = "presetSchemeService")
 public class PresetSchemeService {
 	@Autowired
 	private PresetSchemeMapper presetSchemeMapper;
@@ -57,6 +62,7 @@ public class PresetSchemeService {
 	 * @param id 方案id
 	 * @return 返回预设卡口i方案
 	 */
+	@Cacheable
 	public PresetScheme getSchemeById(Long id) {
 		return presetSchemeMapper.selectByPrimaryKey(id);
 	}
@@ -123,6 +129,7 @@ public class PresetSchemeService {
 	}
 
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
+	@CachePut
 	public void updateScheme(PresetSchemeVO presetSchemeVO) {
 		Long preId = presetSchemeVO.getId();
 
@@ -144,8 +151,7 @@ public class PresetSchemeService {
 		presetPointService.batchSavePresetPoint(presetPointList, presetSchemeVO.getId());
 	}
 
-	@Transactional(rollbackFor = PresetSchemeServiceException.class)
-	public void deleteById(Long id) {
+	private void deleteById(Long id) {
 		presetSchemeMapper.deleteByPrimaryKey(id);
 	}
 
@@ -171,6 +177,7 @@ public class PresetSchemeService {
 	 * @param id 方案id
 	 */
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
+	@CacheEvict
 	public void updateDeleted(Long id) {
 		PresetScheme presetScheme = new PresetScheme();
 		presetScheme.setId(id);
@@ -183,6 +190,7 @@ public class PresetSchemeService {
 	 * @param id 方案id
 	 */
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
+	@CacheEvict
 	public void sureDeleteById(Long id) {
 		this.deleteById(id);
 		presetPointService.deleteByPreId(id);

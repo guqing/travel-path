@@ -10,8 +10,8 @@ spring:
       password: 982148
       # 连接池的配置信息
       # 初始化大小，最小，最大
-      initial-size: 5
-      min-idle: 5
+      initial-size: 10
+      min-idle: 15
       maxActive: 20
       # 配置获取连接等待超时的时间
       maxWait: 60000
@@ -26,6 +26,7 @@ spring:
       # 打开PSCache，并且指定每个连接上PSCache的大小
       poolPreparedStatements: true
       maxPoolPreparedStatementPerConnectionSize: 20
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
