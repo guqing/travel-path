@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     druid:
-      url: jdbc:mysql://localhost:3306/travel_path?useUnicode=true&characterEncoding=UTF-8&&serverTimezone=UTC
+      url: jdbc:mysql://localhost:3306/travel_path?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
       password: 982148
