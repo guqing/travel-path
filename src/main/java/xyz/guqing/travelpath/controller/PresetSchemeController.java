@@ -88,7 +88,7 @@ public class PresetSchemeController {
 	@GetMapping("/getScheme/{preId}")
 	public Object getPresetPointScheme(@PathVariable("preId") Long preId) {
 		try {
-			List<Presetpoint> presetPointList = presetPointService.findListById(preId);
+			List<Presetpoint> presetPointList = presetSchemeService.getPresetPointsByPreId(preId);
 			return Result.okList(presetPointList);
 		} catch (Exception e) {
 			logger.error("根据方案Id获取卡口方案坐标点集合信息出错，入口参数：{}，错误信息：{}",

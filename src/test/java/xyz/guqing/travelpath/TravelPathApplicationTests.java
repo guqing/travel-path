@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
+import xyz.guqing.travelpath.entity.model.PresetScheme;
 import xyz.guqing.travelpath.entity.vo.PresetPointExcelVO;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeExcelVO;
 import xyz.guqing.travelpath.service.PresetSchemeService;
@@ -94,5 +95,11 @@ public class TravelPathApplicationTests {
 		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
 		Integer userId = user.getId();
 		System.out.println(userId);
+	}
+
+	@Test
+	public void testGetPresetScheme() {
+		PresetScheme schemeById = presetSchemeService.getSchemeById(11L);
+		System.out.println(schemeById);
 	}
 }

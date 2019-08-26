@@ -1,8 +1,8 @@
 package xyz.guqing.travelpath.config;
 
-import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.CacheWriter;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.benmanes.caffeine.cache.RemovalCause;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -30,12 +30,20 @@ public class CacheConfig {
 				//maximumSize用来控制cache的最大缓存数量，maximumSize和maximumWeight(最大权重)不可以同时使用，
 				.maximumSize(1000)
 				//最后一次写入或者访问后过多久过期
-				.expireAfterAccess(500, TimeUnit.SECONDS);
+				.expireAfterAccess(500, TimeUnit.SECONDS)
+				//缓存写入/删除监控
+                .writer(new CacheWriter<Object, Object>() {
+					@Override
+					public void write(Object key, Object value) { //此方法是同步阻塞的
+						System.out.println("--缓存写入--:key=" + key + ", value=" + value);
+					}
+					@Override
+					public void delete(Object key, Object value, RemovalCause cause) { System.out.println("--缓存删除--:key=" + key); }
+				});
 		cacheManager.setCaffeine(caffeine);
 		//是否允许值为空
 		cacheManager.setAllowNullValues(false);
 		return cacheManager;
 	}
-
 
 }

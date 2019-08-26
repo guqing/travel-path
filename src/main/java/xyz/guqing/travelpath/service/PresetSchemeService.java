@@ -37,11 +37,15 @@ import java.util.*;
 @Service
 @CacheConfig(cacheNames = "presetSchemeService")
 public class PresetSchemeService {
-	@Autowired
 	private PresetSchemeMapper presetSchemeMapper;
+	private PresetPointService presetPointService;
 
 	@Autowired
-	private PresetPointService presetPointService;
+	public PresetSchemeService(PresetSchemeMapper presetSchemeMapper,
+							   PresetPointService presetPointService) {
+		this.presetSchemeMapper = presetSchemeMapper;
+		this.presetPointService = presetPointService;
+	}
 
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
 	public PresetScheme savePresetScheme(PresetSchemeVO presetSchemeVO, Integer userId) {
@@ -51,7 +55,7 @@ public class PresetSchemeService {
 		presetSchemeMapper.insert(presetScheme);
 
 		//批量保存预设卡口方案坐标点
-		presetPointService.batchSavePresetPoint(presetPoints, presetSchemeVO.getId());
+		presetPointService.batchSavePresetPoint(presetPoints, presetScheme.getId());
 
 		// 返回给页面跟新列表
 		return presetScheme;
@@ -62,7 +66,7 @@ public class PresetSchemeService {
 	 * @param id 方案id
 	 * @return 返回预设卡口i方案
 	 */
-	@Cacheable
+	@Cacheable(key = "#id")
 	public PresetScheme getSchemeById(Long id) {
 		return presetSchemeMapper.selectByPrimaryKey(id);
 	}
@@ -74,6 +78,7 @@ public class PresetSchemeService {
 	 * @param userId 用户id
 	 * @return 返回预设卡口方案分页对象PageInfo
 	 */
+	@Cacheable
 	public PageInfo<PresetScheme> listSechemeByPage(Integer pageNum, Integer pageSize, Integer userId) {
 		PageHelper.startPage(pageNum, pageSize);
 		// 查询
@@ -110,6 +115,16 @@ public class PresetSchemeService {
 	}
 
 	/**
+	 * 根据方案id查询方案详情坐标点数据集
+	 * @param preId 预设卡口方案id
+	 * @return 返回坐标点数据集合
+	 */
+	@Cacheable
+	public List<Presetpoint> getPresetPointsByPreId(Long preId) {
+		return this.presetPointService.findListById(preId);
+	}
+
+	/**
 	 * 构建PresetScheme对象，使用已有属性填充
 	 * @param presetSchemeVO 预设方案点Vo
 	 * @param userId 用户id
@@ -129,7 +144,7 @@ public class PresetSchemeService {
 	}
 
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
-	@CachePut
+	@CachePut(key = "#presetSchemeVO.id")
 	public void updateScheme(PresetSchemeVO presetSchemeVO) {
 		Long preId = presetSchemeVO.getId();
 
@@ -137,6 +152,13 @@ public class PresetSchemeService {
 		PresetScheme scheme = new PresetScheme();
 		scheme.setDeleted(DeleteConstant.RETAIN);
 		scheme.setId(presetSchemeVO.getId());
+
+		List<Presetpoint> presetpoints = presetSchemeVO.getPresetpoints();
+		if(presetpoints != null) {
+			// 更新数据量
+			scheme.setBayonetCount(presetpoints.size());
+		}
+
 		scheme.setModifyTime(new Date());
 		scheme.setName(presetSchemeVO.getName());
 		scheme.setDescription(presetSchemeVO.getDescription());
@@ -159,6 +181,7 @@ public class PresetSchemeService {
 	 * 逻辑删除
 	 * @param id 方案id
 	 */
+	@CachePut
 	public void logicalDeleted(Long id) {
 		this.updateDeleted(id);
 	}
