@@ -78,7 +78,6 @@ public class PresetSchemeService {
 	 * @param userId 用户id
 	 * @return 返回预设卡口方案分页对象PageInfo
 	 */
-	@Cacheable
 	public PageInfo<PresetScheme> listSechemeByPage(Integer pageNum, Integer pageSize, Integer userId) {
 		PageHelper.startPage(pageNum, pageSize);
 		// 查询
@@ -181,7 +180,6 @@ public class PresetSchemeService {
 	 * 逻辑删除
 	 * @param id 方案id
 	 */
-	@CacheEvict(key = "#id")
 	public void logicalDeleted(Long id) {
 		this.updateDeleted(id);
 	}
