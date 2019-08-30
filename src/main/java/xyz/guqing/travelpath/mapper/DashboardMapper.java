@@ -37,4 +37,26 @@ public interface DashboardMapper {
 	 */
 	@Select("select count(*) from routes where userid = #{userId}")
 	int countRouteScheme(Integer userId);
+
+	/**
+	 * 统计所有用户数量
+	 * @return 返回用户数量
+	 */
+	@Select("select count(*) from user")
+	int countUser();
+
+	/**
+	 * 统计所有角色数量
+	 * @return 返回角色数量
+	 */
+	@Select("select count(*) from role")
+	int countRole();
+
+	/**
+	 * 统计权限资源数量
+	 * @return 返回权限资源数量
+	 */
+	@Select("select count(*) from permission_action")
+	int countPermission();
+
 }

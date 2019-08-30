@@ -30,7 +30,23 @@ public class DashboardService {
 
 		return getSchemeOverviewCountMap(presetCount,actualCount,viaCount,routeCount);
 	}
-	
+
+	public Map<String, Integer> countRamOverview() {
+		int userCount = dashboardMapper.countUser();
+		int roleCount = dashboardMapper.countRole();
+		int permissionCount = dashboardMapper.countPermission();
+
+		return getRamOverviewCountMap(userCount,roleCount,permissionCount);
+	}
+
+	private Map<String, Integer> getRamOverviewCountMap(int userCount, int roleCount, int permissionCount) {
+		Map<String, Integer> countMap = new HashMap<>();
+		countMap.put("userCount", userCount);
+		countMap.put("roleCount", roleCount);
+		countMap.put("permissionCount", permissionCount);
+		return countMap;
+	}
+
 	private Map<String, Integer> getSchemeOverviewCountMap(int presetCount, int actualCount, int viaCount, int routeCount) {
 		Map<String, Integer> countMap = new HashMap<>();
 		countMap.put("presetCount", presetCount);

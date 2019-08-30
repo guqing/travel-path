@@ -38,7 +38,18 @@ public class DashboardController {
 			Map<String, Integer> countMap =  dashboardService.countSchemeOverview(userId);
 			return Result.ok(countMap);
 		} catch (Exception e) {
-			logger.error("统计数据概述面板记录出错，错误信息：{}", e.getMessage());
+			logger.error("统计方案数据条数出错，错误信息：{}", e.getMessage());
+			return Result.fail();
+		}
+	}
+
+	@GetMapping("/ram-overview")
+	public Object countRamOverview() {
+		try {
+			Map<String, Integer> countMap =  dashboardService.countRamOverview();
+			return Result.ok(countMap);
+		} catch (Exception e) {
+			logger.error("统计RAM访问控制线管数据条数出错，错误信息：{}", e.getMessage());
 			return Result.fail();
 		}
 	}
