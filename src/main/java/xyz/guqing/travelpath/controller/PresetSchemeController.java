@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import xyz.guqing.travelpath.entity.annotation.WriteLog;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
+import xyz.guqing.travelpath.entity.support.LogType;
 import xyz.guqing.travelpath.entity.vo.PresetPointExcelVO;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeExcelVO;
 import xyz.guqing.travelpath.entity.model.PresetScheme;
@@ -45,12 +47,15 @@ import java.util.concurrent.Callable;
 @RequestMapping("/preset")
 public class PresetSchemeController {
 	private static final Logger logger = LoggerFactory.getLogger(PresetSchemeController.class);
-	@Autowired
 	private PresetSchemeService presetSchemeService;
+
 	@Autowired
-	private PresetPointService presetPointService;
+	public PresetSchemeController(PresetSchemeService presetSchemeService) {
+		this.presetSchemeService = presetSchemeService;
+	}
 
 	@PostMapping("/save")
+	@WriteLog(value = "新增预设卡口方案", type = LogType.INSERT)
 	public Object createScheme(@RequestBody PresetSchemeVO presetSchemeVO) {
 		Object error = validateParameter(presetSchemeVO);
 		if (error != null) {
@@ -60,84 +65,50 @@ public class PresetSchemeController {
 		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
 		Integer userId = user.getId();
 
-		try {
-			PresetScheme presetScheme = presetSchemeService.savePresetScheme(presetSchemeVO, userId);
-			return Result.ok(presetScheme);
-		} catch (Exception e) {
-			logger.error("保存预设卡口方案信息出错，入口参数：{}，错误信息：{}",
-					JSONObject.toJSONString(presetSchemeVO), e.getMessage());
-			return Result.fail();
-		}
+		PresetScheme presetScheme = presetSchemeService.savePresetScheme(presetSchemeVO, userId);
+		return Result.ok(presetScheme);
 	}
 
 	@GetMapping("/list")
 	public Object listSchemeByPage(@RequestParam(value="current",defaultValue = "1") Integer pageNo,
 								   @RequestParam(value = "pageSize",defaultValue = "10") Integer pageSize) {
-		try {
-			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-			Integer userId = user.getId();
-			PageInfo<PresetScheme> presetSchemes = presetSchemeService.listSechemeByPage(pageNo, pageSize, userId);
-			return Result.okList(presetSchemes);
-		} catch (Exception e) {
-			logger.error("分页查询预设卡口方案失败，入口参数：pageNum={},pageSize={}，错误信息：{}",
-					pageNo, pageSize, e.getMessage());
-			return Result.fail();
-		}
+		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+		Integer userId = user.getId();
+		PageInfo<PresetScheme> presetSchemes = presetSchemeService.listSechemeByPage(pageNo, pageSize, userId);
+		return Result.okList(presetSchemes);
 	}
 
 	@GetMapping("/getScheme/{preId}")
 	public Object getPresetPointScheme(@PathVariable("preId") Long preId) {
-		try {
-			List<Presetpoint> presetPointList = presetSchemeService.getPresetPointsByPreId(preId);
-			return Result.okList(presetPointList);
-		} catch (Exception e) {
-			logger.error("根据方案Id获取卡口方案坐标点集合信息出错，入口参数：{}，错误信息：{}",
-					preId, e.getMessage());
-			return Result.fail();
-		}
+		List<Presetpoint> presetPointList = presetSchemeService.getPresetPointsByPreId(preId);
+		return Result.okList(presetPointList);
 	}
 
 	@GetMapping("/list-point/{id}")
 	public Object findPresetPointList(@PathVariable("id") Long preId) {
-		try {
-			PresetScheme scheme = presetSchemeService.getSchemeById(preId);
-			return Result.ok(scheme);
-		} catch (Exception e) {
-			logger.error("根据方案Id获取卡口方案信息出错，入口参数：{}，错误信息：{}",
-					preId, e.getMessage());
-			return Result.fail();
-		}
+		PresetScheme scheme = presetSchemeService.getSchemeById(preId);
+		return Result.ok(scheme);
 	}
 
 	@PutMapping("/update")
+	@WriteLog(value = "更新预设卡口方案", type = LogType.UPDATE)
 	public Object updateScheme(@RequestBody PresetSchemeVO presetSchemeVO) {
 		if(presetSchemeVO.getId() == null) {
 			return Result.badArgument();
 		}
-		try {
-			presetSchemeService.updateScheme(presetSchemeVO);
-			return Result.ok();
-		} catch (Exception e) {
-			logger.error("更新卡口方案信息出错，入口参数：{}，错误信息：{}",
-					presetSchemeVO, e.getMessage());
-			return Result.fail();
-		}
+		presetSchemeService.updateScheme(presetSchemeVO);
+		return Result.ok();
 	}
 
 	/**
 	 * 逻辑删除
-	 * @return
+	 * @return 返回操作信息
 	 */
 	@PostMapping("/trash/{id}")
+	@WriteLog(value = "删除预设卡口方案到回收站", type = LogType.DELETE)
 	public Object throwTrash(@PathVariable("id") Long id) {
-		try {
-			presetSchemeService.logicalDeleted(id);
-			return Result.ok();
-		} catch (Exception e) {
-			logger.error("逻辑删除卡口方案出错，入口参数：{}，错误信息：{}",
-					id, e.getMessage());
-			return Result.fail();
-		}
+		presetSchemeService.logicalDeleted(id);
+		return Result.ok();
 	}
 
 	/**
@@ -145,47 +116,37 @@ public class PresetSchemeController {
 	 * @return 返回删除结果信息
 	 */
 	@PostMapping("/batch-trash")
+	@WriteLog(value = "批量删除预设卡口方案到回收站", type = LogType.DELETE)
 	public Object batchTrash(@RequestBody List<Long> ids) {
-		try {
-			presetSchemeService.batchLogicalDeleted(ids);
-			return Result.ok();
-		} catch (Exception e) {
-			logger.error("批量逻辑删除卡口方案出错，入口参数：{}，错误信息：{}",
-					JSONArray.toJSONString(ids), e.getMessage());
-			return Result.fail();
-		}
+		presetSchemeService.batchLogicalDeleted(ids);
+		return Result.ok();
 	}
 
 	@PostMapping("/download")
-	public void downloadSchemeWithPoints(@RequestBody List<Long> ids, HttpServletResponse response) {
+	public void downloadSchemeWithPoints(@RequestBody List<Long> ids, HttpServletResponse response) throws IOException {
 		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		response.setCharacterEncoding("utf-8");
 		response.setHeader("Content-disposition", "attachment;filename=PresetSchemeWithPoint.xlsx");
 
-		try {
-			ServletOutputStream outputStream = response.getOutputStream();
-			List<PresetSchemeVO> presetSchemeVoList = presetSchemeService.listSchemeByIds(ids);
+		ServletOutputStream outputStream = response.getOutputStream();
+		List<PresetSchemeVO> presetSchemeVoList = presetSchemeService.listSchemeByIds(ids);
 
-			// 写sheet1
-			ExcelWriter writer = EasyExcelFactory.getWriter(outputStream);
-			Sheet schemeSheet = new Sheet(1, 1, PresetSchemeExcelVO.class);
-			schemeSheet.setSheetName("预设卡口方案");
-			List<PresetSchemeExcelVO> presetSchemeExcelVoList = transferToSchemeExcelList(presetSchemeVoList);
-			writer.write(presetSchemeExcelVoList, schemeSheet);
+		// 写sheet1
+		ExcelWriter writer = EasyExcelFactory.getWriter(outputStream);
+		Sheet schemeSheet = new Sheet(1, 1, PresetSchemeExcelVO.class);
+		schemeSheet.setSheetName("预设卡口方案");
+		List<PresetSchemeExcelVO> presetSchemeExcelVoList = transferToSchemeExcelList(presetSchemeVoList);
+		writer.write(presetSchemeExcelVoList, schemeSheet);
 
-			// 写sheet2
-			List<PresetPointExcelVO> presetPointExcelVoList = transferToPresetPointExcelVO(presetSchemeVoList);
-			Sheet presetPointSheet = new Sheet(2, 1, PresetPointExcelVO.class);
-			presetPointSheet.setSheetName("预设卡口坐标点");
-			presetPointSheet.setAutoWidth(true);
-			writer.write(presetPointExcelVoList, presetPointSheet);
+		// 写sheet2
+		List<PresetPointExcelVO> presetPointExcelVoList = transferToPresetPointExcelVO(presetSchemeVoList);
+		Sheet presetPointSheet = new Sheet(2, 1, PresetPointExcelVO.class);
+		presetPointSheet.setSheetName("预设卡口坐标点");
+		presetPointSheet.setAutoWidth(true);
+		writer.write(presetPointExcelVoList, presetPointSheet);
 
-			writer.finish();
-			outputStream.flush();
-		} catch (Exception e) {
-			logger.error("批量下载卡口方案数据出错，入口参数：{}，错误信息：{}",
-					JSONArray.toJSONString(ids), e.getMessage());
-		}
+		writer.finish();
+		outputStream.flush();
 	}
 
 	/**
@@ -195,24 +156,20 @@ public class PresetSchemeController {
 	 * <li>3. 直接读即可
 	 */
 	@PostMapping("/upload")
+	@WriteLog(value = "从excel上传预设卡口方案数据",type = LogType.INSERT)
 	public Object upload(MultipartFile file) {
-		try {
-			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-			Integer userId = user.getId();
+		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+		Integer userId = user.getId();
 
-			// 异步执行任务
-			return new Callable<Object>() {
-				@Override
-				public Object call() throws Exception {
-					// 读取并保存excel数据
-					presetSchemeService.saveUploadSchemeRecord(file, userId);
-					return Result.ok();
-				}
-			};
-		} catch (Exception e) {
-			logger.error("上传卡口方案数据出错，错误信息：{}", e.getMessage());
-			return Result.fail();
-		}
+		// 异步执行任务
+		return new Callable<Object>() {
+			@Override
+			public Object call() throws Exception {
+				// 读取并保存excel数据
+				presetSchemeService.saveUploadSchemeRecord(file, userId);
+				return Result.ok();
+			}
+		};
 	}
 
 	/**

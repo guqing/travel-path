@@ -181,7 +181,7 @@ public class PresetSchemeService {
 	 * 逻辑删除
 	 * @param id 方案id
 	 */
-	@CachePut
+	@CacheEvict(key = "#id")
 	public void logicalDeleted(Long id) {
 		this.updateDeleted(id);
 	}
