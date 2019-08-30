@@ -28,7 +28,7 @@ public class RoleService {
 	public Role getRoleById(Integer roleId) {
 		return roleMapper.selectByPrimaryKey(roleId);
 	}
-	
+
 	public List<Role> listRole() {
 		return roleMapper.selectByExample(null);
 	}
