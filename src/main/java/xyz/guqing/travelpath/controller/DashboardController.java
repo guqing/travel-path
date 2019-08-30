@@ -30,12 +30,12 @@ public class DashboardController {
 		this.dashboardService = dashboardService;
 	}
 
-	@GetMapping("/overview")
-	public Object countOverview() {
+	@GetMapping("/scheme-overview")
+	public Object countSchemeOverview() {
 		try {
 			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
 			Integer userId = user.getId();
-			Map<String, Integer> countMap =  dashboardService.countOverview(userId);
+			Map<String, Integer> countMap =  dashboardService.countSchemeOverview(userId);
 			return Result.ok(countMap);
 		} catch (Exception e) {
 			logger.error("统计数据概述面板记录出错，错误信息：{}", e.getMessage());

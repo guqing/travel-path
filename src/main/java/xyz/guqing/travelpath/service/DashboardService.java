@@ -22,16 +22,16 @@ public class DashboardService {
 		this.dashboardMapper = dashboardMapper;
 	}
 
-	public Map<String, Integer> countOverview(Integer userId) {
+	public Map<String, Integer> countSchemeOverview(Integer userId) {
 		int presetCount = dashboardMapper.countPresetScheme(userId);
 		int actualCount = dashboardMapper.countActualScheme(userId);
 		int viaCount = dashboardMapper.countViaScheme(userId);
 		int routeCount = dashboardMapper.countRouteScheme(userId);
 
-		return getOverviewCountMap(presetCount,actualCount,viaCount,routeCount);
+		return getSchemeOverviewCountMap(presetCount,actualCount,viaCount,routeCount);
 	}
-
-	private Map<String, Integer> getOverviewCountMap(int presetCount, int actualCount, int viaCount, int routeCount) {
+	
+	private Map<String, Integer> getSchemeOverviewCountMap(int presetCount, int actualCount, int viaCount, int routeCount) {
 		Map<String, Integer> countMap = new HashMap<>();
 		countMap.put("presetCount", presetCount);
 		countMap.put("actualCount", actualCount);

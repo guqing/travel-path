@@ -27,7 +27,7 @@ public interface DashboardMapper {
 	 * @param userId 用户id
 	 * @return 返回查询得到的数量
 	 */
-	@Select("select count(*) from route_bayonet_scheme where userid = #{userId}")
+	@Select("select count(*) from route_bayonet_scheme where user_id = #{userId}")
 	int countViaScheme(Integer userId);
 
 	/**
