@@ -7,6 +7,8 @@ public class Log {
 
     private Integer userId;
 
+    private String username;
+
     private String name;
 
     private String content;
@@ -35,6 +37,14 @@ public class Log {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username == null ? null : username.trim();
     }
 
     public String getName() {
