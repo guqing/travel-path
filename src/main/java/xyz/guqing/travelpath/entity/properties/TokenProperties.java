@@ -11,7 +11,7 @@ public class TokenProperties {
     /**
      * 30分钟(以秒s计)
      */
-    private long expirationTime = 1_800;
+    private long expirationTime = 604_800;
     /**
      * 允许过期时间时钟偏移秒s为单位
      */

@@ -100,19 +100,13 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Role" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into role (description, name, available, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Role" useGeneratedKeys="true" keyProperty="id">
+    insert into role (description, name, available,
       create_time, modify_time)
     values (#{description,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{available,jdbcType=CHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Role" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Role" useGeneratedKeys="true" keyProperty="id">
     insert into role
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="description != null" >

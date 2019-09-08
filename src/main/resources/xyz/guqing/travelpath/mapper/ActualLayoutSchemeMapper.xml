@@ -5,12 +5,12 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
-    <result column="bayonet_count" property="bayonetCount" jdbcType="INTEGER" />
+    <result column="bayonet_count" property="bayonetCount" jdbcType="BIGINT" />
     <result column="userid" property="userid" jdbcType="INTEGER" />
     <result column="preset_id" property="presetId" jdbcType="BIGINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
-    <result column="deleted" property="deleted" jdbcType="TINYINT" />
+    <result column="deleted" property="deleted" jdbcType="SMALLINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -104,21 +104,15 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.ActualLayoutScheme" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into actual_layout_scheme (name, description, bayonet_count, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.ActualLayoutScheme" useGeneratedKeys="true" keyProperty="id" >
+    insert into actual_layout_scheme (name, description, bayonet_count,
       userid, preset_id, create_time, 
       modify_time, deleted)
-    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{bayonetCount,jdbcType=INTEGER}, 
+    values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{bayonetCount,jdbcType=BIGINT}, 
       #{userid,jdbcType=INTEGER}, #{presetId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=TINYINT})
+      #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=SMALLINT})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.ActualLayoutScheme" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.ActualLayoutScheme" useGeneratedKeys="true" keyProperty="id" >
     insert into actual_layout_scheme
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="name != null" >
@@ -154,7 +148,7 @@
         #{description,jdbcType=VARCHAR},
       </if>
       <if test="bayonetCount != null" >
-        #{bayonetCount,jdbcType=INTEGER},
+        #{bayonetCount,jdbcType=BIGINT},
       </if>
       <if test="userid != null" >
         #{userid,jdbcType=INTEGER},
@@ -169,7 +163,7 @@
         #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleted != null" >
-        #{deleted,jdbcType=TINYINT},
+        #{deleted,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
@@ -192,7 +186,7 @@
         description = #{record.description,jdbcType=VARCHAR},
       </if>
       <if test="record.bayonetCount != null" >
-        bayonet_count = #{record.bayonetCount,jdbcType=INTEGER},
+        bayonet_count = #{record.bayonetCount,jdbcType=BIGINT},
       </if>
       <if test="record.userid != null" >
         userid = #{record.userid,jdbcType=INTEGER},
@@ -207,7 +201,7 @@
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.deleted != null" >
-        deleted = #{record.deleted,jdbcType=TINYINT},
+        deleted = #{record.deleted,jdbcType=SMALLINT},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -219,12 +213,12 @@
     set id = #{record.id,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
-      bayonet_count = #{record.bayonetCount,jdbcType=INTEGER},
+      bayonet_count = #{record.bayonetCount,jdbcType=BIGINT},
       userid = #{record.userid,jdbcType=INTEGER},
       preset_id = #{record.presetId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{record.deleted,jdbcType=TINYINT}
+      deleted = #{record.deleted,jdbcType=SMALLINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -239,7 +233,7 @@
         description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="bayonetCount != null" >
-        bayonet_count = #{bayonetCount,jdbcType=INTEGER},
+        bayonet_count = #{bayonetCount,jdbcType=BIGINT},
       </if>
       <if test="userid != null" >
         userid = #{userid,jdbcType=INTEGER},
@@ -254,7 +248,7 @@
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleted != null" >
-        deleted = #{deleted,jdbcType=TINYINT},
+        deleted = #{deleted,jdbcType=SMALLINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -263,12 +257,12 @@
     update actual_layout_scheme
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      bayonet_count = #{bayonetCount,jdbcType=INTEGER},
+      bayonet_count = #{bayonetCount,jdbcType=BIGINT},
       userid = #{userid,jdbcType=INTEGER},
       preset_id = #{presetId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{deleted,jdbcType=TINYINT}
+      deleted = #{deleted,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

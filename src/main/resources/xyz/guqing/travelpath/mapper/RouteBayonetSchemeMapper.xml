@@ -11,7 +11,7 @@
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
-    <result column="deleted" property="deleted" jdbcType="TINYINT" />
+    <result column="deleted" property="deleted" jdbcType="SMALLINT" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -105,23 +105,17 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into route_bayonet_scheme (name, description, car_number, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" useGeneratedKeys="true" keyProperty="id">
+    insert into route_bayonet_scheme (name, description, car_number,
       bayonet_count, actual_id, user_id, 
       create_time, modify_time, deleted
       )
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{carNumber,jdbcType=VARCHAR}, 
       #{bayonetCount,jdbcType=INTEGER}, #{actualId,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=TINYINT}
+      #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=SMALLINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.RouteBayonetScheme" useGeneratedKeys="true" keyProperty="id">
     insert into route_bayonet_scheme
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="name != null" >
@@ -178,7 +172,7 @@
         #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleted != null" >
-        #{deleted,jdbcType=TINYINT},
+        #{deleted,jdbcType=SMALLINT},
       </if>
     </trim>
   </insert>
@@ -219,7 +213,7 @@
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.deleted != null" >
-        deleted = #{record.deleted,jdbcType=TINYINT},
+        deleted = #{record.deleted,jdbcType=SMALLINT},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -237,7 +231,7 @@
       user_id = #{record.userId,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{record.deleted,jdbcType=TINYINT}
+      deleted = #{record.deleted,jdbcType=SMALLINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -270,7 +264,7 @@
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleted != null" >
-        deleted = #{deleted,jdbcType=TINYINT},
+        deleted = #{deleted,jdbcType=SMALLINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -285,7 +279,7 @@
       user_id = #{userId,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{deleted,jdbcType=TINYINT}
+      deleted = #{deleted,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

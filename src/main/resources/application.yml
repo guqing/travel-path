@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     druid:
-      url: jdbc:mysql://localhost:3306/travel_path?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      username: root
+      url: jdbc:postgresql://localhost:5432/travel_path #jdbc:mysql://localhost:3306/travel_path?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+      driver-class-name: org.postgresql.Driver #com.mysql.cj.jdbc.Driver
+      username: postgres
       password: 982148
       # 连接池的配置信息
       # 初始化大小，最小，最大
@@ -19,7 +19,6 @@ spring:
       timeBetweenEvictionRunsMillis: 60000
       # 配置一个连接在池中最小生存的时间，单位是毫秒
       minEvictableIdleTimeMillis: 300000
-      validationQuery: SELECT 1 FROM DUAL
       testWhileIdle: true
       testOnBorrow: false
       testOnReturn: false

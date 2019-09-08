@@ -5,9 +5,9 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="action" property="action" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
-    <result column="defaultCheck" property="defaultcheck" jdbcType="BIT" />
+    <result column="defaultcheck" property="defaultcheck" jdbcType="SMALLINT" />
     <result column="url" property="url" jdbcType="VARCHAR" />
-    <result column="p_id" property="pId" jdbcType="INTEGER" />
+    <result column="p_id" property="pId" jdbcType="BIGINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -70,7 +70,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, action, description, defaultCheck, url, p_id, create_time, modify_time
+    id, action, description, defaultcheck, url, p_id, create_time, modify_time
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="xyz.guqing.travelpath.entity.model.PermissionActionExample" >
     select
@@ -102,21 +102,15 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into permission_action (action, description, defaultCheck, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" useGeneratedKeys="true" keyProperty="id">
+    insert into permission_action (action, description, defaultcheck,
       url, p_id, create_time, 
       modify_time)
-    values (#{action,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{defaultcheck,jdbcType=BIT}, 
-      #{url,jdbcType=VARCHAR}, #{pId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+    values (#{action,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{defaultcheck,jdbcType=SMALLINT}, 
+      #{url,jdbcType=VARCHAR}, #{pId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.PermissionAction" useGeneratedKeys="true" keyProperty="id">
     insert into permission_action
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="action != null" >
@@ -126,7 +120,7 @@
         description,
       </if>
       <if test="defaultcheck != null" >
-        defaultCheck,
+        defaultcheck,
       </if>
       <if test="url != null" >
         url,
@@ -149,13 +143,13 @@
         #{description,jdbcType=VARCHAR},
       </if>
       <if test="defaultcheck != null" >
-        #{defaultcheck,jdbcType=BIT},
+        #{defaultcheck,jdbcType=SMALLINT},
       </if>
       <if test="url != null" >
         #{url,jdbcType=VARCHAR},
       </if>
       <if test="pId != null" >
-        #{pId,jdbcType=INTEGER},
+        #{pId,jdbcType=BIGINT},
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
@@ -184,13 +178,13 @@
         description = #{record.description,jdbcType=VARCHAR},
       </if>
       <if test="record.defaultcheck != null" >
-        defaultCheck = #{record.defaultcheck,jdbcType=BIT},
+        defaultcheck = #{record.defaultcheck,jdbcType=SMALLINT},
       </if>
       <if test="record.url != null" >
         url = #{record.url,jdbcType=VARCHAR},
       </if>
       <if test="record.pId != null" >
-        p_id = #{record.pId,jdbcType=INTEGER},
+        p_id = #{record.pId,jdbcType=BIGINT},
       </if>
       <if test="record.createTime != null" >
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -208,9 +202,9 @@
     set id = #{record.id,jdbcType=INTEGER},
       action = #{record.action,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
-      defaultCheck = #{record.defaultcheck,jdbcType=BIT},
+      defaultcheck = #{record.defaultcheck,jdbcType=SMALLINT},
       url = #{record.url,jdbcType=VARCHAR},
-      p_id = #{record.pId,jdbcType=INTEGER},
+      p_id = #{record.pId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null" >
@@ -227,13 +221,13 @@
         description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="defaultcheck != null" >
-        defaultCheck = #{defaultcheck,jdbcType=BIT},
+        defaultcheck = #{defaultcheck,jdbcType=SMALLINT},
       </if>
       <if test="url != null" >
         url = #{url,jdbcType=VARCHAR},
       </if>
       <if test="pId != null" >
-        p_id = #{pId,jdbcType=INTEGER},
+        p_id = #{pId,jdbcType=BIGINT},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -248,9 +242,9 @@
     update permission_action
     set action = #{action,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
-      defaultCheck = #{defaultcheck,jdbcType=BIT},
+      defaultcheck = #{defaultcheck,jdbcType=SMALLINT},
       url = #{url,jdbcType=VARCHAR},
-      p_id = #{pId,jdbcType=INTEGER},
+      p_id = #{pId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}

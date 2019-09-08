@@ -9,13 +9,13 @@
     <result column="distance" property="distance" jdbcType="INTEGER" />
     <result column="instruction" property="instruction" jdbcType="VARCHAR" />
     <result column="road" property="road" jdbcType="VARCHAR" />
-    <result column="time" property="time" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="BIGINT" />
     <result column="route_id" property="routeId" jdbcType="BIGINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="xyz.guqing.travelpath.entity.model.Steps" extends="BaseResultMap" >
-    <result column="path" property="path" jdbcType="LONGVARBINARY" />
+    <result column="path" property="path" jdbcType="BINARY" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -130,23 +130,17 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Steps" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into steps (action, assistant_action, cities, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Steps" useGeneratedKeys="true" keyProperty="id">
+    insert into steps (action, assistant_action, cities,
       distance, instruction, road, 
       time, route_id, create_time, 
       modify_time, path)
     values (#{action,jdbcType=VARCHAR}, #{assistantAction,jdbcType=VARCHAR}, #{cities,jdbcType=VARCHAR}, 
       #{distance,jdbcType=INTEGER}, #{instruction,jdbcType=VARCHAR}, #{road,jdbcType=VARCHAR}, 
-      #{time,jdbcType=INTEGER}, #{routeId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{modifyTime,jdbcType=TIMESTAMP}, #{path,jdbcType=LONGVARBINARY})
+      #{time,jdbcType=BIGINT}, #{routeId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifyTime,jdbcType=TIMESTAMP}, #{path,jdbcType=BINARY})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Steps" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Steps" useGeneratedKeys="true" keyProperty="id">
     insert into steps
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="action != null" >
@@ -203,7 +197,7 @@
         #{road,jdbcType=VARCHAR},
       </if>
       <if test="time != null" >
-        #{time,jdbcType=INTEGER},
+        #{time,jdbcType=BIGINT},
       </if>
       <if test="routeId != null" >
         #{routeId,jdbcType=BIGINT},
@@ -215,7 +209,7 @@
         #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="path != null" >
-        #{path,jdbcType=LONGVARBINARY},
+        #{path,jdbcType=BINARY},
       </if>
     </trim>
   </insert>
@@ -250,7 +244,7 @@
         road = #{record.road,jdbcType=VARCHAR},
       </if>
       <if test="record.time != null" >
-        time = #{record.time,jdbcType=INTEGER},
+        time = #{record.time,jdbcType=BIGINT},
       </if>
       <if test="record.routeId != null" >
         route_id = #{record.routeId,jdbcType=BIGINT},
@@ -262,7 +256,7 @@
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.path != null" >
-        path = #{record.path,jdbcType=LONGVARBINARY},
+        path = #{record.path,jdbcType=BINARY},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -278,11 +272,11 @@
       distance = #{record.distance,jdbcType=INTEGER},
       instruction = #{record.instruction,jdbcType=VARCHAR},
       road = #{record.road,jdbcType=VARCHAR},
-      time = #{record.time,jdbcType=INTEGER},
+      time = #{record.time,jdbcType=BIGINT},
       route_id = #{record.routeId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      path = #{record.path,jdbcType=LONGVARBINARY}
+      path = #{record.path,jdbcType=BINARY}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -296,7 +290,7 @@
       distance = #{record.distance,jdbcType=INTEGER},
       instruction = #{record.instruction,jdbcType=VARCHAR},
       road = #{record.road,jdbcType=VARCHAR},
-      time = #{record.time,jdbcType=INTEGER},
+      time = #{record.time,jdbcType=BIGINT},
       route_id = #{record.routeId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP}
@@ -326,7 +320,7 @@
         road = #{road,jdbcType=VARCHAR},
       </if>
       <if test="time != null" >
-        time = #{time,jdbcType=INTEGER},
+        time = #{time,jdbcType=BIGINT},
       </if>
       <if test="routeId != null" >
         route_id = #{routeId,jdbcType=BIGINT},
@@ -338,7 +332,7 @@
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="path != null" >
-        path = #{path,jdbcType=LONGVARBINARY},
+        path = #{path,jdbcType=BINARY},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -351,11 +345,11 @@
       distance = #{distance,jdbcType=INTEGER},
       instruction = #{instruction,jdbcType=VARCHAR},
       road = #{road,jdbcType=VARCHAR},
-      time = #{time,jdbcType=INTEGER},
+      time = #{time,jdbcType=BIGINT},
       route_id = #{routeId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      path = #{path,jdbcType=LONGVARBINARY}
+      path = #{path,jdbcType=BINARY}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.Steps" >
@@ -366,7 +360,7 @@
       distance = #{distance,jdbcType=INTEGER},
       instruction = #{instruction,jdbcType=VARCHAR},
       road = #{road,jdbcType=VARCHAR},
-      time = #{time,jdbcType=INTEGER},
+      time = #{time,jdbcType=BIGINT},
       route_id = #{routeId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP}

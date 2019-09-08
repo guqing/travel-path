@@ -104,10 +104,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Log" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Log" useGeneratedKeys="true" keyProperty="id">
     insert into log (user_id, username, name, 
       content, type, method_name, 
       ip, create_time, modify_time
@@ -117,10 +114,7 @@
       #{ip,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Log" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Log" useGeneratedKeys="true" keyProperty="id">
     insert into log
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="userId != null" >

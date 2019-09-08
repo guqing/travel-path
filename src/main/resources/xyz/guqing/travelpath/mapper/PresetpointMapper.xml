@@ -101,21 +101,15 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Presetpoint" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into presetpoint (lng, lat, edge_number, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Presetpoint" useGeneratedKeys="true" keyProperty="id">
+    insert into presetpoint (lng, lat, edge_number,
       preid, create_time, modify_time
       )
     values (#{lng,jdbcType=VARCHAR}, #{lat,jdbcType=VARCHAR}, #{edgeNumber,jdbcType=VARCHAR}, 
       #{preid,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Presetpoint" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Presetpoint" useGeneratedKeys="true" keyProperty="id">
     insert into presetpoint
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="lng != null" >

@@ -18,8 +18,8 @@
     <result column="last_login_ip" property="lastLoginIp" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
-    <result column="deleted" property="deleted" jdbcType="BIT" />
-    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="deleted" property="deleted" jdbcType="SMALLINT" />
+    <result column="role_id" property="roleId" jdbcType="BIGINT" />
     <result column="role_name" property="roleName" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
@@ -91,7 +91,7 @@
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from user
+    from public.user
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -102,24 +102,21 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from user
+    from public.user
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
-    delete from user
+    delete from public.user
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <delete id="deleteByExample" parameterType="xyz.guqing.travelpath.entity.model.UserExample" >
-    delete from user
+    delete from public.user
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.User" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into user (username, password, nickname, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.User" useGeneratedKeys="true" keyProperty="id">
+    insert into user (username, password, nickname,
       gender, birthday, mobile, 
       email, avatar, description, 
       status, user_level, last_login_time, 
@@ -131,13 +128,10 @@
       #{email,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{status,jdbcType=INTEGER}, #{userLevel,jdbcType=INTEGER}, #{lastLoginTime,jdbcType=TIMESTAMP}, 
       #{lastLoginIp,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}, 
-      #{deleted,jdbcType=BIT}, #{roleId,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}
+      #{deleted,jdbcType=SMALLINT}, #{roleId,jdbcType=BIGINT}, #{roleName,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.User" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.User" useGeneratedKeys="true" keyProperty="id">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="username != null" >
@@ -242,10 +236,10 @@
         #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleted != null" >
-        #{deleted,jdbcType=BIT},
+        #{deleted,jdbcType=SMALLINT},
       </if>
       <if test="roleId != null" >
-        #{roleId,jdbcType=INTEGER},
+        #{roleId,jdbcType=BIGINT},
       </if>
       <if test="roleName != null" >
         #{roleName,jdbcType=VARCHAR},
@@ -253,7 +247,7 @@
     </trim>
   </insert>
   <select id="countByExample" parameterType="xyz.guqing.travelpath.entity.model.UserExample" resultType="java.lang.Integer" >
-    select count(*) from user
+    select count(*) from public.user
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -310,10 +304,10 @@
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.deleted != null" >
-        deleted = #{record.deleted,jdbcType=BIT},
+        deleted = #{record.deleted,jdbcType=SMALLINT},
       </if>
       <if test="record.roleId != null" >
-        role_id = #{record.roleId,jdbcType=INTEGER},
+        role_id = #{record.roleId,jdbcType=BIGINT},
       </if>
       <if test="record.roleName != null" >
         role_name = #{record.roleName,jdbcType=VARCHAR},
@@ -341,8 +335,8 @@
       last_login_ip = #{record.lastLoginIp,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{record.deleted,jdbcType=BIT},
-      role_id = #{record.roleId,jdbcType=INTEGER},
+      deleted = #{record.deleted,jdbcType=SMALLINT},
+      role_id = #{record.roleId,jdbcType=BIGINT},
       role_name = #{record.roleName,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -397,10 +391,10 @@
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleted != null" >
-        deleted = #{deleted,jdbcType=BIT},
+        deleted = #{deleted,jdbcType=SMALLINT},
       </if>
       <if test="roleId != null" >
-        role_id = #{roleId,jdbcType=INTEGER},
+        role_id = #{roleId,jdbcType=BIGINT},
       </if>
       <if test="roleName != null" >
         role_name = #{roleName,jdbcType=VARCHAR},
@@ -425,8 +419,8 @@
       last_login_ip = #{lastLoginIp,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{deleted,jdbcType=BIT},
-      role_id = #{roleId,jdbcType=INTEGER},
+      deleted = #{deleted,jdbcType=SMALLINT},
+      role_id = #{roleId,jdbcType=BIGINT},
       role_name = #{roleName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

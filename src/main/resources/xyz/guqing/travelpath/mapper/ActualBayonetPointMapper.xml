@@ -101,21 +101,15 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.ActualBayonetPoint" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into actual_bayonet_point (lng, lat, edge_number, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.ActualBayonetPoint" useGeneratedKeys="true" keyProperty="id">
+    insert into actual_bayonet_point (lng, lat, edge_number,
       actual_id, create_time, modify_time
       )
     values (#{lng,jdbcType=VARCHAR}, #{lat,jdbcType=VARCHAR}, #{edgeNumber,jdbcType=VARCHAR}, 
       #{actualId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.ActualBayonetPoint" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.ActualBayonetPoint" useGeneratedKeys="true" keyProperty="id" >
     insert into actual_bayonet_point
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="lng != null" >

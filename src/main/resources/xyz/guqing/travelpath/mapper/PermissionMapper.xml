@@ -104,21 +104,15 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Permission" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into permission (permission_id, permission_name, description, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Permission" useGeneratedKeys="true" keyProperty="id">
+    insert into permission (permission_id, permission_name, description,
       url, sort_index, available, 
       create_time, modify_time)
     values (#{permissionId,jdbcType=VARCHAR}, #{permissionName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{url,jdbcType=VARCHAR}, #{sortIndex,jdbcType=VARCHAR}, #{available,jdbcType=CHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{modifyTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Permission" >
-    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Permission" useGeneratedKeys="true" keyProperty="id">
     insert into permission
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="permissionId != null" >

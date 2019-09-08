@@ -5,6 +5,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Font;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.metadata.TableStyle;
+import io.jsonwebtoken.Claims;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,9 @@ public class TravelPathApplicationTests {
 
 	@Test
 	public void contextLoads() {
-		System.out.println(presetSchemeService.listSechemeByPage(1,10,1));
+		String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndXFpbmciLCJJRCI6MSwiZXhwIjoxNTY3MTUzNjg0LCJjcmVhdGVkIjoxNTY3MTUzNjI0NDg0fQ.243dXzwT4QJ2Pj2DMuBVYT3YH3gKqPcpCG6HRMTtgteAS6EddBi0jjKbTSLP0bXIhiQEFRFz4Nzs91I0CO7_7w";
+		Claims claimsFromToken = tokenUtil.getClaimsFromToken(token);
+		System.out.println(claimsFromToken.getSubject());
 	}
 
 	@Test

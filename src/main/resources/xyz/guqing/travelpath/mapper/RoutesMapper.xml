@@ -16,10 +16,10 @@
     <result column="userid" property="userid" jdbcType="INTEGER" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
-    <result column="deleted" property="deleted" jdbcType="BIT" />
+    <result column="deleted" property="deleted" jdbcType="SMALLINT" />
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="xyz.guqing.travelpath.entity.model.Routes" extends="BaseResultMap" >
-    <result column="path" property="path" jdbcType="LONGVARBINARY" />
+    <result column="path" property="path" jdbcType="BINARY" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -134,11 +134,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Routes" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
-    insert into routes (distance, policy, time, 
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.Routes" useGeneratedKeys="true" keyProperty="id">
+    insert into routes (distance, policy, time,
       tolls, tolls_distance, origin, 
       destination, state, action_count, 
       rid, userid, create_time, 
@@ -148,13 +145,10 @@
       #{tolls,jdbcType=INTEGER}, #{tollsDistance,jdbcType=INTEGER}, #{origin,jdbcType=VARCHAR}, 
       #{destination,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{actionCount,jdbcType=INTEGER}, 
       #{rid,jdbcType=BIGINT}, #{userid,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}, #{path,jdbcType=LONGVARBINARY}
+      #{modifyTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=SMALLINT}, #{path,jdbcType=BINARY}
       )
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Routes" >
-    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID()
-    </selectKey>
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.Routes" useGeneratedKeys="true" keyProperty="id">
     insert into routes
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="distance != null" >
@@ -244,10 +238,10 @@
         #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleted != null" >
-        #{deleted,jdbcType=BIT},
+        #{deleted,jdbcType=SMALLINT},
       </if>
       <if test="path != null" >
-        #{path,jdbcType=LONGVARBINARY},
+        #{path,jdbcType=BINARY},
       </if>
     </trim>
   </insert>
@@ -303,10 +297,10 @@
         modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="record.deleted != null" >
-        deleted = #{record.deleted,jdbcType=BIT},
+        deleted = #{record.deleted,jdbcType=SMALLINT},
       </if>
       <if test="record.path != null" >
-        path = #{record.path,jdbcType=LONGVARBINARY},
+        path = #{record.path,jdbcType=BINARY},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -329,8 +323,8 @@
       userid = #{record.userid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{record.deleted,jdbcType=BIT},
-      path = #{record.path,jdbcType=LONGVARBINARY}
+      deleted = #{record.deleted,jdbcType=SMALLINT},
+      path = #{record.path,jdbcType=BINARY}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -351,7 +345,7 @@
       userid = #{record.userid,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       modify_time = #{record.modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{record.deleted,jdbcType=BIT}
+      deleted = #{record.deleted,jdbcType=SMALLINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -399,10 +393,10 @@
         modify_time = #{modifyTime,jdbcType=TIMESTAMP},
       </if>
       <if test="deleted != null" >
-        deleted = #{deleted,jdbcType=BIT},
+        deleted = #{deleted,jdbcType=SMALLINT},
       </if>
       <if test="path != null" >
-        path = #{path,jdbcType=LONGVARBINARY},
+        path = #{path,jdbcType=BINARY},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -422,8 +416,8 @@
       userid = #{userid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{deleted,jdbcType=BIT},
-      path = #{path,jdbcType=LONGVARBINARY}
+      deleted = #{deleted,jdbcType=SMALLINT},
+      path = #{path,jdbcType=BINARY}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.Routes" >
@@ -441,7 +435,7 @@
       userid = #{userid,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       modify_time = #{modifyTime,jdbcType=TIMESTAMP},
-      deleted = #{deleted,jdbcType=BIT}
+      deleted = #{deleted,jdbcType=SMALLINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
