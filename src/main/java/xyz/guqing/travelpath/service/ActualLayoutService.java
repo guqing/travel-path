@@ -104,7 +104,6 @@ public class ActualLayoutService {
 	 * 逻辑删除方案
 	 * @param id 方案id
 	 */
-	@CachePut
 	public void logicalDelete(Long id) {
 		// 更新删除状态
 		updateDeleteStatus(id);
@@ -148,7 +147,7 @@ public class ActualLayoutService {
 	 * @param actualLayoutSchemeVO 布设卡口方案VO
 	 */
 	@Transactional(rollbackFor = ActualLayoutException.class)
-	@CachePut
+	@CacheEvict
 	public void update(ActualLayoutSchemeVO actualLayoutSchemeVO) {
 		ActualLayoutScheme layoutScheme = getLayoutScheme(actualLayoutSchemeVO);
 		// 不需要创建时间
