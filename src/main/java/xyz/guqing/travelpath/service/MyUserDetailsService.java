@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
+import xyz.guqing.travelpath.entity.dto.PermissionDTO;
 import xyz.guqing.travelpath.entity.model.Permission;
 import xyz.guqing.travelpath.entity.model.PermissionAction;
 import xyz.guqing.travelpath.entity.model.Role;
@@ -30,8 +31,6 @@ public class MyUserDetailsService implements UserDetailsService {
     private RoleService roleService;
     @Autowired
     private PermissionService permissionService;
-    @Autowired
-    private PermissionActionService actionService;
 
     @Override
     @Cacheable
@@ -43,8 +42,8 @@ public class MyUserDetailsService implements UserDetailsService {
         userDetails.setPassword(user.getPassword());
 
         // 设置权限url
-        List<Permission> permissions = permissionService.listPermissionByRoleId(user.getRoleId());
-        userDetails.setPermissionUrl(this.getPermissionUrl(permissions));
+        Set<PermissionAction> actions = permissionService.listActionsByRoleId(user.getRoleId());
+        userDetails.setPermissionUrl(this.getPermissionUrl(actions));
 
         Role role = roleService.getRoleById(user.getRoleId());
         userDetails.setRole(role);
@@ -54,16 +53,13 @@ public class MyUserDetailsService implements UserDetailsService {
 
     /**
      * 根据权限列表获取权限对应的url集合
-     * @param permissions 权限集合
+     * @param actions 权限action集合
      * @return 返回权限url
      */
-    private Set<String> getPermissionUrl(List<Permission> permissions) {
+    private Set<String> getPermissionUrl(Set<PermissionAction> actions) {
         Set<String> actionUrl = new HashSet<>();
-        permissions.forEach(permission -> {
-            Set<PermissionAction> permissionActions = actionService.listPermissionAction(permission.getId());
-            permissionActions.forEach(permissionAction -> {
-                actionUrl.add(permissionAction.getUrl());
-            });
+        actions.forEach(action -> {
+            actionUrl.add(action.getUrl());
         });
 
         return actionUrl;

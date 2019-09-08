@@ -26,7 +26,8 @@ public class PermissionActionService {
 	}
 
 	@Cacheable
-	public Set<PermissionAction> listPermissionAction(Integer permissionId) {
-		return actionMapper.listActionByPid(permissionId);
+	public Set<PermissionAction> listActionByRoleId(Integer roleId) {
+		return actionMapper.listActionByRoleId(roleId);
 	}
+
 }

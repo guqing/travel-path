@@ -27,17 +27,14 @@ public class UserService {
     private UserMapper userMapper;
     private RoleService roleService;
     private PermissionService permissionService;
-    private PermissionActionService actionService;
 
     @Autowired
     public UserService(UserMapper userMapper,
                        RoleService roleService,
-                       PermissionService permissionService,
-                       PermissionActionService actionService) {
+                       PermissionService permissionService) {
         this.userMapper = userMapper;
         this.roleService = roleService;
         this.permissionService = permissionService;
-        this.actionService = actionService;
     }
 
     @Cacheable
@@ -61,8 +58,8 @@ public class UserService {
 	public UserDTO getUserInfo(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         Role role = roleService.getRoleById(user.getRoleId());
-        List<Permission> permissions = permissionService.listPermissionByRoleId(role.getId());
-        return userDtoConverter(user, role, permissions);
+        List<PermissionDTO> permissionDtoList = permissionService.listPermissionByRoleId(role.getId());
+        return userDtoConverter(user, role, permissionDtoList);
     }
 
     /**
@@ -77,7 +74,7 @@ public class UserService {
         users.forEach(user -> {
             // 查询角色,权限
             Role role = roleService.getRoleById(user.getRoleId());
-            List<Permission> permissions = permissionService.listPermissionByRoleId(role.getId());
+            List<PermissionDTO> permissions = permissionService.listPermissionByRoleId(role.getId());
             UserDTO userDTO = userDtoConverter(user, role, permissions);
             userList.add(userDTO);
         });
@@ -85,7 +82,7 @@ public class UserService {
         return new PageInfo<>(userList);
     }
 
-    private UserDTO userDtoConverter(User user, Role role, List<Permission> permissions) {
+    private UserDTO userDtoConverter(User user, Role role, List<PermissionDTO> permissions) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setName(user.getNickname());
@@ -102,27 +99,8 @@ public class UserService {
         //设置角色和权限
         RoleDTO roleDTO = new RoleDTO();
         BeanUtils.copyProperties(role, roleDTO);
-        roleDTO.setPermissions(permissionDtoConverter(permissions));
+        roleDTO.setPermissions(permissions);
         userDTO.setRole(roleDTO);
         return userDTO;
-    }
-
-    private List<PermissionDTO> permissionDtoConverter(List<Permission> permissions) {
-	    List<PermissionDTO> permissionDtoList = new ArrayList<>();
-        permissions.forEach(permission -> {
-            Set<PermissionAction> permissionActions = actionService.listPermissionAction(permission.getId());
-            PermissionDTO permissionDTO = new PermissionDTO();
-            permissionDTO.setId(permission.getId());
-            permissionDTO.setPermissionId(permission.getPermissionId());
-            permissionDTO.setDescription(permission.getDescription());
-            permissionDTO.setPermissionName(permission.getPermissionName());
-            //设置action
-            permissionDTO.setActions(JSONArray.toJSONString(permissionActions));
-            permissionDTO.setActionEntitySet(permissionActions);
-            //添加到集合中
-            permissionDtoList.add(permissionDTO);
-        });
-
-        return permissionDtoList;
     }
 }

@@ -18,4 +18,7 @@ public interface CustomPermissionMapper {
      */
     @Select("SELECT p.* FROM role r LEFT JOIN role_permission rp on rp.role_id=r.id JOIN permission p on p.id=rp.permission_id WHERE r.id=#{roleId}")
     List<Permission> queryPermissionByRoleIds(@Param("roleId") Integer roleId);
+
+    @Select("SELECT p.* FROM permission p where id=#{permissionId}")
+    Permission selectById(Integer permissionId);
 }
