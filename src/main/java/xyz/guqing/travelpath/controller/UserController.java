@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.controller;
 
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import xyz.guqing.travelpath.utils.JwtTokenUtil;
 import xyz.guqing.travelpath.utils.Result;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author guqing
@@ -65,12 +67,19 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user/list")
+    public Object list(@RequestParam(defaultValue = "1") Integer current,
+                       @RequestParam(defaultValue = "10") Integer pageSize) {
+        PageInfo<UserDTO> userList = userService.listUser(current, pageSize);
+        return Result.okList(userList);
+    }
+
     @PostMapping("/auth/register")
     public Object register(@RequestBody User user){
         return Result.ok(user);
     }
 
-    public Object validateUser(User user) {
+    private Object validateUser(User user) {
         if(StringUtils.isBlank(user.getUsername())) {
             return Result.badArgument();
         }
