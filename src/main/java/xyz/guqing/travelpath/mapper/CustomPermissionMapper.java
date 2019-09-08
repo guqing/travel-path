@@ -7,7 +7,6 @@ import xyz.guqing.travelpath.entity.model.Permission;
 
 import java.util.List;
 
-
 @Mapper
 public interface CustomPermissionMapper {
 

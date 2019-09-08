@@ -35,7 +35,6 @@ public class PermissionService {
 	 * @param roleId 角色Id
 	 * @return 用户权限集合
 	 */
-	@Cacheable
 	public List<PermissionDTO> listPermissionByRoleId(Integer roleId) {
 		// 根据角色查询权限的action
 		Set<PermissionAction> permissionActions = actionService.listActionByRoleId(roleId);
@@ -57,6 +56,9 @@ public class PermissionService {
 	 * @return 返回权限的DTO对象
 	 */
 	private PermissionDTO getPermissionDTO(Permission permission, Set<PermissionAction> actions) {
+		if(permission == null) {
+			return null;
+		}
 		PermissionDTO permissionDTO = new PermissionDTO();
 		permissionDTO.setId(permission.getId());
 		permissionDTO.setPermissionId(permission.getPermissionId());
@@ -107,7 +109,9 @@ public class PermissionService {
 			Set<PermissionAction> actions = entry.getValue();
 			Permission permission = customPermissionMapper.selectById(permissionId);
 			PermissionDTO permissionDTO = getPermissionDTO(permission, actions);
-			permissions.add(permissionDTO);
+			if(permissionDTO != null) {
+				permissions.add(permissionDTO);
+			}
 		}
 		return permissions;
 	}

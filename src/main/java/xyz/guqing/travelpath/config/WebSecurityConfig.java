@@ -19,7 +19,7 @@ import xyz.guqing.travelpath.security.AjaxAccessDeniedHandler;
 import xyz.guqing.travelpath.security.AjaxAuthenticationEntryPoint;
 import xyz.guqing.travelpath.security.AjaxAuthenticationFailureHandler;
 import xyz.guqing.travelpath.security.AjaxLogoutSuccessHandler;
-import xyz.guqing.travelpath.service.MyUserDetailsService;
+import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     AjaxLogoutSuccessHandler logoutSuccessHandler;
 
     @Autowired
-    private MyUserDetailsService userService;
+    private MyUserDetailsServiceImpl userService;
 
     @Autowired
     private MySecurityAutoConfiguration securityAutoConfiguration;

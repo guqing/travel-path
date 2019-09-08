@@ -23,14 +23,19 @@ import java.util.Set;
  */
 @Service
 @CacheConfig(cacheNames = "myUserDetailsService")
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsServiceImpl implements UserDetailsService {
+    private UserService userService;
+    private RoleService roleService;
+    private PermissionService permissionService;
 
     @Autowired
-    private UserService userService;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private PermissionService permissionService;
+    public MyUserDetailsServiceImpl(UserService userService,
+                                    RoleService roleService,
+                                    PermissionService permissionService) {
+        this.userService = userService;
+        this.roleService = roleService;
+        this.permissionService = permissionService;
+    }
 
     @Override
     @Cacheable

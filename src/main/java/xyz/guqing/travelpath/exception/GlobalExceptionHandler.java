@@ -1,5 +1,7 @@
 package xyz.guqing.travelpath.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,8 +16,10 @@ import xyz.guqing.travelpath.utils.Result;
 @ControllerAdvice
 @ResponseBody
 public class GlobalExceptionHandler {
+	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	@ExceptionHandler(Exception.class)
 	public Object handleException(Exception e) {
+		logger.error("全局异常拦截，错误信息：{}", e.getMessage());
 		return Result.fail();
 	}
 }

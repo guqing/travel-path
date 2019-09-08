@@ -9,7 +9,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.properties.MySecurityAutoConfiguration;
 import xyz.guqing.travelpath.entity.properties.TokenProperties;
-import xyz.guqing.travelpath.service.MyUserDetailsService;
+import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
 import xyz.guqing.travelpath.utils.JwtTokenUtil;
 import xyz.guqing.travelpath.utils.UserTokenUtil;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private MyUserDetailsServiceImpl myUserDetailsService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;

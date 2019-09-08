@@ -11,13 +11,13 @@ import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.User;
 import xyz.guqing.travelpath.entity.properties.TokenProperties;
-import xyz.guqing.travelpath.service.MyUserDetailsService;
+import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
 import xyz.guqing.travelpath.service.UserService;
 import xyz.guqing.travelpath.utils.JwtTokenUtil;
 import xyz.guqing.travelpath.utils.Result;
+import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * @author guqing
@@ -27,11 +27,9 @@ import java.util.List;
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(PresetSchemeController.class);
     @Autowired
-    private MyUserDetailsService userDetailsService;
+    private MyUserDetailsServiceImpl userDetailsService;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-    @Autowired
-    private TokenProperties tokenProperties;
     @Autowired
     private UserService userService;
 
@@ -55,15 +53,13 @@ public class UserController {
 
     @GetMapping("/user/info")
     public Object getUserInfo(HttpServletRequest request) {
-        String token = request.getHeader(tokenProperties.getHeaderString());
-        Integer userId = jwtTokenUtil.getUserIdFromToken(token);
         try {
+            MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+            Integer userId = user.getId();
             UserDTO userInfo = userService.getUserInfo(userId);
             return Result.ok(userInfo);
-        }catch (Exception e) {
-            logger.error("查询用户信息出错，入口参数token：{}，userId{}，错误信息：{}",
-                    token, userId, e.getMessage());
-            return Result.fail();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
