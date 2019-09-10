@@ -10,6 +10,8 @@ import xyz.guqing.travelpath.entity.dto.PermissionDTO;
 import xyz.guqing.travelpath.service.PermissionService;
 import xyz.guqing.travelpath.utils.Result;
 
+import java.util.List;
+
 /**
  * 权限controller
  *
@@ -30,5 +32,11 @@ public class PermissionController {
 								 @RequestParam(defaultValue = "10") Integer pageSize) {
 		PageInfo<PermissionDTO> permissionsPageInfo = permissionService.listAllPermission(current, pageSize);
 		return Result.okList(permissionsPageInfo);
+	}
+
+	@GetMapping("/list-all")
+	public Object listPermissionNoPager() {
+		List<PermissionDTO> permissionList = permissionService.listAllPermission();
+		return Result.okList(permissionList);
 	}
 }

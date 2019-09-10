@@ -1,5 +1,7 @@
 package xyz.guqing.travelpath.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,7 +31,9 @@ public class RoleService {
 		return roleMapper.selectByPrimaryKey(roleId);
 	}
 
-	public List<Role> listRole() {
-		return roleMapper.selectByExample(null);
+	public PageInfo<Role> listRole(Integer current, Integer pageSize) {
+		PageHelper.startPage(current, pageSize);
+		List<Role> roles = roleMapper.selectByExample(null);
+		return new PageInfo<>(roles);
 	}
 }

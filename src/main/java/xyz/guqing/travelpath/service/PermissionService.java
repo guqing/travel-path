@@ -65,6 +65,16 @@ public class PermissionService {
 		return new PageInfo<>(permissionDtoList);
 	}
 
+	public List<PermissionDTO> listAllPermission() {
+		// 查询所有权限的action
+		Set<PermissionAction> permissionActions = actionService.listAllAction();
+		// 使用权限的action以权限id为键，权限的action集合为值构建一个map，目的是查询permission对象
+		Map<Integer, Set<PermissionAction>> permissionActionMap = getPermissionActionMap(permissionActions);
+
+		// 使用permissionActionMap逆向构建权限对象
+		return getPermissionDtoList(permissionActionMap);
+	}
+
 	/**
 	 * 根据permission和actions对象构建一个PermissionDTO对象
 	 * @param permission 用户权限
