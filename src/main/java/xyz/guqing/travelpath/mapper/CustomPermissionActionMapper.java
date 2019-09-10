@@ -16,8 +16,11 @@ import java.util.Set;
 public interface CustomPermissionActionMapper {
 
 	@Select("select * from permission_action where p_id = #{permissionId}")
-	public Set<PermissionAction> listActionByPid(Integer permissionId);
+	Set<PermissionAction> listActionByPid(Integer permissionId);
 
 	@Select("SELECT p.* FROM role r LEFT JOIN role_permission rp on rp.role_id=r.id JOIN permission_action p on p.id=rp.permission_id WHERE r.id=#{roleId}")
-	public Set<PermissionAction> listActionByRoleId(Integer roleId);
+	Set<PermissionAction> listActionByRoleId(Integer roleId);
+
+	@Select("select * from permission_action")
+	Set<PermissionAction> selectAll();
 }

@@ -33,6 +33,7 @@ public class PermissionDTO {
 	private String permissionId;
 	private String permissionName;
 	private String description;
+	private Integer available;
 	private String url;
 	private String actions;
 	private Set<PermissionAction> actionEntitySet;
@@ -91,5 +92,13 @@ public class PermissionDTO {
 
 	public void setActionEntitySet(Set<PermissionAction> actionEntitySet) {
 		this.actionEntitySet = actionEntitySet;
+	}
+
+	public Integer getAvailable() {
+		return available;
+	}
+
+	public void setAvailable(Integer available) {
+		this.available = available;
 	}
 }

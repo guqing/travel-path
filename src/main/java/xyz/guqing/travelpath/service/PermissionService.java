@@ -1,6 +1,8 @@
 package xyz.guqing.travelpath.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -10,6 +12,7 @@ import xyz.guqing.travelpath.entity.model.Permission;
 import xyz.guqing.travelpath.entity.model.PermissionAction;
 import xyz.guqing.travelpath.mapper.CustomPermissionMapper;
 
+import java.security.Permissions;
 import java.util.*;
 
 /**
@@ -47,6 +50,19 @@ public class PermissionService {
 	public Set<PermissionAction> listActionsByRoleId(Integer roleId) {
 		// 根据角色查询权限的action
 		return actionService.listActionByRoleId(roleId);
+	}
+
+	public PageInfo<PermissionDTO> listAllPermission(Integer current, Integer pageSize) {
+		// 查询所有权限的action
+		Set<PermissionAction> permissionActions = actionService.listAllAction();
+		// 使用权限的action以权限id为键，权限的action集合为值构建一个map，目的是查询permission对象
+		Map<Integer, Set<PermissionAction>> permissionActionMap = getPermissionActionMap(permissionActions);
+
+		// 注意：对permissionDTO list分页，不能写在顶部,否则是对action分页
+		PageHelper.startPage(current, pageSize);
+		// 使用permissionActionMap逆向构建权限对象
+		List<PermissionDTO> permissionDtoList = getPermissionDtoList(permissionActionMap);
+		return new PageInfo<>(permissionDtoList);
 	}
 
 	/**

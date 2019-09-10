@@ -30,4 +30,7 @@ public class PermissionActionService {
 		return actionMapper.listActionByRoleId(roleId);
 	}
 
+	public Set<PermissionAction> listAllAction() {
+		return actionMapper.selectAll();
+	}
 }

@@ -7,14 +7,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
-import xyz.guqing.travelpath.entity.dto.PermissionDTO;
-import xyz.guqing.travelpath.entity.model.Permission;
 import xyz.guqing.travelpath.entity.model.PermissionAction;
 import xyz.guqing.travelpath.entity.model.Role;
 import xyz.guqing.travelpath.entity.model.User;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
