@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -104,5 +105,7 @@ public class TravelPathApplicationTests {
 	public void testGetPresetScheme() {
 		PresetScheme schemeById = presetSchemeService.getSchemeById(11L);
 		System.out.println(schemeById);
+
+		Hashtable<String,String> hashtable = new Hashtable<>();
 	}
 }
