@@ -9,7 +9,7 @@ addons:
     packages:
       - postgresql-9.6-postgis-2.3
 before_script:
-  - psql -c "create database travel_path;" -U postgres
+  - psql -c 'create database travel_path;' -U postgres
   - psql -U postgres -c "create extension postgis"
   - psql -U postgres -q -d travel_path -f src/main/resources/db/travel_path.sql
 env:
