@@ -1,6 +1,11 @@
 language: java
 jdk:
   - openjdk11
+addons:
+  postgresql: "9.6"
+before_script:
+  - psql -c 'create database travel_path;' -U postgres
+  - psql -U postgres -q -d travel_path -f db/travel_path.sql
 cache:
   directories:
     - $HOME/.maven/caches
