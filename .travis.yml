@@ -4,17 +4,18 @@ jdk:
 services:
   - postgresql
 addons:
-  postgresql: "9.6"
+  postgresql: "10"
   apt:
     packages:
-      - postgresql-9.6-postgis-2.3
+      - postgresql-10
+      - postgresql-client-10
+      - postgresql-10-postgis-2.4.3
 before_script:
   - psql -c 'create database travel_path;' -U postgres
   - psql -U postgres -c "create extension postgis"
   - psql -U postgres -q -d travel_path -f src/main/resources/db/travel_path.sql
 env:
   global:
-    - PGHOST=/var/run/postgresql
     - PGPORT=5433
 cache:
   directories:
