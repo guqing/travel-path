@@ -36,13 +36,6 @@ public class TravelPathApplicationTests {
 	private PresetSchemeService presetSchemeService;
 
 	@Test
-	public void contextLoads() {
-		String token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJndXFpbmciLCJJRCI6MSwiZXhwIjoxNTY3MTUzNjg0LCJjcmVhdGVkIjoxNTY3MTUzNjI0NDg0fQ.243dXzwT4QJ2Pj2DMuBVYT3YH3gKqPcpCG6HRMTtgteAS6EddBi0jjKbTSLP0bXIhiQEFRFz4Nzs91I0CO7_7w";
-		Claims claimsFromToken = tokenUtil.getClaimsFromToken(token);
-		System.out.println(claimsFromToken.getSubject());
-	}
-
-	@Test
 	public void testWriteExcel() throws IOException {
 		OutputStream out = new FileOutputStream("F:/预设卡口方案上传模板.xlsx");
 		System.out.println(out);
@@ -92,20 +85,5 @@ public class TravelPathApplicationTests {
 		// 背景色
 		tableStyle.setTableHeadBackGroundColor(IndexedColors.GREY_25_PERCENT);
 		return tableStyle;
-	}
-
-	@Test
-	public void testSecurityHelper() {
-		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-		Integer userId = user.getId();
-		System.out.println(userId);
-	}
-
-	@Test
-	public void testGetPresetScheme() {
-		PresetScheme schemeById = presetSchemeService.getSchemeById(11L);
-		System.out.println(schemeById);
-
-		Hashtable<String,String> hashtable = new Hashtable<>();
 	}
 }

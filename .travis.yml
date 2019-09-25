@@ -1,2 +1,13 @@
+language: java
+jdk:
+  - openjdk11
+cache:
+  directories:
+    - $HOME/.maven/caches
+branches:
+  only:
+    - master
+    - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 notifications:
-  webhooks: https://fathomless-fjord-24024.herokuapp.com/notify
+  webhooks:
+    - https://fathomless-fjord-24024.herokuapp.com/notify
