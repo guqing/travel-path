@@ -26,6 +26,8 @@ public class RoleDTO {
 
 	private List<PermissionDTO> permissions;
 
+	private List<Long> permissionIds;
+
 	public Integer getId() {
 		return id;
 	}
@@ -80,5 +82,13 @@ public class RoleDTO {
 
 	public void setPermissions(List<PermissionDTO> permissions) {
 		this.permissions = permissions;
+	}
+
+	public List<Long> getPermissionIds() {
+		return permissionIds;
+	}
+
+	public void setPermissionIds(List<Long> permissionIds) {
+		this.permissionIds = permissionIds;
 	}
 }

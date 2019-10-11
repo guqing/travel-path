@@ -4,10 +4,7 @@ import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.RoleDTO;
 import xyz.guqing.travelpath.entity.model.Role;
 import xyz.guqing.travelpath.service.RoleService;
@@ -37,5 +34,27 @@ public class RoleController {
 						   @RequestParam(defaultValue = "10") Integer pageSize) {
 		PageInfo<RoleDTO> roles = roleService.listRole(current, pageSize);
 		return Result.okList(roles);
+	}
+
+	@PostMapping("/save")
+	public Object save(@RequestBody RoleDTO role) {
+		roleService.save(role);
+		return Result.ok();
+	}
+
+	@PutMapping("/update")
+	public Object update(@RequestBody RoleDTO role) {
+		if(role.getId() == null) {
+			return Result.badArgument();
+		}
+
+		roleService.update(role);
+		return Result.ok();
+	}
+
+	@PostMapping("/delete/{id}")
+	public Object delete(@PathVariable("id") Integer id) {
+		roleService.delete(id);
+		return Result.ok();
 	}
 }

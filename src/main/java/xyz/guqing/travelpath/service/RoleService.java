@@ -13,6 +13,7 @@ import xyz.guqing.travelpath.entity.model.Role;
 import xyz.guqing.travelpath.mapper.RoleMapper;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,10 +27,42 @@ import java.util.List;
 public class RoleService {
 	private RoleMapper roleMapper;
 	private PermissionService permissionService;
+	private RolePermissionService rolePermissionService;
+
 	@Autowired
-	public RoleService(RoleMapper roleMapper, PermissionService permissionService) {
+	public RoleService(RoleMapper roleMapper,
+					   PermissionService permissionService,
+					   RolePermissionService rolePermissionService) {
 		this.roleMapper = roleMapper;
 		this.permissionService = permissionService;
+		this.rolePermissionService = rolePermissionService;
+	}
+
+	public void save(RoleDTO role) {
+		// 保存角色信息
+		Role record = new Role();
+		BeanUtils.copyProperties(role, record);
+		record.setCreateTime(new Date());
+		record.setModifyTime(new Date());
+		roleMapper.insertSelective(record);
+
+		// 保存角色相关的权限
+		rolePermissionService.saveByBatch(record.getId(), role.getPermissionIds());
+	}
+
+	public void update(RoleDTO role) {
+		// 更新角色信息
+		Role record = new Role();
+		BeanUtils.copyProperties(role, record);
+		record.setCreateTime(null);
+		record.setModifyTime(new Date());
+		roleMapper.updateByPrimaryKeySelective(record);
+
+		// 删除角色相关权限信息
+		rolePermissionService.deleteByRoleId(role.getId());
+
+		// 保存角色相关权限信息
+		rolePermissionService.saveByBatch(record.getId(), role.getPermissionIds());
 	}
 
 	@Cacheable
@@ -53,5 +86,12 @@ public class RoleService {
 		}
 
 		return new PageInfo<>(roleList);
+	}
+
+	public void delete(Integer id) {
+		// 删除角色信息
+		roleMapper.deleteByPrimaryKey(id);
+		// 删除角色权限关联信息
+		rolePermissionService.deleteByRoleId(id);
 	}
 }
