@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.guqing.travelpath.entity.dto.RoleDTO;
 import xyz.guqing.travelpath.entity.model.Role;
 import xyz.guqing.travelpath.service.RoleService;
 import xyz.guqing.travelpath.utils.Result;
@@ -34,7 +35,7 @@ public class RoleController {
 	@GetMapping("/list")
 	public Object listRole(@RequestParam(defaultValue = "1") Integer current,
 						   @RequestParam(defaultValue = "10") Integer pageSize) {
-		PageInfo<Role> roles = roleService.listRole(current, pageSize);
+		PageInfo<RoleDTO> roles = roleService.listRole(current, pageSize);
 		return Result.okList(roles);
 	}
 }
