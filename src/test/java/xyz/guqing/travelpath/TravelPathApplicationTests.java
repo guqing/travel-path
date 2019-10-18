@@ -86,4 +86,5 @@ public class TravelPathApplicationTests {
 		tableStyle.setTableHeadBackGroundColor(IndexedColors.GREY_25_PERCENT);
 		return tableStyle;
 	}
+
 }

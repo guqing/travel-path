@@ -1,6 +1,7 @@
 package xyz.guqing.travelpath.service;
 
 import com.alibaba.fastjson.JSONArray;
+import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -38,10 +39,14 @@ public class UserService {
     }
 
     @Cacheable
-    public User getUserByUsername(String username){
+    public User getUserByUsername(String username, Integer loginType){
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
-        criteria.andUsernameEqualTo(username);
+        if(loginType == 0) {
+            criteria.andEmailEqualTo(username);
+        } else {
+            criteria.andUsernameEqualTo(username);
+        }
         List<User> userList = userMapper.selectByExample(userExample);
         if (CollectionUtils.isEmpty(userList)){
             return null;
@@ -60,6 +65,14 @@ public class UserService {
         Role role = roleService.getRoleById(user.getRoleId());
         List<PermissionDTO> permissionDtoList = permissionService.listPermissionByRoleId(role.getId());
         return userDtoConverter(user, role, permissionDtoList);
+    }
+
+    public void updateLoginTime(Integer userId, String ip) {
+        User user = new User();
+        user.setId(userId);
+        user.setLastLoginTime(new Date());
+        user.setLastLoginIp(ip);
+        userMapper.updateByPrimaryKeySelective(user);
     }
 
     /**
@@ -84,16 +97,9 @@ public class UserService {
 
     private UserDTO userDtoConverter(User user, Role role, List<PermissionDTO> permissions) {
         UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
+        BeanUtils.copyProperties(user, userDTO);
         userDTO.setName(user.getNickname());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setGender(user.getGender());
-        userDTO.setAvatar(user.getAvatar());
-        userDTO.setStatus(user.getStatus());
-        userDTO.setLastLoginIp(user.getLastLoginIp());
-        userDTO.setLastLoginTime(user.getLastLoginTime());
         userDTO.setTelephone(user.getMobile());
-        userDTO.setCreateTime(user.getModifyTime());
         userDTO.setRoleId(role.getName());
 
         //设置角色和权限

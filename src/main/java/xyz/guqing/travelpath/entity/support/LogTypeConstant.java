@@ -1,7 +1,7 @@
 package xyz.guqing.travelpath.entity.support;
 
 /**
- * 日志相关的静态变量
+ * 日志相关的静态常量
  *
  * @author guqin
  * @date 2019-08-30 13:05

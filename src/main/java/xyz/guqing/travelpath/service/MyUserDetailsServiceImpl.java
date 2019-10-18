@@ -10,6 +10,7 @@ import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.model.PermissionAction;
 import xyz.guqing.travelpath.entity.model.Role;
 import xyz.guqing.travelpath.entity.model.User;
+import xyz.guqing.travelpath.entity.support.LoginTypeConstant;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -37,8 +38,17 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
     @Override
     @Cacheable
     public MyUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return loadUser(username, LoginTypeConstant.USERNAME);
+    }
+
+    @Cacheable
+    public MyUserDetails loadUserByUsername(String username, Integer loginType) throws UsernameNotFoundException {
+        return loadUser(username, loginType);
+    }
+
+    private MyUserDetails loadUser(String username, Integer loginType) {
         MyUserDetails userDetails = new MyUserDetails();
-        User user = userService.getUserByUsername(username);
+        User user = userService.getUserByUsername(username, loginType);
         userDetails.setId(user.getId());
         userDetails.setUsername(user.getUsername());
         userDetails.setPassword(user.getPassword());
@@ -49,10 +59,8 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
 
         Role role = roleService.getRoleById(user.getRoleId());
         userDetails.setRole(role);
-
         return userDetails;
     }
-
     /**
      * 根据权限列表获取权限对应的url集合
      * @param actions 权限action集合

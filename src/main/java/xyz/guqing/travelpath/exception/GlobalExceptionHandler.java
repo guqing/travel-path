@@ -19,6 +19,7 @@ public class GlobalExceptionHandler {
 	private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 	@ExceptionHandler(Exception.class)
 	public Object handleException(Exception e) {
+		e.printStackTrace();
 		logger.error("全局异常拦截，错误信息：{}", e.getMessage());
 		return Result.fail();
 	}

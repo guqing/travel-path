@@ -116,7 +116,7 @@
     </if>
   </delete>
   <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.User" useGeneratedKeys="true" keyProperty="id">
-    insert into user (username, password, nickname,
+    insert into public.user (username, password, nickname,
       gender, birthday, mobile, 
       email, avatar, description, 
       status, user_level, last_login_time, 
@@ -132,7 +132,7 @@
       )
   </insert>
   <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.User" useGeneratedKeys="true" keyProperty="id">
-    insert into user
+    insert into public.user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="username != null" >
         username,
@@ -253,7 +253,7 @@
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update user
+    update public.user
     <set >
       <if test="record.id != null" >
         id = #{record.id,jdbcType=INTEGER},
@@ -318,7 +318,7 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update user
+    update public.user
     set id = #{record.id,jdbcType=INTEGER},
       username = #{record.username,jdbcType=VARCHAR},
       password = #{record.password,jdbcType=VARCHAR},
@@ -343,7 +343,7 @@
     </if>
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="xyz.guqing.travelpath.entity.model.User" >
-    update user
+    update public.user
     <set >
       <if test="username != null" >
         username = #{username,jdbcType=VARCHAR},
@@ -403,7 +403,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="xyz.guqing.travelpath.entity.model.User" >
-    update user
+    update public.user
     set username = #{username,jdbcType=VARCHAR},
       password = #{password,jdbcType=VARCHAR},
       nickname = #{nickname,jdbcType=VARCHAR},
