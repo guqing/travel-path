@@ -109,4 +109,14 @@ public class UserService {
         userDTO.setRole(roleDTO);
         return userDTO;
     }
+
+    public UserDTO getBaseUserInfo(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        userDTO.setName(user.getNickname());
+        userDTO.setTelephone(user.getMobile());
+        userDTO.setLastLoginIp(null);
+        return userDTO;
+    }
 }

@@ -19,7 +19,6 @@ public class UserDTO implements Serializable {
 	private String username;
 	private String description;
 	private Date birthday;
-	private String mobile;
 	private String email;
 	private String avatar;
 	private Integer status;

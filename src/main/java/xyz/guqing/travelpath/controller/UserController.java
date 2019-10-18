@@ -62,14 +62,18 @@ public class UserController {
 
     @GetMapping("/user/info")
     public Object getUserInfo(HttpServletRequest request) {
-        try {
-            MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-            Integer userId = user.getId();
-            UserDTO userInfo = userService.getUserInfo(userId);
-            return Result.ok(userInfo);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+        Integer userId = user.getId();
+        UserDTO userInfo = userService.getUserInfo(userId);
+        return Result.ok(userInfo);
+    }
+
+    @GetMapping("/user/baseInfo")
+    public Object getBaseInfo() {
+        MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+        Integer userId = user.getId();
+        UserDTO userInfo = userService.getBaseUserInfo(userId);
+        return Result.ok(userInfo);
     }
 
     @GetMapping("/user/list")
