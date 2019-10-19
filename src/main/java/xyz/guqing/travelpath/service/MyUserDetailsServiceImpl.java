@@ -1,8 +1,6 @@
 package xyz.guqing.travelpath.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -20,7 +18,6 @@ import java.util.Set;
  * @date 2019/8/11
  */
 @Service
-@CacheConfig(cacheNames = "myUserDetailsService")
 public class MyUserDetailsServiceImpl implements UserDetailsService {
     private UserService userService;
     private RoleService roleService;
@@ -36,12 +33,10 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    @Cacheable
     public MyUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return loadUser(username, LoginTypeConstant.USERNAME);
     }
 
-    @Cacheable
     public MyUserDetails loadUserByUsername(String username, Integer loginType) throws UsernameNotFoundException {
         return loadUser(username, loginType);
     }

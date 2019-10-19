@@ -1,19 +1,22 @@
 package xyz.guqing.travelpath.service;
 
-import com.alibaba.fastjson.JSONArray;
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import xyz.guqing.travelpath.entity.dto.PermissionDTO;
 import xyz.guqing.travelpath.entity.dto.RoleDTO;
 import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.*;
+import xyz.guqing.travelpath.entity.params.UserParam;
+import xyz.guqing.travelpath.exception.UserServiceException;
 import xyz.guqing.travelpath.mapper.UserMapper;
 
 import java.util.*;
@@ -38,7 +41,7 @@ public class UserService {
         this.permissionService = permissionService;
     }
 
-    @Cacheable
+    @Cacheable(key = "#username")
     public User getUserByUsername(String username, Integer loginType){
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
@@ -67,6 +70,11 @@ public class UserService {
         return userDtoConverter(user, role, permissionDtoList);
     }
 
+    /**
+     * 更新用户的最后登录时间
+     * @param userId 用户id
+     * @param ip 用户登录ip
+     */
     public void updateLoginTime(Integer userId, String ip) {
         User user = new User();
         user.setId(userId);
@@ -95,6 +103,38 @@ public class UserService {
         return new PageInfo<>(userList);
     }
 
+    /**
+     * 根据用户id查询用户的基本信息
+     * @param userId 用户id
+     * @return 返回用户基本信息不包含权限和角色
+     */
+    public UserDTO getBaseUserInfo(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        UserDTO userDTO = new UserDTO();
+        BeanUtils.copyProperties(user, userDTO);
+        userDTO.setName(user.getNickname());
+        userDTO.setTelephone(user.getMobile());
+        userDTO.setLastLoginIp(null);
+        return userDTO;
+    }
+
+    /**
+     * 更新用户信息,需要根据id删除该key的缓存
+     * @param userParam 用户信息参数
+     */
+    @CacheEvict(key = "#userParam.id")
+    @Transactional(rollbackFor = UserServiceException.class)
+    public void updateUserInfo(UserParam userParam) {
+        User user = new User();
+        BeanUtils.copyProperties(userParam, user);
+        user.setMobile(userParam.getTelephone());
+        user.setNickname(userParam.getName());
+        user.setModifyTime(new Date());
+
+        userMapper.updateByPrimaryKeySelective(user);
+    }
+
+
     private UserDTO userDtoConverter(User user, Role role, List<PermissionDTO> permissions) {
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
@@ -110,13 +150,4 @@ public class UserService {
         return userDTO;
     }
 
-    public UserDTO getBaseUserInfo(Integer userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
-        userDTO.setName(user.getNickname());
-        userDTO.setTelephone(user.getMobile());
-        userDTO.setLastLoginIp(null);
-        return userDTO;
-    }
 }

@@ -13,6 +13,7 @@ import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.User;
 import xyz.guqing.travelpath.entity.params.LoginParam;
+import xyz.guqing.travelpath.entity.params.UserParam;
 import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
 import xyz.guqing.travelpath.service.UserService;
 import xyz.guqing.travelpath.utils.IpUtil;
@@ -83,18 +84,18 @@ public class UserController {
         return Result.okList(userList);
     }
 
+    @PutMapping("/user/updateInfo")
+    public Object updateUserInfo(@RequestBody UserParam userParam,
+                                 BindingResult result) {
+        if(result.hasErrors()) {
+            return Result.badArgument();
+        }
+        userService.updateUserInfo(userParam);
+        return Result.ok();
+    }
+
     @PostMapping("/auth/register")
     public Object register(@RequestBody User user){
         return Result.ok(user);
-    }
-
-    private Object validateUser(User user) {
-        if(StringUtils.isBlank(user.getUsername())) {
-            return Result.badArgument();
-        }
-        if(StringUtils.isBlank(user.getPassword())) {
-            return Result.badArgument();
-        }
-        return null;
     }
 }

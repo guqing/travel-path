@@ -1,16 +1,12 @@
 package xyz.guqing.travelpath.security;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
-import xyz.guqing.travelpath.entity.model.Permission;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Component("rbacauthorityservice")
@@ -18,19 +14,15 @@ public class RbacAuthorityService {
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
 
         Object principal = authentication.getPrincipal();
-        boolean hasPermission  = false;
-
+        boolean hasPermission = false;
         if (principal instanceof MyUserDetails) {
             MyUserDetails myUserDetails = (MyUserDetails)principal;
-            String username = ((UserDetails)principal).getUsername();
 
             //获取资源
             //这些 url 都是要登录后才能访问，且其他的 url 都不能访问
             Set<String> permissionUrls = myUserDetails.getPermissionUrl();
 
-            hasPermission = matcherUrl(request, permissionUrls);
-    
-            return hasPermission;
+            hasPermission = matcherPrincipalUrls(request, permissionUrls);
         }
 
         return hasPermission;
@@ -41,11 +33,24 @@ public class RbacAuthorityService {
      * @param request 请求对象
      * @param urls 允许访问的url地址
      */
-    private boolean matcherUrl(HttpServletRequest request, Set<String> urls) {
+    private boolean matcherPrincipalUrls(HttpServletRequest request, Set<String> urls) {
+        if(matcherUrls(request, urls)) {
+            return true;
+        } else {
+            return matcherCommonUrls(request);
+        }
+    }
+
+    private boolean matcherCommonUrls(HttpServletRequest request) {
+        Set<String> commonUrls = new HashSet<>();
+        commonUrls.add("/attachment/uploadImage");
+        return matcherUrls(request, commonUrls);
+    }
+
+    private boolean matcherUrls(HttpServletRequest request, Set<String> urls) {
         boolean hasPermission = false;
         AntPathMatcher antPathMatcher = new AntPathMatcher();
-        
-        for (String url : urls) {
+        for(String url : urls) {
             if (antPathMatcher.match(url, request.getRequestURI())) {
                 hasPermission = true;
                 break;

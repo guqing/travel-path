@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * @author guqing
+ */
 @ConfigurationProperties(prefix = "auth.security.system")
 public class SystemProperties {
     /**
