@@ -72,11 +72,9 @@ public class LogAspect {
 		// 获取参数名称
 		String[] parameterNames = methodSignature.getParameterNames();
 		String paramsName = JSONArray.toJSONString(parameterNames);
-		//请求参数值
-		String paramsValue = JSONArray.toJSONString(joinPoint.getArgs());
 
 		logger.error("异常请求ip:{},异常方法全名:{},异常信息:{},参数名称:{}, 参数值:{}",
-				ip,methodName,errorInfo,paramsName, paramsValue);
+				ip,methodName,errorInfo,paramsName, joinPoint.getArgs());
 	}
 
 	private void insertLogInfo(Method method) {

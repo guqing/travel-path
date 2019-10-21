@@ -14,6 +14,7 @@ import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.User;
 import xyz.guqing.travelpath.entity.params.LoginParam;
 import xyz.guqing.travelpath.entity.params.UserParam;
+import xyz.guqing.travelpath.entity.params.UserPasswordParam;
 import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
 import xyz.guqing.travelpath.service.UserService;
 import xyz.guqing.travelpath.utils.IpUtil;
@@ -91,6 +92,19 @@ public class UserController {
             return Result.badArgument();
         }
         userService.updateUserInfo(userParam);
+        return Result.ok();
+    }
+
+    @PutMapping("/user/updatePassword")
+    public Object updatePassword(@RequestBody UserPasswordParam passwordParam) throws Exception{
+
+        // 去除新密码首尾空格
+        String newPassword = passwordParam.getNewPassword().trim();
+        boolean isExists = userService.isExistsWithIdAndPassword(passwordParam.getId(), passwordParam.getOldPassword());
+        if(!isExists) {
+            return Result.fail(402 ,"原始密码不正确");
+        }
+        userService.updatePassword(passwordParam.getId(), newPassword);
         return Result.ok();
     }
 

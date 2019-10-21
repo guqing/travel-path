@@ -8,8 +8,10 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import xyz.guqing.travelpath.entity.dto.PermissionDTO;
 import xyz.guqing.travelpath.entity.dto.RoleDTO;
@@ -150,4 +152,33 @@ public class UserService {
         return userDTO;
     }
 
+    /**
+     * 根据id和密码查询用户，存在返回true，否则返回false
+     * @param id 用户id
+     * @param oldPassword 用户的密码
+     * @return 存在返回true，否则返回false
+     */
+    public boolean isExistsWithIdAndPassword(Integer id, String oldPassword) {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        User user = userMapper.selectByPrimaryKey(id);
+        Optional<String> password = Optional.ofNullable(user).map(User::getPassword);
+        Assert.isTrue(password.isPresent(), "用户不存在");
+
+        return bCryptPasswordEncoder.matches(oldPassword, password.get());
+    }
+
+    /**
+     * 修改密码
+     * @param id 用户id
+     * @param newPassword 新密码
+     */
+    @CacheEvict(key = "#id")
+    public void updatePassword(Integer id, String newPassword) {
+        User user = new User();
+        user.setId(id);
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encodePassword = bCryptPasswordEncoder.encode(newPassword);
+        user.setPassword(encodePassword);
+        userMapper.updateByPrimaryKeySelective(user);
+    }
 }

@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author guqing
+ * @date 2019年10月19日 21:59
+ */
 @Component("rbacauthorityservice")
 public class RbacAuthorityService {
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
