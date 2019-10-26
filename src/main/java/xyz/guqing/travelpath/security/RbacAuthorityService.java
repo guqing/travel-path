@@ -27,6 +27,8 @@ public class RbacAuthorityService {
             Set<String> permissionUrls = myUserDetails.getPermissionUrl();
 
             hasPermission = matcherPrincipalUrls(request, permissionUrls);
+        } else {
+            hasPermission = matcherCommonUrls(request);
         }
 
         return hasPermission;
@@ -48,6 +50,8 @@ public class RbacAuthorityService {
     private boolean matcherCommonUrls(HttpServletRequest request) {
         Set<String> commonUrls = new HashSet<>();
         commonUrls.add("/attachment/uploadImage");
+        commonUrls.add("/auth/register");
+        commonUrls.add("/user/has-user");
         return matcherUrls(request, commonUrls);
     }
 

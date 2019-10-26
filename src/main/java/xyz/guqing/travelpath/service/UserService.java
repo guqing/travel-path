@@ -181,4 +181,12 @@ public class UserService {
         user.setPassword(encodePassword);
         userMapper.updateByPrimaryKeySelective(user);
     }
+
+    public boolean checkUserExistsByUsername(String username) {
+        UserExample userExample = new UserExample();
+        UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andUsernameEqualTo(username);
+        List<User> users = userMapper.selectByExample(userExample);
+        return !users.isEmpty();
+    }
 }

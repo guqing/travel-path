@@ -23,4 +23,9 @@ public class UserServiceTest {
     public void testUpdateLastLoginTime() {
         userService.updateLoginTime(1, "127.0.0.1");
     }
+
+    @Test
+    public void testUsernameExists() {
+        System.out.println(userService.checkUserExistsByUsername("guqin"));
+    }
 }

@@ -1,18 +1,17 @@
 package xyz.guqing.travelpath.controller;
 
 import com.github.pagehelper.PageInfo;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import xyz.guqing.travelpath.entity.annotation.WriteLog;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.User;
 import xyz.guqing.travelpath.entity.params.LoginParam;
+import xyz.guqing.travelpath.entity.params.RegisterParam;
 import xyz.guqing.travelpath.entity.params.UserParam;
 import xyz.guqing.travelpath.entity.params.UserPasswordParam;
 import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
@@ -22,6 +21,7 @@ import xyz.guqing.travelpath.utils.JwtTokenUtil;
 import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -108,8 +108,28 @@ public class UserController {
         return Result.ok();
     }
 
+    @GetMapping("/user/has-user")
+    public Object hasUser(String username) {
+        if(username == null) {
+            return Result.badArgument();
+        }
+        boolean isExists = userService.checkUserExistsByUsername(username);
+        return Result.ok(isExists);
+    }
+
     @PostMapping("/auth/register")
-    public Object register(@RequestBody User user){
-        return Result.ok(user);
+    public Object register(@RequestBody RegisterParam model, BindingResult result){
+        if(result.hasErrors()) {
+            return Result.badArgument();
+        }
+
+        boolean isExists = userService.checkUserExistsByUsername(model.getUsername());
+        if(isExists) {
+            return Result.fail(401, "用户名已经存在");
+        }
+
+        // 保存用户
+        System.out.println(model);
+        return Result.ok(model);
     }
 }
