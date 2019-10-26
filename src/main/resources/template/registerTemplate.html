@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>邮件模板</title>
+</head>
+<body>
+<p>您好，感谢您的注册，这时一封验证邮件，请点击下面的链接完成注册！</p>
+<a href="#" th:href="@{http://www.baidu.com(id=${id})}">点我完成注册</a>
+</body>
+</html>
