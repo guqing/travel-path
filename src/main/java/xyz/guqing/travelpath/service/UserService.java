@@ -6,7 +6,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,11 +16,15 @@ import xyz.guqing.travelpath.entity.dto.PermissionDTO;
 import xyz.guqing.travelpath.entity.dto.RoleDTO;
 import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.*;
+import xyz.guqing.travelpath.entity.params.RegisterParam;
 import xyz.guqing.travelpath.entity.params.UserParam;
+import xyz.guqing.travelpath.entity.support.DeleteConstant;
+import xyz.guqing.travelpath.entity.support.UserStatusConstant;
 import xyz.guqing.travelpath.exception.UserServiceException;
 import xyz.guqing.travelpath.mapper.UserMapper;
 
 import java.util.*;
+import java.util.Optional;
 
 /**
  * @author guqing
@@ -30,17 +33,20 @@ import java.util.*;
 @Service
 @CacheConfig(cacheNames = "userService")
 public class UserService {
-    private UserMapper userMapper;
-    private RoleService roleService;
-    private PermissionService permissionService;
+    private final UserMapper userMapper;
+    private final RoleService roleService;
+    private final PermissionService permissionService;
+    private final MailService mailService;
 
     @Autowired
     public UserService(UserMapper userMapper,
                        RoleService roleService,
-                       PermissionService permissionService) {
+                       PermissionService permissionService,
+                       MailService mailService) {
         this.userMapper = userMapper;
         this.roleService = roleService;
         this.permissionService = permissionService;
+        this.mailService = mailService;
     }
 
     @Cacheable(key = "#username")
@@ -188,5 +194,44 @@ public class UserService {
         criteria.andUsernameEqualTo(username);
         List<User> users = userMapper.selectByExample(userExample);
         return !users.isEmpty();
+    }
+
+    /**
+     * 用户注册:
+     * 1.保存用户到数据库
+     * 2.发送激活邮件
+     * @param model 用户信息
+     * @param serverPath 服务器基地址,发送邮件中的激活链接需要
+     */
+    @Transactional(rollbackFor = UserServiceException.class)
+    public void register(RegisterParam model, String serverPath) {
+        User user = new User();
+        // 补全用户信息
+        BeanUtils.copyProperties(model, user);
+        user.setModifyTime(new Date());
+        user.setCreateTime(new Date());
+        user.setDeleted(UserStatusConstant.NORMAL);
+        user.setStatus(UserStatusConstant.UNACTIVE);
+
+        // 对密码加密
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encodePassword = bCryptPasswordEncoder.encode(model.getPassword());
+        user.setPassword(encodePassword);
+
+        // 保存到数据库
+        userMapper.insertSelective(user);
+
+        Integer id = user.getId();
+
+        // 构建发送邮件所需的数据对象
+        Map<String, Object> userDTO = new HashMap<>();
+        userDTO.put("id", id);
+        userDTO.put("email", user.getEmail());
+        userDTO.put("username", user.getUsername());
+        String activateUrl = serverPath + "user/activate?username=" + user.getUsername();
+        userDTO.put("activateUrl", activateUrl);
+        userDTO.put("createTime", new Date());
+        // 发送激活邮件
+        mailService.sendRegisterMail(userDTO);
     }
 }

@@ -30,9 +30,10 @@ public class SendMailHelper {
         //创建邮件发送服务器
         mailSender = new JavaMailSenderImpl();
         mailSender.setHost(mailOptions.getHost());
-         mailSender.setPort(mailOptions.getPort());
+        mailSender.setPort(mailOptions.getPort());
         mailSender.setUsername(mailOptions.getUsername());
         mailSender.setPassword(mailOptions.getPassword());
+
         //加认证机制
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.auth", mailOptions.isAuth());

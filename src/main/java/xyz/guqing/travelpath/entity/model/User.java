@@ -35,7 +35,7 @@ public class User {
 
     private Date modifyTime;
 
-    private Boolean deleted;
+    private Integer deleted;
 
     private Integer roleId;
 
@@ -169,11 +169,11 @@ public class User {
         this.modifyTime = modifyTime;
     }
 
-    public Boolean getDeleted() {
+    public Integer getDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public void setDeleted(Integer deleted) {
         this.deleted = deleted;
     }
 

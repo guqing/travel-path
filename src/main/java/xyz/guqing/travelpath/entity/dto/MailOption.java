@@ -22,6 +22,7 @@ public class MailOption {
      * 发件人的邮箱账号
      */
     private String username;
+
     /**
      * 发件人的邮箱密码
      */

@@ -1,6 +1,5 @@
 package xyz.guqing.travelpath.service;
 
-import org.apache.commons.collections4.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,12 +7,17 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 import xyz.guqing.travelpath.entity.dto.MailOption;
+import xyz.guqing.travelpath.entity.model.Optional;
+import xyz.guqing.travelpath.entity.support.MailOptionConvert;
 import xyz.guqing.travelpath.exception.MailException;
 import xyz.guqing.travelpath.mapper.MailOptionMapper;
 import xyz.guqing.travelpath.utils.SendMailHelper;
 
 import javax.mail.internet.MimeMessage;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 电子邮件service<br>
@@ -24,13 +28,13 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class MailService {
     private final TemplateEngine templateEngine;
-    private final MailOptionMapper mailOptionMapper;
-
+    private final MailOptionConvert mailOptionConvert;
+    private String mailFrom;
     @Autowired
-    public MailService(MailOptionMapper mailOptionMapper,
+    public MailService(MailOptionConvert mailOptionConvert,
                        TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
-        this.mailOptionMapper = mailOptionMapper;
+        this.mailOptionConvert = mailOptionConvert;
     }
 
     /**
@@ -38,25 +42,25 @@ public class MailService {
      * @return 返回JavaMailSender对象
      */
     public JavaMailSender getMailSender() {
-        MailOption mailOption = mailOptionMapper.getMailOption();
+        MailOption mailOption = mailOptionConvert.getMailOption();
+        mailFrom = mailOption.getUsername();
         SendMailHelper sendMailHelper = new SendMailHelper(mailOption);
         return sendMailHelper.getMailSender();
     }
 
     /**
      * 异步发送简单邮件
-     * @param from 发送人
      * @param to 收件人
      * @param subject 主题
      * @param content 邮件内容
      */
     @Async
-    public void sendSimpleMail(String from, String to, String subject, String content) {
+    public void sendSimpleMail(String to, String subject, String content) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         JavaMailSender mailSender = getMailSender();
         try {
             //发件人
-            mailMessage.setFrom(from);
+            mailMessage.setFrom(mailFrom);
 
             //收件人
             mailMessage.setTo(to);
@@ -78,12 +82,13 @@ public class MailService {
      * 这个时候我们就需要使用MimeMessage来设置复杂一些的邮件内容
      */
     @Async
-    public void sendTemplateMail(String from, String to, String subject, String tempContext) {
+    public void sendTemplateMail(String to, String subject, String tempContext) {
         JavaMailSender mailSender = getMailSender();
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            helper.setFrom(from);
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            System.out.println("mailFrom:" + mailFrom);
+            helper.setFrom(mailFrom);
             helper.setTo(to);
             helper.setSubject(subject);
 
@@ -95,5 +100,19 @@ public class MailService {
         } catch (Exception e) {
             throw new MailException(e);
         }
+    }
+
+    /**
+     * 发送注册激活邮件
+     * @param userDTO 用户信息
+     */
+    public void sendRegisterMail(Map<String,Object> userDTO) {
+        Context context = new Context();
+        //定义模板数据
+        context.setVariables(userDTO);
+        //获取thymeleaf的html模板
+        String tempContext = templateEngine.process("registerTemplate",context);
+        Object email = userDTO.get("email");
+        sendTemplateMail(email.toString(), "用户注册", tempContext);
     }
 }

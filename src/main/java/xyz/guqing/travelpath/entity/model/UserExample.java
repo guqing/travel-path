@@ -263,72 +263,72 @@ public class UserExample {
         }
 
         public Criteria andPasswordIsNull() {
-            addCriterion("\"password\" is null");
+            addCriterion("password is null");
             return (Criteria) this;
         }
 
         public Criteria andPasswordIsNotNull() {
-            addCriterion("\"password\" is not null");
+            addCriterion("password is not null");
             return (Criteria) this;
         }
 
         public Criteria andPasswordEqualTo(String value) {
-            addCriterion("\"password\" =", value, "password");
+            addCriterion("password =", value, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordNotEqualTo(String value) {
-            addCriterion("\"password\" <>", value, "password");
+            addCriterion("password <>", value, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordGreaterThan(String value) {
-            addCriterion("\"password\" >", value, "password");
+            addCriterion("password >", value, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordGreaterThanOrEqualTo(String value) {
-            addCriterion("\"password\" >=", value, "password");
+            addCriterion("password >=", value, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordLessThan(String value) {
-            addCriterion("\"password\" <", value, "password");
+            addCriterion("password <", value, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordLessThanOrEqualTo(String value) {
-            addCriterion("\"password\" <=", value, "password");
+            addCriterion("password <=", value, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordLike(String value) {
-            addCriterion("\"password\" like", value, "password");
+            addCriterion("password like", value, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordNotLike(String value) {
-            addCriterion("\"password\" not like", value, "password");
+            addCriterion("password not like", value, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordIn(List<String> values) {
-            addCriterion("\"password\" in", values, "password");
+            addCriterion("password in", values, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordNotIn(List<String> values) {
-            addCriterion("\"password\" not in", values, "password");
+            addCriterion("password not in", values, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordBetween(String value1, String value2) {
-            addCriterion("\"password\" between", value1, value2, "password");
+            addCriterion("password between", value1, value2, "password");
             return (Criteria) this;
         }
 
         public Criteria andPasswordNotBetween(String value1, String value2) {
-            addCriterion("\"password\" not between", value1, value2, "password");
+            addCriterion("password not between", value1, value2, "password");
             return (Criteria) this;
         }
 
@@ -803,62 +803,62 @@ public class UserExample {
         }
 
         public Criteria andStatusIsNull() {
-            addCriterion("\"status\" is null");
+            addCriterion("status is null");
             return (Criteria) this;
         }
 
         public Criteria andStatusIsNotNull() {
-            addCriterion("\"status\" is not null");
+            addCriterion("status is not null");
             return (Criteria) this;
         }
 
         public Criteria andStatusEqualTo(Integer value) {
-            addCriterion("\"status\" =", value, "status");
+            addCriterion("status =", value, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusNotEqualTo(Integer value) {
-            addCriterion("\"status\" <>", value, "status");
+            addCriterion("status <>", value, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusGreaterThan(Integer value) {
-            addCriterion("\"status\" >", value, "status");
+            addCriterion("status >", value, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusGreaterThanOrEqualTo(Integer value) {
-            addCriterion("\"status\" >=", value, "status");
+            addCriterion("status >=", value, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusLessThan(Integer value) {
-            addCriterion("\"status\" <", value, "status");
+            addCriterion("status <", value, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusLessThanOrEqualTo(Integer value) {
-            addCriterion("\"status\" <=", value, "status");
+            addCriterion("status <=", value, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusIn(List<Integer> values) {
-            addCriterion("\"status\" in", values, "status");
+            addCriterion("status in", values, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusNotIn(List<Integer> values) {
-            addCriterion("\"status\" not in", values, "status");
+            addCriterion("status not in", values, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusBetween(Integer value1, Integer value2) {
-            addCriterion("\"status\" between", value1, value2, "status");
+            addCriterion("status between", value1, value2, "status");
             return (Criteria) this;
         }
 
         public Criteria andStatusNotBetween(Integer value1, Integer value2) {
-            addCriterion("\"status\" not between", value1, value2, "status");
+            addCriterion("status not between", value1, value2, "status");
             return (Criteria) this;
         }
 
@@ -1182,52 +1182,52 @@ public class UserExample {
             return (Criteria) this;
         }
 
-        public Criteria andDeletedEqualTo(Boolean value) {
+        public Criteria andDeletedEqualTo(Integer value) {
             addCriterion("deleted =", value, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedNotEqualTo(Boolean value) {
+        public Criteria andDeletedNotEqualTo(Integer value) {
             addCriterion("deleted <>", value, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedGreaterThan(Boolean value) {
+        public Criteria andDeletedGreaterThan(Integer value) {
             addCriterion("deleted >", value, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedGreaterThanOrEqualTo(Boolean value) {
+        public Criteria andDeletedGreaterThanOrEqualTo(Integer value) {
             addCriterion("deleted >=", value, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedLessThan(Boolean value) {
+        public Criteria andDeletedLessThan(Integer value) {
             addCriterion("deleted <", value, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedLessThanOrEqualTo(Boolean value) {
+        public Criteria andDeletedLessThanOrEqualTo(Integer value) {
             addCriterion("deleted <=", value, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedIn(List<Boolean> values) {
+        public Criteria andDeletedIn(List<Integer> values) {
             addCriterion("deleted in", values, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedNotIn(List<Boolean> values) {
+        public Criteria andDeletedNotIn(List<Integer> values) {
             addCriterion("deleted not in", values, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedBetween(Boolean value1, Boolean value2) {
+        public Criteria andDeletedBetween(Integer value1, Integer value2) {
             addCriterion("deleted between", value1, value2, "deleted");
             return (Criteria) this;
         }
 
-        public Criteria andDeletedNotBetween(Boolean value1, Boolean value2) {
+        public Criteria andDeletedNotBetween(Integer value1, Integer value2) {
             addCriterion("deleted not between", value1, value2, "deleted");
             return (Criteria) this;
         }

@@ -11,7 +11,7 @@ import xyz.guqing.travelpath.service.MailService;
 /**
  * 邮件service测试类<br>
  *
- * @author guqin
+ * @author guqing
  * @date 2019-10-26 23:20
  */
 @RunWith(SpringRunner.class)

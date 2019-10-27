@@ -84,7 +84,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/favicon.ico",
                         "/**/*.html",
                         "/**/*.css",
-                        "/**/*.js"
+                        "/**/*.js",
+                        "/*.jpg",
+                        "/*.png"
                 ).permitAll()
 
                 // 对登录注册要允许匿名访问

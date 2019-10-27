@@ -118,7 +118,9 @@ public class UserController {
     }
 
     @PostMapping("/auth/register")
-    public Object register(@RequestBody RegisterParam model, BindingResult result){
+    public Object register(@RequestBody RegisterParam model,
+                           BindingResult result,
+                           HttpServletRequest request){
         if(result.hasErrors()) {
             return Result.badArgument();
         }
@@ -129,7 +131,17 @@ public class UserController {
         }
 
         // 保存用户
-        System.out.println(model);
+        userService.register(model, getServerPath(request));
         return Result.ok(model);
+    }
+
+    /**
+     * 获取当前服务器基地址
+     * @param request request请求对象
+     * @return 返回服务器基地址
+     */
+    private String getServerPath(HttpServletRequest request) {
+        return request.getScheme() + "://"+request.getServerName()+":" +
+                request.getServerPort() + request.getContextPath() + "/";
     }
 }

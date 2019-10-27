@@ -6,7 +6,7 @@ import xyz.guqing.travelpath.entity.model.User;
 import xyz.guqing.travelpath.entity.model.UserExample;
 
 public interface UserMapper {
-    int countByExample(UserExample example);
+    long countByExample(UserExample example);
 
     int deleteByExample(UserExample example);
 
