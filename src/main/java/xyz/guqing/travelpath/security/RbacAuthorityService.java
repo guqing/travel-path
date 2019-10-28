@@ -52,6 +52,7 @@ public class RbacAuthorityService {
         commonUrls.add("/attachment/uploadImage");
         commonUrls.add("/auth/register");
         commonUrls.add("/user/has-user");
+        commonUrls.add("/user/activate");
         return matcherUrls(request, commonUrls);
     }
 

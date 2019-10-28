@@ -24,6 +24,7 @@ import xyz.guqing.travelpath.utils.SecurityUserHelper;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Objects;
 
 /**
  * @author guqing
@@ -47,6 +48,9 @@ public class UserController {
     @PostMapping("/auth/login")
     public Object login(@RequestBody @Valid LoginParam user, HttpServletRequest request) {
         MyUserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername(), user.getLoginType());
+        if(Objects.isNull(userDetails)) {
+            return Result.fail(403, "用户不存在");
+        }
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         boolean isPasswordEqual = bCryptPasswordEncoder.matches(user.getPassword(), userDetails.getPassword());;
@@ -134,6 +138,7 @@ public class UserController {
         userService.register(model, getServerPath(request));
         return Result.ok(model);
     }
+
 
     /**
      * 获取当前服务器基地址

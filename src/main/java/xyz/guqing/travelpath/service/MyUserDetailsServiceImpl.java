@@ -11,6 +11,7 @@ import xyz.guqing.travelpath.entity.model.User;
 import xyz.guqing.travelpath.entity.support.LoginTypeConstant;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -44,6 +45,11 @@ public class MyUserDetailsServiceImpl implements UserDetailsService {
     private MyUserDetails loadUser(String username, Integer loginType) {
         MyUserDetails userDetails = new MyUserDetails();
         User user = userService.getUserByUsername(username, loginType);
+
+        if(Objects.isNull(user)) {
+            return null;
+        }
+
         userDetails.setId(user.getId());
         userDetails.setUsername(user.getUsername());
         userDetails.setPassword(user.getPassword());

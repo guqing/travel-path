@@ -106,6 +106,7 @@ public class MailService {
      * 发送注册激活邮件
      * @param userDTO 用户信息
      */
+    @Async
     public void sendRegisterMail(Map<String,Object> userDTO) {
         Context context = new Context();
         //定义模板数据

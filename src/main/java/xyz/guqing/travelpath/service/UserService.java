@@ -49,10 +49,12 @@ public class UserService {
         this.mailService = mailService;
     }
 
-    @Cacheable(key = "#username")
+    @Cacheable(key = "#username", unless = "#result==null")
     public User getUserByUsername(String username, Integer loginType){
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
+        criteria.andDeletedEqualTo(UserStatusConstant.NORMAL);
+        criteria.andStatusEqualTo(UserStatusConstant.NORMAL);
         if(loginType == 0) {
             criteria.andEmailEqualTo(username);
         } else {
@@ -234,4 +236,6 @@ public class UserService {
         // 发送激活邮件
         mailService.sendRegisterMail(userDTO);
     }
+
+   
 }

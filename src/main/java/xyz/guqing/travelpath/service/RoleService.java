@@ -65,7 +65,7 @@ public class RoleService {
 		rolePermissionService.saveByBatch(record.getId(), role.getPermissionIds());
 	}
 
-	@Cacheable
+	@Cacheable(unless = "#result==null")
 	public Role getRoleById(Integer roleId) {
 		return roleMapper.selectByPrimaryKey(roleId);
 	}
