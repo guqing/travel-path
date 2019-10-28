@@ -95,7 +95,7 @@ public class ActualLayoutService {
 	 * @param id 布设口卡口方案id
 	 * @return 返回查询到的方案id对象集合
 	 */
-	@Cacheable
+	@Cacheable(unless = "#result==null")
 	public List<ActualBayonetPoint> getSchemePointsById(Long id) {
 		return bayonetPointService.queryPointsByActualId(id);
 	}

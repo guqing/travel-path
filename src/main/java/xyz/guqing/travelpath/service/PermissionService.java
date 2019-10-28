@@ -22,7 +22,6 @@ import java.util.*;
  * @date 2019-08-11 10:03
  */
 @Service
-@CacheConfig(cacheNames = "permissionService")
 public class PermissionService {
 	private CustomPermissionMapper customPermissionMapper;
 	private PermissionActionService actionService;

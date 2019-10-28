@@ -7,10 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import xyz.guqing.travelpath.entity.model.Permission;
 import xyz.guqing.travelpath.entity.model.Role;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author guqing
@@ -27,7 +24,7 @@ public class MyUserDetails implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
-        if(StringUtils.isNotBlank(role.getName())) {
+        if(!Objects.isNull(role) && StringUtils.isNotBlank(role.getName())) {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         }
 

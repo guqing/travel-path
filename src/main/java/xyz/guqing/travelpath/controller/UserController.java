@@ -139,6 +139,11 @@ public class UserController {
         return Result.ok(model);
     }
 
+    @GetMapping("/user/activate")
+    public String activateAccount(String username) {
+        userService.activateAccount(username);
+        return "<h1 style='color:green;'>恭喜！邮箱验证成功</h1>";
+    }
 
     /**
      * 获取当前服务器基地址

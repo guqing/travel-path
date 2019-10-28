@@ -25,7 +25,7 @@ public class PermissionActionService {
 		this.actionMapper = actionMapper;
 	}
 
-	@Cacheable
+	@Cacheable(unless = "#result==null")
 	public Set<PermissionAction> listActionByRoleId(Integer roleId) {
 		return actionMapper.listActionByRoleId(roleId);
 	}

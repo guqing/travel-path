@@ -20,8 +20,13 @@ import java.util.List;
  */
 @Service
 public class PresetPointService {
-	@Autowired
+
 	private PresetpointMapper presetpointMapper;
+
+	@Autowired
+	public PresetPointService(PresetpointMapper presetpointMapper) {
+		this.presetpointMapper = presetpointMapper;
+	}
 
 	/**
 	 * 批量添加预设卡口方案坐标点

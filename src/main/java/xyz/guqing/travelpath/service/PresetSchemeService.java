@@ -66,7 +66,7 @@ public class PresetSchemeService {
 	 * @param id 方案id
 	 * @return 返回预设卡口i方案
 	 */
-	@Cacheable(key = "#id")
+	@Cacheable(key = "#id", unless = "#result==null")
 	public PresetScheme getSchemeById(Long id) {
 		return presetSchemeMapper.selectByPrimaryKey(id);
 	}
@@ -118,7 +118,7 @@ public class PresetSchemeService {
 	 * @param preId 预设卡口方案id
 	 * @return 返回坐标点数据集合
 	 */
-	@Cacheable
+	@Cacheable(unless = "#result==null")
 	public List<Presetpoint> getPresetPointsByPreId(Long preId) {
 		return this.presetPointService.findListById(preId);
 	}

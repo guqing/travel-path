@@ -82,7 +82,7 @@ public class RouteBayonetSchemeService {
 		return routeBayonetScheme;
 	}
 
-	@Cacheable
+	@Cacheable(unless = "#result==null")
 	public List<RouteBayonetPoint> getPointById(Long id) {
 
 		return pointService.getPointsByRid(id);

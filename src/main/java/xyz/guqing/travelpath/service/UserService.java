@@ -72,7 +72,7 @@ public class UserService {
      * @param userId 用户id
      * @return 用户信息DTO对象
      */
-    @Cacheable
+    @Cacheable(unless = "#result==null")
 	public UserDTO getUserInfo(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
         Role role = roleService.getRoleById(user.getRoleId());
@@ -237,5 +237,19 @@ public class UserService {
         mailService.sendRegisterMail(userDTO);
     }
 
-   
+    /**
+     * 根据用户名激活账户
+     * @param username 用户名
+     */
+    public void activateAccount(String username) {
+        // 修改用户账号状态
+        User user = new User();
+        user.setStatus(UserStatusConstant.NORMAL);
+
+        UserExample example = new UserExample();
+        UserExample.Criteria criteria = example.createCriteria();
+        criteria.andUsernameEqualTo(username);
+
+        userMapper.updateByExampleSelective(user, example);
+    }
 }
