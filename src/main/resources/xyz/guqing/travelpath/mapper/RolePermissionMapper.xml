@@ -86,11 +86,11 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.RolePermission" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insert" parameterType="xyz.guqing.travelpath.entity.model.RolePermission">
     insert into role_permission (role_id, permission_id)
     values (#{roleId,jdbcType=BIGINT}, #{permissionId,jdbcType=BIGINT})
   </insert>
-  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.RolePermission" useGeneratedKeys="true" keyProperty="id">
+  <insert id="insertSelective" parameterType="xyz.guqing.travelpath.entity.model.RolePermission">
     insert into role_permission
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="roleId != null" >

@@ -214,6 +214,10 @@ public class UserService {
         user.setCreateTime(new Date());
         user.setDeleted(UserStatusConstant.NORMAL);
         user.setStatus(UserStatusConstant.UNACTIVE);
+        // 设置默认角色和id，默认未普通用户
+        Role role = roleService.findDefaultRole();
+        user.setRoleId(role.getId());
+        user.setRoleName(role.getName());
 
         // 对密码加密
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

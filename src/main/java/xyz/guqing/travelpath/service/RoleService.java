@@ -1,15 +1,20 @@
 package xyz.guqing.travelpath.service;
+import	java.util.Optional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import xyz.guqing.travelpath.entity.dto.PermissionDTO;
 import xyz.guqing.travelpath.entity.dto.RoleDTO;
 import xyz.guqing.travelpath.entity.model.Role;
+import xyz.guqing.travelpath.entity.model.RoleExample;
 import xyz.guqing.travelpath.mapper.RoleMapper;
 
 import java.util.ArrayList;
@@ -50,6 +55,7 @@ public class RoleService {
 		rolePermissionService.saveByBatch(record.getId(), role.getPermissionIds());
 	}
 
+	@CachePut(key = "#role.id", unless = "#role.id == null")
 	public void update(RoleDTO role) {
 		// 更新角色信息
 		Role record = new Role();
@@ -93,5 +99,21 @@ public class RoleService {
 		roleMapper.deleteByPrimaryKey(id);
 		// 删除角色权限关联信息
 		rolePermissionService.deleteByRoleId(id);
+	}
+
+	/**
+	 * 查询系统默认角色，即普通用户
+	 * @return 返回普通用户角色
+	 */
+	public Role findDefaultRole() {
+		RoleExample example = new RoleExample();
+		RoleExample.Criteria criteria = example.createCriteria();
+		criteria.andNameEqualTo("user");
+		List<Role> roles = roleMapper.selectByExample(example);
+
+		if(CollectionUtils.isEmpty(roles)) {
+			return null;
+		}
+		return roles.get(0);
 	}
 }
