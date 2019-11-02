@@ -10,9 +10,11 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import xyz.guqing.travelpath.entity.dto.MailOption;
 import xyz.guqing.travelpath.entity.model.Optional;
+import xyz.guqing.travelpath.entity.params.MailOptionsParam;
 import xyz.guqing.travelpath.entity.support.MailOptionConvert;
 import xyz.guqing.travelpath.exception.MailException;
 import xyz.guqing.travelpath.mapper.MailOptionMapper;
+import xyz.guqing.travelpath.mapper.OptionalMapper;
 import xyz.guqing.travelpath.utils.SendMailHelper;
 
 import javax.mail.internet.MimeMessage;
@@ -29,11 +31,15 @@ import java.util.Map;
 public class MailService {
     private final TemplateEngine templateEngine;
     private final MailOptionConvert mailOptionConvert;
+    private final OptionalMapper optionalMapper;
     private String mailFrom;
+
     @Autowired
     public MailService(MailOptionConvert mailOptionConvert,
+                       OptionalMapper optionalMapper,
                        TemplateEngine templateEngine) {
         this.templateEngine = templateEngine;
+        this.optionalMapper = optionalMapper;
         this.mailOptionConvert = mailOptionConvert;
     }
 
@@ -46,6 +52,14 @@ public class MailService {
         mailFrom = mailOption.getUsername();
         SendMailHelper sendMailHelper = new SendMailHelper(mailOption);
         return sendMailHelper.getMailSender();
+    }
+
+    /**
+     * 查询邮件服务相关参数
+     * @return 返回邮件服务配置选项类
+     */
+    public MailOption getMailOptions() {
+        return mailOptionConvert.getMailOption();
     }
 
     /**
@@ -87,7 +101,6 @@ public class MailService {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-            System.out.println("mailFrom:" + mailFrom);
             helper.setFrom(mailFrom);
             helper.setTo(to);
             helper.setSubject(subject);
@@ -115,5 +128,35 @@ public class MailService {
         String tempContext = templateEngine.process("registerTemplate",context);
         Object email = userDTO.get("email");
         sendTemplateMail(email.toString(), "用户注册", tempContext);
+    }
+
+    /**
+     * 保存邮件服务相关参数
+     * @param mailParam 邮件服务参数类
+     */
+    public void saveOptions(MailOptionsParam mailParam) {
+
+        Optional optional = new Optional();
+        optional.setGroupName("email");
+
+        // 保存host
+        optional.setKey("host");
+        optional.setValue(mailParam.getHost());
+        optionalMapper.insertSelective(optional);
+
+        // 保存port
+        optional.setKey("port");
+        optional.setValue(mailParam.getPort());
+        optionalMapper.insertSelective(optional);
+
+        // 保存username
+        optional.setKey("username");
+        optional.setValue(mailParam.getUsername());
+        optionalMapper.insertSelective(optional);
+
+        // 保存password
+        optional.setKey("password");
+        optional.setValue(mailParam.getPassword());
+        optionalMapper.insertSelective(optional);
     }
 }

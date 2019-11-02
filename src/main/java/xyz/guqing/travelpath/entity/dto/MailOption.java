@@ -41,5 +41,7 @@ public class MailOption {
     /**
      * 使用tls加密方式
      */
-    private boolean tlsEnable;
+    private boolean tlsEnable = true;
+
+    private boolean sslEnabled = true;
 }

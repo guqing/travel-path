@@ -38,6 +38,7 @@ public class SendMailHelper {
         Properties javaMailProperties = new Properties();
         javaMailProperties.put("mail.smtp.auth", mailOptions.isAuth());
         javaMailProperties.put("mail.smtp.starttls.enable", mailOptions.isTlsEnable());
+        javaMailProperties.put("mail.smtp.ssl.enable", mailOptions.isSslEnabled());
         javaMailProperties.put("mail.smtp.timeout", mailOptions.getTimeout());
         mailSender.setJavaMailProperties(javaMailProperties);
     }

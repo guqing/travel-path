@@ -143,7 +143,7 @@ public class PresetSchemeService {
 	}
 
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
-	@CachePut(key = "#presetSchemeVO.id")
+	@CacheEvict(key = "#presetSchemeVO.id")
 	public void updateScheme(PresetSchemeVO presetSchemeVO) {
 		Long preId = presetSchemeVO.getId();
 

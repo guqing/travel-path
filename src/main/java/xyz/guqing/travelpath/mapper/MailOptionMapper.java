@@ -1,8 +1,10 @@
 package xyz.guqing.travelpath.mapper;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import xyz.guqing.travelpath.entity.model.Optional;
+import xyz.guqing.travelpath.entity.params.MailOptionsParam;
 
 import java.util.List;
 
