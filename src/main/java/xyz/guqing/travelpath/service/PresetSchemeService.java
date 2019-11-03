@@ -335,4 +335,23 @@ public class PresetSchemeService {
 
 		return preSetPointMapListByPreId;
 	}
+
+	/**
+	 * 分页查询回收站中的预选卡口方案
+	 * @param current 当前页码
+	 * @param pageSize 页大小
+	 * @param userId 用户id
+	 * @return 返回回收站中的预选卡口方案
+	 */
+	public PageInfo<PresetScheme> findTrashByPage(Integer current, Integer pageSize, Integer userId) {
+		PageHelper.startPage(current, pageSize);
+
+		PresetSchemeExample example = new PresetSchemeExample();
+		PresetSchemeExample.Criteria criteria = example.createCriteria();
+		criteria.andUseridEqualTo(userId);
+		criteria.andDeletedEqualTo(DeleteConstant.DELETED);
+
+		List<PresetScheme> presetSchemes = presetSchemeMapper.selectByExample(example);
+		return new PageInfo<>(presetSchemes);
+	}
 }

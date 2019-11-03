@@ -111,6 +111,15 @@ public class PresetSchemeController {
 		return Result.ok();
 	}
 
+	@GetMapping("/trash/query")
+	public Object findTrashByPage(@RequestParam(value="current", defaultValue = "1") Integer current,
+								  @RequestParam(value="current", defaultValue = "10") Integer pageSize) {
+		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+		Integer userId = user.getId();
+		PageInfo<PresetScheme> presetSchemes = presetSchemeService.findTrashByPage(current, pageSize, userId);
+		return Result.okList(presetSchemes);
+	}
+
 	/**
 	 * 批量逻辑删除
 	 * @return 返回删除结果信息
