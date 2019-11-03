@@ -8,7 +8,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,7 +95,7 @@ public class PresetSchemeService {
 	 * @return 返回预设卡口方案Vo
 	 */
 	public List<PresetSchemeVO> listSchemeByIds(List<Long> ids) {
-		List<PresetSchemeVO> presetSchemeVOList = new ArrayList<>();
+		List<PresetSchemeVO> presetSchemeVoList = new ArrayList<>();
 		ids.forEach(preId -> {
 			PresetSchemeVO presetSchemeVO = new PresetSchemeVO();
 
@@ -108,9 +107,9 @@ public class PresetSchemeService {
 			List<Presetpoint> presetpoints = presetPointService.findListById(preId);
 			presetSchemeVO.setPresetpoints(presetpoints);
 
-			presetSchemeVOList.add(presetSchemeVO);
+			presetSchemeVoList.add(presetSchemeVO);
 		});
-		return presetSchemeVOList;
+		return presetSchemeVoList;
 	}
 
 	/**
@@ -181,7 +180,7 @@ public class PresetSchemeService {
 	 * @param id 方案id
 	 */
 	public void logicalDeleted(Long id) {
-		this.updateDeleted(id);
+		this.updateDeleted(id, DeleteConstant.DELETED);
 	}
 
 	/**
@@ -190,7 +189,9 @@ public class PresetSchemeService {
 	 */
 	public void batchLogicalDeleted(List<Long> ids) {
 		// 方法引用
-		ids.forEach(this::updateDeleted);
+		ids.forEach(id -> {
+			updateDeleted(id, DeleteConstant.DELETED);
+		});
 	}
 
 	/**
@@ -199,10 +200,10 @@ public class PresetSchemeService {
 	 */
 	@Transactional(rollbackFor = PresetSchemeServiceException.class)
 	@CacheEvict
-	public void updateDeleted(Long id) {
+	public void updateDeleted(Long id, Byte status) {
 		PresetScheme presetScheme = new PresetScheme();
 		presetScheme.setId(id);
-		presetScheme.setDeleted(DeleteConstant.DELETED);
+		presetScheme.setDeleted(status);
 		presetSchemeMapper.updateByPrimaryKeySelective(presetScheme);
 	}
 
@@ -353,5 +354,15 @@ public class PresetSchemeService {
 
 		List<PresetScheme> presetSchemes = presetSchemeMapper.selectByExample(example);
 		return new PageInfo<>(presetSchemes);
+	}
+
+	/**
+	 * 批量彻底删除数据
+	 * @param ids id集合
+	 */
+	public void batchSureDelete(List<Long> ids) {
+		for(Long id : ids) {
+			this.sureDeleteById(id);
+		}
 	}
 }

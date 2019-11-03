@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.entity.annotation.WriteLog;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
+import xyz.guqing.travelpath.entity.support.DeleteConstant;
 import xyz.guqing.travelpath.entity.support.LogType;
 import xyz.guqing.travelpath.entity.vo.PresetPointExcelVO;
 import xyz.guqing.travelpath.entity.vo.PresetSchemeExcelVO;
@@ -113,11 +114,29 @@ public class PresetSchemeController {
 
 	@GetMapping("/trash/query")
 	public Object findTrashByPage(@RequestParam(value="current", defaultValue = "1") Integer current,
-								  @RequestParam(value="current", defaultValue = "10") Integer pageSize) {
+								  @RequestParam(value="pageSize", defaultValue = "10") Integer pageSize) {
 		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
 		Integer userId = user.getId();
 		PageInfo<PresetScheme> presetSchemes = presetSchemeService.findTrashByPage(current, pageSize, userId);
 		return Result.okList(presetSchemes);
+	}
+
+	@PostMapping("/trash/deleteById/{id}")
+	public Object deleteTrashById(@PathVariable("id") Long id) {
+		presetSchemeService.sureDeleteById(id);
+		return Result.ok();
+	}
+
+	@PostMapping("/trash/batchDelete")
+	public Object batchDeleteTrash(@RequestBody List<Long> ids) {
+		presetSchemeService.batchSureDelete(ids);
+		return Result.ok();
+	}
+
+	@PostMapping("/trash/recover/{id}")
+	public Object recoverTrashById(@PathVariable("id") Long id) {
+		presetSchemeService.updateDeleted(id, DeleteConstant.RETAIN);
+		return Result.ok();
 	}
 
 	/**
