@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.model.ActualBayonetPoint;
 import xyz.guqing.travelpath.entity.model.ActualLayoutScheme;
+import xyz.guqing.travelpath.entity.support.DeleteConstant;
 import xyz.guqing.travelpath.entity.vo.ActualLayoutExcelVO;
 import xyz.guqing.travelpath.entity.vo.ActualLayoutSchemeVO;
 import xyz.guqing.travelpath.entity.vo.ActualPointExcelVO;
@@ -57,7 +58,9 @@ public class ActualLayoutController {
 	public Object listByPage(@RequestParam(defaultValue = "1") Integer current,
 							 @RequestParam(defaultValue = "10") Integer pageSize) {
 		try {
-			PageInfo<ActualLayoutScheme> pageInfo = layoutService.listByPage(current, pageSize);
+			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+			Integer userId = user.getId();
+			PageInfo<ActualLayoutScheme> pageInfo = layoutService.listByPage(current, pageSize, userId);
 			return Result.okList(pageInfo);
 		} catch (Exception e) {
 			logger.error("分页查询布设卡口方案数据出错，入口参数：current:{}，" +
@@ -123,6 +126,33 @@ public class ActualLayoutController {
 					JSONArray.toJSONString(ids), e.getMessage());
 			return Result.fail();
 		}
+	}
+
+	@GetMapping("/trash/query")
+	public Object findTrashByPage(@RequestParam(value = "current", defaultValue = "1") Integer current,
+								  @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+		Integer userId = user.getId();
+		PageInfo<ActualLayoutScheme> pageInfo = layoutService.listTrashByPage(current, pageSize, userId);
+		return Result.okList(pageInfo);
+	}
+
+	@PostMapping("/trash/recover/{id}")
+	public Object recoverTrashData(@PathVariable("id") Long id) {
+		layoutService.updateDeleteStatus(id, DeleteConstant.RETAIN);
+		return Result.ok();
+	}
+
+	@PostMapping("/trash/delete/{id}")
+	public Object deleteTrashById(@PathVariable("id") Long id) {
+		layoutService.deleteById(id);
+		return Result.ok();
+	}
+
+	@PostMapping("/trash/batch-delete")
+	public Object batchDeleteTrash(@RequestBody List<Long> ids) {
+		ids.forEach(layoutService::deleteById);
+		return Result.ok();
 	}
 
 	@PutMapping("/update")

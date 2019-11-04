@@ -51,17 +51,11 @@ public class ActualLayoutService {
 	 * 分页查询卡口布设方案数据
 	 * @param current 当前页，即页码
 	 * @param pageSize 分页大小，即每一页多少条数据
-	 * @return 返回分页查询结果pageInfo对象
+	 * @param userId 用户id
+     * @return 返回分页查询结果pageInfo对象
 	 */
-	public PageInfo<ActualLayoutScheme> listByPage(Integer current, Integer pageSize) {
-		PageHelper.startPage(current, pageSize);
-
-		ActualLayoutSchemeExample example = new ActualLayoutSchemeExample();
-		ActualLayoutSchemeExample.Criteria criteria = example.createCriteria();
-		criteria.andDeletedEqualTo(DeleteConstant.RETAIN);
-		List<ActualLayoutScheme> actualLayoutSchemes = layoutSchemeMapper.selectByExample(example);
-
-		return new PageInfo<>(actualLayoutSchemes);
+	public PageInfo<ActualLayoutScheme> listByPage(Integer current, Integer pageSize, Integer userId) {
+		return getActualLayoutSchemePageInfo(current, pageSize, userId, DeleteConstant.RETAIN);
 	}
 
 
@@ -106,7 +100,7 @@ public class ActualLayoutService {
 	 */
 	public void logicalDelete(Long id) {
 		// 更新删除状态
-		updateDeleteStatus(id);
+		updateDeleteStatus(id, DeleteConstant.DELETED);
 	}
 
 	/**
@@ -114,7 +108,9 @@ public class ActualLayoutService {
 	 * @param ids 方案id集合
 	 */
 	public void batchLogicalDelete(List<Long> ids) {
-		ids.forEach(this::updateDeleteStatus);
+		ids.forEach(id -> {
+			updateDeleteStatus(id, DeleteConstant.DELETED);
+		});
 	}
 
 	/**
@@ -122,11 +118,11 @@ public class ActualLayoutService {
 	 * @param id 布设卡口方案id
 	 */
 	@Transactional(rollbackFor = ActualLayoutException.class)
-	public void updateDeleteStatus(Long id) {
+	public void updateDeleteStatus(Long id, Byte status) {
 		ActualLayoutScheme layoutScheme = new ActualLayoutScheme();
 		layoutScheme.setId(id);
 		layoutScheme.setModifyTime(new Date());
-		layoutScheme.setDeleted(DeleteConstant.DELETED);
+		layoutScheme.setDeleted(status);
 		//更新数据
 		layoutSchemeMapper.updateByPrimaryKeySelective(layoutScheme);
 	}
@@ -272,5 +268,27 @@ public class ActualLayoutService {
 		});
 
 		return actualSchemeMap;
+	}
+
+	public PageInfo<ActualLayoutScheme> listTrashByPage(Integer current, Integer pageSize, Integer userId) {
+		return getActualLayoutSchemePageInfo(current, pageSize, userId, DeleteConstant.DELETED);
+	}
+
+	/**
+	 * 分页查询方案列表
+	 * @param current 当前页码
+	 * @param pageSize 分页大小
+	 * @param userId 用户id
+	 * @param deleted 数据状态，保留或者回收站
+	 * @return 返回查询结果的PageInfo对象
+	 */
+	private PageInfo<ActualLayoutScheme> getActualLayoutSchemePageInfo(Integer current, Integer pageSize, Integer userId, Byte deleted) {
+		PageHelper.startPage(current, pageSize);
+		ActualLayoutSchemeExample example = new ActualLayoutSchemeExample();
+		ActualLayoutSchemeExample.Criteria criteria = example.createCriteria();
+		criteria.andDeletedEqualTo(deleted);
+		criteria.andUseridEqualTo(userId);
+		List<ActualLayoutScheme> actualLayoutSchemes = layoutSchemeMapper.selectByExample(example);
+		return new PageInfo<>(actualLayoutSchemes);
 	}
 }
