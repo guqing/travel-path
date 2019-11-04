@@ -11,7 +11,7 @@ public interface DashboardMapper {
 	 * @param userId 用户id
 	 * @return 返回统计数量
 	 */
-	@Select("select count(*) from preset_scheme where userid = #{userId}")
+	@Select("select count(*) from preset_scheme where userid = #{userId} and deleted=0")
 	int countPresetScheme(Integer userId);
 
 	/**
@@ -19,7 +19,7 @@ public interface DashboardMapper {
 	 * @param userId 用户id
 	 * @return 返回统计后的数据条数
 	 */
-	@Select("select count(*) from actual_layout_scheme where userid = #{userId}")
+	@Select("select count(*) from actual_layout_scheme where userid = #{userId} and deleted=0")
 	int countActualScheme(Integer userId);
 
 	/**
@@ -27,7 +27,7 @@ public interface DashboardMapper {
 	 * @param userId 用户id
 	 * @return 返回查询得到的数量
 	 */
-	@Select("select count(*) from route_bayonet_scheme where user_id = #{userId}")
+	@Select("select count(*) from route_bayonet_scheme where user_id = #{userId} and deleted=0")
 	int countViaScheme(Integer userId);
 
 	/**
@@ -35,7 +35,7 @@ public interface DashboardMapper {
 	 * @param userId 用户id
 	 * @return 返回查询到的数量
 	 */
-	@Select("select count(*) from routes where userid = #{userId}")
+	@Select("select count(*) from routes where userid = #{userId} and deleted=0")
 	int countRouteScheme(Integer userId);
 
 	/**
