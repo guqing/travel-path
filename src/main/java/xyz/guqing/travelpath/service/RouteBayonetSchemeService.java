@@ -49,13 +49,7 @@ public class RouteBayonetSchemeService {
 	 * @return 返回方案列表集合
 	 */
 	public PageInfo<RouteBayonetScheme> querySchemeList(Integer current, Integer pageSize, Integer userId) {
-		PageHelper.startPage(current, pageSize);
-		RouteBayonetSchemeExample example = new RouteBayonetSchemeExample();
-		RouteBayonetSchemeExample.Criteria criteria = example.createCriteria();
-		criteria.andDeletedEqualTo(DeleteConstant.RETAIN);
-
-		List<RouteBayonetScheme> routeBayonetSchemes = routeBayonetMapper.selectByExample(example);
-		return new PageInfo<>(routeBayonetSchemes);
+		return getRouteBayonetSchemePageInfo(current, pageSize, userId, DeleteConstant.RETAIN);
 	}
 
 	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
@@ -91,15 +85,15 @@ public class RouteBayonetSchemeService {
 	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
 	@CacheEvict
 	public void logicalDelete(Long id) {
-		updateDeleteStatus(id);
+		updateDeleteStatus(id, DeleteConstant.DELETED);
 	}
 
 	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
 	@CachePut
-	public void updateDeleteStatus(Long id) {
+	public void updateDeleteStatus(Long id, Byte status) {
 		RouteBayonetScheme routeBayonetScheme = new RouteBayonetScheme();
 		routeBayonetScheme.setId(id);
-		routeBayonetScheme.setDeleted(DeleteConstant.DELETED);
+		routeBayonetScheme.setDeleted(status);
 
 		routeBayonetMapper.updateByPrimaryKeySelective(routeBayonetScheme);
 	}
@@ -109,7 +103,9 @@ public class RouteBayonetSchemeService {
 	 * @param ids 方案id集合
 	 */
 	public void batchLogicalDelete(List<Long> ids) {
-		ids.forEach(this::updateDeleteStatus);
+		ids.forEach(id -> {
+			updateDeleteStatus(id, DeleteConstant.DELETED);
+		});
 	}
 
 	/**
@@ -130,5 +126,39 @@ public class RouteBayonetSchemeService {
 		pointService.deleteByRid(rid);
 		// 在添加坐标数据集
 		pointService.batchSavePoints(routeBayonetVO.getBayonetPoints(), rid);
+	}
+
+	public PageInfo<RouteBayonetScheme> listTrashByPage(Integer current, Integer pageSize, Integer userId) {
+		return getRouteBayonetSchemePageInfo(current, pageSize, userId, DeleteConstant.DELETED);
+	}
+
+	/**
+	 * 根据参数查询路径方案列表
+	 * @param current 当前页
+	 * @param pageSize 页大小
+	 * @param userId 用户id
+	 * @param status 数据状态
+	 * @return 返回分页查询得到的路径方案数据
+	 */
+	private PageInfo<RouteBayonetScheme> getRouteBayonetSchemePageInfo(Integer current,
+																	   Integer pageSize,
+																	   Integer userId,
+																	   Byte status) {
+		PageHelper.startPage(current, pageSize);
+		RouteBayonetSchemeExample example = new RouteBayonetSchemeExample();
+		RouteBayonetSchemeExample.Criteria criteria = example.createCriteria();
+		criteria.andDeletedEqualTo(status);
+		criteria.andUserIdEqualTo(userId);
+		List<RouteBayonetScheme> routeBayonetSchemes = routeBayonetMapper.selectByExample(example);
+		return new PageInfo<> (routeBayonetSchemes);
+	}
+
+	/**
+	 * 删除方案数据
+	 * @param id 方案id
+	 */
+	public void deleteById(Long id) {
+		routeBayonetMapper.deleteByPrimaryKey(id);
+		pointService.deleteByRid(id);
 	}
 }

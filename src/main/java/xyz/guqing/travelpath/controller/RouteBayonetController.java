@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.model.RouteBayonetPoint;
 import xyz.guqing.travelpath.entity.model.RouteBayonetScheme;
+import xyz.guqing.travelpath.entity.support.DeleteConstant;
 import xyz.guqing.travelpath.entity.vo.RouteBayonetVO;
 import xyz.guqing.travelpath.service.RouteBayonetSchemeService;
 import xyz.guqing.travelpath.utils.Result;
@@ -112,6 +113,33 @@ public class RouteBayonetController {
 		    return Result.fail();
 		}
 	}
+
+	@GetMapping("/trash/query")
+	public Object findTrashByPage(@RequestParam(defaultValue = "1") Integer current,
+							 @RequestParam(defaultValue = "10") Integer pageSize) {
+		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+		Integer userId = user.getId();
+		return Result.okList(routeBayonetService.listTrashByPage(current, pageSize, userId));
+	}
+
+	@PostMapping("/trash/recover/{id}")
+	public Object recoverTrashData(@PathVariable("id") Long id) {
+		routeBayonetService.updateDeleteStatus(id, DeleteConstant.RETAIN);
+		return Result.ok();
+	}
+
+	@PostMapping("/trash/delete/{id}")
+	public Object deleteTrashById(@PathVariable("id") Long id) {
+		routeBayonetService.deleteById(id);
+		return Result.ok();
+	}
+
+	@PostMapping("/trash/batch-delete")
+	public Object batchDeleteTrash(@RequestBody List<Long> ids) {
+		ids.forEach(routeBayonetService::deleteById);
+		return Result.ok();
+	}
+
 
 	@PutMapping("/update")
 	public Object update(@RequestBody RouteBayonetVO routeBayonetVO) {
