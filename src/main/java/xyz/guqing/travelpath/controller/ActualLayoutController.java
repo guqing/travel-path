@@ -46,225 +46,225 @@ import java.util.concurrent.Callable;
 @RestController
 @RequestMapping("/actual")
 public class ActualLayoutController {
-	private static final Logger logger = LoggerFactory.getLogger(ActualLayoutController.class);
-	private final ActualLayoutService layoutService;
+    private static final Logger logger = LoggerFactory.getLogger(ActualLayoutController.class);
+    private final ActualLayoutService layoutService;
 
-	@Autowired
-	public ActualLayoutController(ActualLayoutService layoutService) {
-		this.layoutService = layoutService;
-	}
+    @Autowired
+    public ActualLayoutController(ActualLayoutService layoutService) {
+        this.layoutService = layoutService;
+    }
 
-	@GetMapping("/list")
-	public Object listByPage(@RequestParam(defaultValue = "1") Integer current,
-							 @RequestParam(defaultValue = "10") Integer pageSize) {
-		try {
-			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-			Integer userId = user.getId();
-			PageInfo<ActualLayoutScheme> pageInfo = layoutService.listByPage(current, pageSize, userId);
-			return Result.okList(pageInfo);
-		} catch (Exception e) {
-			logger.error("分页查询布设卡口方案数据出错，入口参数：current:{}，" +
-					"pageSize:{},错误信息：{}", current, pageSize, e.getMessage());
-			return Result.fail();
-		}
-	}
+    @GetMapping("/list")
+    public Object listByPage(@RequestParam(defaultValue = "1") Integer current,
+                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        try {
+            MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+            Integer userId = user.getId();
+            PageInfo<ActualLayoutScheme> pageInfo = layoutService.listByPage(current, pageSize, userId);
+            return Result.okList(pageInfo);
+        } catch (Exception e) {
+            logger.error("分页查询布设卡口方案数据出错，入口参数：current:{}，" +
+                    "pageSize:{},错误信息：{}", current, pageSize, e.getMessage());
+            return Result.fail();
+        }
+    }
 
-	@PostMapping("/save")
-	public Object saveActualScheme(@RequestBody ActualLayoutSchemeVO actualLayoutSchemeVO) {
-		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-		Integer userId = user.getId();
-		actualLayoutSchemeVO.setUserid(userId);
-		Object error = validateSchemeVO(actualLayoutSchemeVO);
-		if(error != null) {
-			return error;
-		}
+    @PostMapping("/save")
+    public Object saveActualScheme(@RequestBody ActualLayoutSchemeVO actualLayoutSchemeVO) {
+        MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+        Integer userId = user.getId();
+        actualLayoutSchemeVO.setUserid(userId);
+        Object error = validateSchemeVO(actualLayoutSchemeVO);
+        if(error != null) {
+            return error;
+        }
 
-		try {
-			layoutService.save(actualLayoutSchemeVO);
-			return Result.ok();
-		} catch (Exception e) {
-			logger.error("新增布设卡口方案数据出错，入口参数：current:{}，pageSize:{},错误信息：{}",
-					JSONObject.toJSONString(actualLayoutSchemeVO), e.getMessage());
-			return Result.fail();
-		}
-	}
+        try {
+            layoutService.save(actualLayoutSchemeVO);
+            return Result.ok();
+        } catch (Exception e) {
+            logger.error("新增布设卡口方案数据出错，入口参数：current:{}，pageSize:{},错误信息：{}",
+                    JSONObject.toJSONString(actualLayoutSchemeVO), e.getMessage());
+            return Result.fail();
+        }
+    }
 
-	@GetMapping("/get/{id}")
-	public Object getSchemePointsById(@PathVariable("id") Long id) {
-		try {
-			List<ActualBayonetPoint> bayonetPoints = layoutService.getSchemePointsById(id);
-			return Result.okList(bayonetPoints);
-		} catch (Exception e) {
-			logger.error("根据id查询布设卡口方案坐标集合数据出错，入口参数：{},错误信息：{}",
-					id, e.getMessage());
-			return Result.fail();
-		}
-	}
+    @GetMapping("/get/{id}")
+    public Object getSchemePointsById(@PathVariable("id") Long id) {
+        try {
+            List<ActualBayonetPoint> bayonetPoints = layoutService.getSchemePointsById(id);
+            return Result.okList(bayonetPoints);
+        } catch (Exception e) {
+            logger.error("根据id查询布设卡口方案坐标集合数据出错，入口参数：{},错误信息：{}",
+                    id, e.getMessage());
+            return Result.fail();
+        }
+    }
 
-	@PostMapping("/trash/{id}")
-	public Object throwTrash(@PathVariable("id") Long id) {
-		try {
-			layoutService.logicalDelete(id);
-			return Result.ok();
-		} catch (Exception e) {
-			logger.error("根据方案id逻辑删除方案出错，入口参数：{}，错误信息：{}", id, e.getMessage());
-			return Result.fail();
-		}
-	}
+    @PostMapping("/trash/{id}")
+    public Object throwTrash(@PathVariable("id") Long id) {
+        try {
+            layoutService.logicalDelete(id);
+            return Result.ok();
+        } catch (Exception e) {
+            logger.error("根据方案id逻辑删除方案出错，入口参数：{}，错误信息：{}", id, e.getMessage());
+            return Result.fail();
+        }
+    }
 
-	/**
-	 * 根据布设卡口方案id批量扔进回收站
-	 * @return 返回执行结果对象，成功或失败
-	 */
-	@PostMapping("/batch-trash")
-	public Object batchThrowTrash(@RequestBody List<Long> ids) {
-		try {
-			layoutService.batchLogicalDelete(ids);
-			return Result.ok();
-		} catch (Exception e) {
-			logger.error("根据方案id集合批量逻辑删除方案出错，入口参数：{}，错误信息：{}",
-					JSONArray.toJSONString(ids), e.getMessage());
-			return Result.fail();
-		}
-	}
+    /**
+     * 根据布设卡口方案id批量扔进回收站
+     * @return 返回执行结果对象，成功或失败
+     */
+    @PostMapping("/batch-trash")
+    public Object batchThrowTrash(@RequestBody List<Long> ids) {
+        try {
+            layoutService.batchLogicalDelete(ids);
+            return Result.ok();
+        } catch (Exception e) {
+            logger.error("根据方案id集合批量逻辑删除方案出错，入口参数：{}，错误信息：{}",
+                    JSONArray.toJSONString(ids), e.getMessage());
+            return Result.fail();
+        }
+    }
 
-	@GetMapping("/trash/query")
-	public Object findTrashByPage(@RequestParam(value = "current", defaultValue = "1") Integer current,
-								  @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-		MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-		Integer userId = user.getId();
-		PageInfo<ActualLayoutScheme> pageInfo = layoutService.listTrashByPage(current, pageSize, userId);
-		return Result.okList(pageInfo);
-	}
+    @GetMapping("/trash/query")
+    public Object findTrashByPage(@RequestParam(value = "current", defaultValue = "1") Integer current,
+                                  @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+        Integer userId = user.getId();
+        PageInfo<ActualLayoutScheme> pageInfo = layoutService.listTrashByPage(current, pageSize, userId);
+        return Result.okList(pageInfo);
+    }
 
-	@PostMapping("/trash/recover/{id}")
-	public Object recoverTrashData(@PathVariable("id") Long id) {
-		layoutService.updateDeleteStatus(id, DeleteConstant.RETAIN);
-		return Result.ok();
-	}
+    @PostMapping("/trash/recover/{id}")
+    public Object recoverTrashData(@PathVariable("id") Long id) {
+        layoutService.updateDeleteStatus(id, DeleteConstant.RETAIN);
+        return Result.ok();
+    }
 
-	@PostMapping("/trash/delete/{id}")
-	public Object deleteTrashById(@PathVariable("id") Long id) {
-		layoutService.deleteById(id);
-		return Result.ok();
-	}
+    @PostMapping("/trash/delete/{id}")
+    public Object deleteTrashById(@PathVariable("id") Long id) {
+        layoutService.deleteById(id);
+        return Result.ok();
+    }
 
-	@PostMapping("/trash/batch-delete")
-	public Object batchDeleteTrash(@RequestBody List<Long> ids) {
-		ids.forEach(layoutService::deleteById);
-		return Result.ok();
-	}
+    @PostMapping("/trash/batch-delete")
+    public Object batchDeleteTrash(@RequestBody List<Long> ids) {
+        ids.forEach(layoutService::deleteById);
+        return Result.ok();
+    }
 
-	@PutMapping("/update")
-	public Object update(@RequestBody ActualLayoutSchemeVO actualLayoutSchemeVO) {
-		if(actualLayoutSchemeVO.getId() == null) {
-			return Result.badArgument();
-		}
+    @PutMapping("/update")
+    public Object update(@RequestBody ActualLayoutSchemeVO actualLayoutSchemeVO) {
+        if(actualLayoutSchemeVO.getId() == null) {
+            return Result.badArgument();
+        }
 
-		try {
-			layoutService.update(actualLayoutSchemeVO);
-			return Result.ok();
-		} catch (Exception e) {
-			logger.error("更新布设卡口方案出错，入口参数：{}，错误信息：{}",
-					JSONObject.toJSONString(actualLayoutSchemeVO), e.getMessage());
-			return Result.fail();
-		}
-	}
+        try {
+            layoutService.update(actualLayoutSchemeVO);
+            return Result.ok();
+        } catch (Exception e) {
+            logger.error("更新布设卡口方案出错，入口参数：{}，错误信息：{}",
+                    JSONObject.toJSONString(actualLayoutSchemeVO), e.getMessage());
+            return Result.fail();
+        }
+    }
 
-	@PostMapping("/download")
-	public void downloadSchemeWithPoints(@RequestBody List<Long> ids, HttpServletResponse response) {
-		response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-		response.setCharacterEncoding("utf-8");
-		response.setHeader("Content-disposition", "attachment;filename=布设卡口方案.xlsx");
-		try {
-			ServletOutputStream outputStream = response.getOutputStream();
-			List<ActualLayoutSchemeVO> actualLayoutSchemeVoList = layoutService.listSchemeByIds(ids);
+    @PostMapping("/download")
+    public void downloadSchemeWithPoints(@RequestBody List<Long> ids, HttpServletResponse response) {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Content-disposition", "attachment;filename=布设卡口方案.xlsx");
+        try {
+            ServletOutputStream outputStream = response.getOutputStream();
+            List<ActualLayoutSchemeVO> actualLayoutSchemeVoList = layoutService.listSchemeByIds(ids);
 
-			// 写sheet1
-			ExcelWriter writer = EasyExcelFactory.getWriter(outputStream);
-			Sheet schemeSheet = new Sheet(1, 1, ActualLayoutExcelVO.class);
-			schemeSheet.setSheetName("布设卡口方案");
-			List<ActualLayoutExcelVO> presetSchemeExcelVoList = transferToSchemeExcelList(actualLayoutSchemeVoList);
-			writer.write(presetSchemeExcelVoList, schemeSheet);
+            // 写sheet1
+            ExcelWriter writer = EasyExcelFactory.getWriter(outputStream);
+            Sheet schemeSheet = new Sheet(1, 1, ActualLayoutExcelVO.class);
+            schemeSheet.setSheetName("布设卡口方案");
+            List<ActualLayoutExcelVO> presetSchemeExcelVoList = transferToSchemeExcelList(actualLayoutSchemeVoList);
+            writer.write(presetSchemeExcelVoList, schemeSheet);
 
-			// 写sheet2
-			List<ActualPointExcelVO> actualPointExcelVoList = transferToActualPointExcelVO(actualLayoutSchemeVoList);
-			Sheet presetPointSheet = new Sheet(2, 1, ActualPointExcelVO.class);
-			presetPointSheet.setSheetName("布设卡口坐标点");
-			presetPointSheet.setAutoWidth(true);
-			writer.write(actualPointExcelVoList, presetPointSheet);
+            // 写sheet2
+            List<ActualPointExcelVO> actualPointExcelVoList = transferToActualPointExcelVO(actualLayoutSchemeVoList);
+            Sheet presetPointSheet = new Sheet(2, 1, ActualPointExcelVO.class);
+            presetPointSheet.setSheetName("布设卡口坐标点");
+            presetPointSheet.setAutoWidth(true);
+            writer.write(actualPointExcelVoList, presetPointSheet);
 
-			writer.finish();
-			outputStream.flush();
-		} catch (Exception e) {
-			logger.error("批量导出布设卡口方案出错，入口参数：{}，错误信息：{}",
-					JSONArray.toJSONString(ids), e.getMessage());
-		}
-	}
+            writer.finish();
+            outputStream.flush();
+        } catch (Exception e) {
+            logger.error("批量导出布设卡口方案出错，入口参数：{}，错误信息：{}",
+                    JSONArray.toJSONString(ids), e.getMessage());
+        }
+    }
 
-	@PostMapping("/upload")
-	public Object upload(MultipartFile file) {
-		try {
-			MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-			Integer userId = user.getId();
+    @PostMapping("/upload")
+    public Object upload(MultipartFile file) {
+        try {
+            MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
+            Integer userId = user.getId();
 
-			// 异步执行任务
-			return new Callable<Object>() {
-				@Override
-				public Object call() throws Exception {
-					// 读取并保存excel数据
-					layoutService.saveUploadExcelRecord(file, userId);
-					return Result.ok();
-				}
-			};
-		} catch (Exception e) {
-			logger.error("上传布设卡口方案数据出错，错误信息：{}", e.getMessage());
-			return Result.fail();
-		}
-	}
+            // 异步执行任务
+            return new Callable<Object>() {
+                @Override
+                public Object call() throws Exception {
+                    // 读取并保存excel数据
+                    layoutService.saveUploadExcelRecord(file, userId);
+                    return Result.ok();
+                }
+            };
+        } catch (Exception e) {
+            logger.error("上传布设卡口方案数据出错，错误信息：{}", e.getMessage());
+            return Result.fail();
+        }
+    }
 
 
-	private List<ActualPointExcelVO> transferToActualPointExcelVO(List<ActualLayoutSchemeVO> actualLayoutSchemeVoList) {
-		List<ActualPointExcelVO> actualPointExcelVoList = new ArrayList<>();
-		actualLayoutSchemeVoList.forEach(actualLayoutSchemeVO -> {
-			List<ActualBayonetPoint> preSetPointList = actualLayoutSchemeVO.getBayonetPoints();
-			preSetPointList.forEach(bayonetPoint -> {
-				ActualPointExcelVO actualPointExcelVO = new ActualPointExcelVO();
-				BeanUtils.copyProperties(bayonetPoint, actualPointExcelVO);
+    private List<ActualPointExcelVO> transferToActualPointExcelVO(List<ActualLayoutSchemeVO> actualLayoutSchemeVoList) {
+        List<ActualPointExcelVO> actualPointExcelVoList = new ArrayList<>();
+        actualLayoutSchemeVoList.forEach(actualLayoutSchemeVO -> {
+            List<ActualBayonetPoint> preSetPointList = actualLayoutSchemeVO.getBayonetPoints();
+            preSetPointList.forEach(bayonetPoint -> {
+                ActualPointExcelVO actualPointExcelVO = new ActualPointExcelVO();
+                BeanUtils.copyProperties(bayonetPoint, actualPointExcelVO);
 
-				actualPointExcelVoList.add(actualPointExcelVO);
-			});
-		});
-		return actualPointExcelVoList;
-	}
+                actualPointExcelVoList.add(actualPointExcelVO);
+            });
+        });
+        return actualPointExcelVoList;
+    }
 
-	private List<ActualLayoutExcelVO> transferToSchemeExcelList(List<ActualLayoutSchemeVO> actualLayoutSchemeVoList) {
-		List<ActualLayoutExcelVO> actualLayoutExcelList = new ArrayList<>();
-		actualLayoutSchemeVoList.forEach(actualSchemeVO -> {
-			ActualLayoutExcelVO actualLayoutExcelVO = new ActualLayoutExcelVO();
-			BeanUtils.copyProperties(actualSchemeVO, actualLayoutExcelVO);
+    private List<ActualLayoutExcelVO> transferToSchemeExcelList(List<ActualLayoutSchemeVO> actualLayoutSchemeVoList) {
+        List<ActualLayoutExcelVO> actualLayoutExcelList = new ArrayList<>();
+        actualLayoutSchemeVoList.forEach(actualSchemeVO -> {
+            ActualLayoutExcelVO actualLayoutExcelVO = new ActualLayoutExcelVO();
+            BeanUtils.copyProperties(actualSchemeVO, actualLayoutExcelVO);
 
-			actualLayoutExcelList.add(actualLayoutExcelVO);
-		});
+            actualLayoutExcelList.add(actualLayoutExcelVO);
+        });
 
-		return actualLayoutExcelList;
-	}
+        return actualLayoutExcelList;
+    }
 
-	/**
-	 * @param layoutSchemeVO 包含基本信息和坐标点数据集
-	 * @return 校验参数是否合法，合法返回null,不合法返回
-	 * (401, 参数不对)的错误提示
-	 */
-	private Object validateSchemeVO(ActualLayoutSchemeVO layoutSchemeVO) {
-		if(StringUtils.isBlank(layoutSchemeVO.getName())) {
-			return Result.badArgument();
-		}
-		if(layoutSchemeVO.getUserid() == null) {
-			return Result.badArgument();
-		}
-		if(layoutSchemeVO.getPresetId() == null) {
-			return Result.badArgument();
-		}
-		return null;
-	}
+    /**
+     * @param layoutSchemeVO 包含基本信息和坐标点数据集
+     * @return 校验参数是否合法，合法返回null,不合法返回
+     * (401, 参数不对)的错误提示
+     */
+    private Object validateSchemeVO(ActualLayoutSchemeVO layoutSchemeVO) {
+        if(StringUtils.isBlank(layoutSchemeVO.getName())) {
+            return Result.badArgument();
+        }
+        if(layoutSchemeVO.getUserid() == null) {
+            return Result.badArgument();
+        }
+        if(layoutSchemeVO.getPresetId() == null) {
+            return Result.badArgument();
+        }
+        return null;
+    }
 }

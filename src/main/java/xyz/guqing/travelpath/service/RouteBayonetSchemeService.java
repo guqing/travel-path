@@ -31,134 +31,134 @@ import java.util.List;
 @Service
 @CacheConfig(cacheNames = "routeBayonetSchemeService")
 public class RouteBayonetSchemeService {
-	private final RouteBayonetSchemeMapper routeBayonetMapper;
-	private final RouteBayonetPointService pointService;
+    private final RouteBayonetSchemeMapper routeBayonetMapper;
+    private final RouteBayonetPointService pointService;
 
-	@Autowired
-	public RouteBayonetSchemeService(RouteBayonetSchemeMapper routeBayonetMapper,
-									 RouteBayonetPointService pointService) {
-		this.routeBayonetMapper = routeBayonetMapper;
-		this.pointService = pointService;
-	}
+    @Autowired
+    public RouteBayonetSchemeService(RouteBayonetSchemeMapper routeBayonetMapper,
+                                     RouteBayonetPointService pointService) {
+        this.routeBayonetMapper = routeBayonetMapper;
+        this.pointService = pointService;
+    }
 
-	/**
-	 * 查询方案列表基本信息
-	 * @param current 当前页码
-	 * @param pageSize 分页大小
-	 * @param userId 用户id
-	 * @return 返回方案列表集合
-	 */
-	public PageInfo<RouteBayonetScheme> querySchemeList(Integer current, Integer pageSize, Integer userId) {
-		return getRouteBayonetSchemePageInfo(current, pageSize, userId, DeleteConstant.RETAIN);
-	}
+    /**
+     * 查询方案列表基本信息
+     * @param current 当前页码
+     * @param pageSize 分页大小
+     * @param userId 用户id
+     * @return 返回方案列表集合
+     */
+    public PageInfo<RouteBayonetScheme> querySchemeList(Integer current, Integer pageSize, Integer userId) {
+        return getRouteBayonetSchemePageInfo(current, pageSize, userId, DeleteConstant.RETAIN);
+    }
 
-	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
-	public void save(RouteBayonetVO routeBayonetVO) throws RouteBayonetPointException {
-		// 保存方案基本信息
-		RouteBayonetScheme routeScheme = getRouteScheme(routeBayonetVO);
-		routeBayonetMapper.insert(routeScheme);
+    @Transactional(rollbackFor = RouteBayonetSchemeException.class)
+    public void save(RouteBayonetVO routeBayonetVO) throws RouteBayonetPointException {
+        // 保存方案基本信息
+        RouteBayonetScheme routeScheme = getRouteScheme(routeBayonetVO);
+        routeBayonetMapper.insert(routeScheme);
 
-		// 保存方案坐标信息
-		List<RouteBayonetPoint> routeBayonetPoint = routeBayonetVO.getBayonetPoints();
-		pointService.batchSavePoints(routeBayonetPoint, routeScheme.getId());
-	}
+        // 保存方案坐标信息
+        List<RouteBayonetPoint> routeBayonetPoint = routeBayonetVO.getBayonetPoints();
+        pointService.batchSavePoints(routeBayonetPoint, routeScheme.getId());
+    }
 
-	private RouteBayonetScheme getRouteScheme(RouteBayonetVO routeBayonetVO) {
-		RouteBayonetScheme routeBayonetScheme = new RouteBayonetScheme();
-		BeanUtils.copyProperties(routeBayonetVO, routeBayonetScheme);
-		routeBayonetScheme.setDeleted(DeleteConstant.RETAIN);
-		routeBayonetScheme.setCreateTime(new Date());
-		routeBayonetScheme.setModifyTime(new Date());
-		List<RouteBayonetPoint> bayonetPoints = routeBayonetVO.getBayonetPoints();
-		if(bayonetPoints != null) {
-			routeBayonetScheme.setBayonetCount(bayonetPoints.size());
-		}
-		return routeBayonetScheme;
-	}
+    private RouteBayonetScheme getRouteScheme(RouteBayonetVO routeBayonetVO) {
+        RouteBayonetScheme routeBayonetScheme = new RouteBayonetScheme();
+        BeanUtils.copyProperties(routeBayonetVO, routeBayonetScheme);
+        routeBayonetScheme.setDeleted(DeleteConstant.RETAIN);
+        routeBayonetScheme.setCreateTime(new Date());
+        routeBayonetScheme.setModifyTime(new Date());
+        List<RouteBayonetPoint> bayonetPoints = routeBayonetVO.getBayonetPoints();
+        if(bayonetPoints != null) {
+            routeBayonetScheme.setBayonetCount(bayonetPoints.size());
+        }
+        return routeBayonetScheme;
+    }
 
-	@Cacheable(unless = "#result==null")
-	public List<RouteBayonetPoint> getPointById(Long id) {
+    @Cacheable(unless = "#result==null")
+    public List<RouteBayonetPoint> getPointById(Long id) {
 
-		return pointService.getPointsByRid(id);
-	}
+        return pointService.getPointsByRid(id);
+    }
 
-	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
-	@CacheEvict
-	public void logicalDelete(Long id) {
-		updateDeleteStatus(id, DeleteConstant.DELETED);
-	}
+    @Transactional(rollbackFor = RouteBayonetSchemeException.class)
+    @CacheEvict
+    public void logicalDelete(Long id) {
+        updateDeleteStatus(id, DeleteConstant.DELETED);
+    }
 
-	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
-	@CachePut
-	public void updateDeleteStatus(Long id, Byte status) {
-		RouteBayonetScheme routeBayonetScheme = new RouteBayonetScheme();
-		routeBayonetScheme.setId(id);
-		routeBayonetScheme.setDeleted(status);
+    @Transactional(rollbackFor = RouteBayonetSchemeException.class)
+    @CachePut
+    public void updateDeleteStatus(Long id, Byte status) {
+        RouteBayonetScheme routeBayonetScheme = new RouteBayonetScheme();
+        routeBayonetScheme.setId(id);
+        routeBayonetScheme.setDeleted(status);
 
-		routeBayonetMapper.updateByPrimaryKeySelective(routeBayonetScheme);
-	}
+        routeBayonetMapper.updateByPrimaryKeySelective(routeBayonetScheme);
+    }
 
-	/**
-	 * 批量逻辑删除
-	 * @param ids 方案id集合
-	 */
-	public void batchLogicalDelete(List<Long> ids) {
-		ids.forEach(id -> {
-			updateDeleteStatus(id, DeleteConstant.DELETED);
-		});
-	}
+    /**
+     * 批量逻辑删除
+     * @param ids 方案id集合
+     */
+    public void batchLogicalDelete(List<Long> ids) {
+        ids.forEach(id -> {
+            updateDeleteStatus(id, DeleteConstant.DELETED);
+        });
+    }
 
-	/**
-	 * 更新数据
-	 * @param routeBayonetVO 数据vo对象
-	 */
-	@Transactional(rollbackFor = RouteBayonetSchemeException.class)
-	@CachePut
-	public void update(RouteBayonetVO routeBayonetVO) throws RouteBayonetPointException {
-		RouteBayonetScheme routeBayonetScheme = getRouteScheme(routeBayonetVO);
-		// 不需要创建时间
-		routeBayonetScheme.setCreateTime(null);
-		// 更新卡口方案基本信息
-		routeBayonetMapper.updateByPrimaryKeySelective(routeBayonetScheme);
+    /**
+     * 更新数据
+     * @param routeBayonetVO 数据vo对象
+     */
+    @Transactional(rollbackFor = RouteBayonetSchemeException.class)
+    @CachePut
+    public void update(RouteBayonetVO routeBayonetVO) throws RouteBayonetPointException {
+        RouteBayonetScheme routeBayonetScheme = getRouteScheme(routeBayonetVO);
+        // 不需要创建时间
+        routeBayonetScheme.setCreateTime(null);
+        // 更新卡口方案基本信息
+        routeBayonetMapper.updateByPrimaryKeySelective(routeBayonetScheme);
 
-		//先根据方案id删除坐标数据集
-		Long rid = routeBayonetVO.getId();
-		pointService.deleteByRid(rid);
-		// 在添加坐标数据集
-		pointService.batchSavePoints(routeBayonetVO.getBayonetPoints(), rid);
-	}
+        //先根据方案id删除坐标数据集
+        Long rid = routeBayonetVO.getId();
+        pointService.deleteByRid(rid);
+        // 在添加坐标数据集
+        pointService.batchSavePoints(routeBayonetVO.getBayonetPoints(), rid);
+    }
 
-	public PageInfo<RouteBayonetScheme> listTrashByPage(Integer current, Integer pageSize, Integer userId) {
-		return getRouteBayonetSchemePageInfo(current, pageSize, userId, DeleteConstant.DELETED);
-	}
+    public PageInfo<RouteBayonetScheme> listTrashByPage(Integer current, Integer pageSize, Integer userId) {
+        return getRouteBayonetSchemePageInfo(current, pageSize, userId, DeleteConstant.DELETED);
+    }
 
-	/**
-	 * 根据参数查询路径方案列表
-	 * @param current 当前页
-	 * @param pageSize 页大小
-	 * @param userId 用户id
-	 * @param status 数据状态
-	 * @return 返回分页查询得到的路径方案数据
-	 */
-	private PageInfo<RouteBayonetScheme> getRouteBayonetSchemePageInfo(Integer current,
-																	   Integer pageSize,
-																	   Integer userId,
-																	   Byte status) {
-		PageHelper.startPage(current, pageSize);
-		RouteBayonetSchemeExample example = new RouteBayonetSchemeExample();
-		RouteBayonetSchemeExample.Criteria criteria = example.createCriteria();
-		criteria.andDeletedEqualTo(status);
-		criteria.andUserIdEqualTo(userId);
-		List<RouteBayonetScheme> routeBayonetSchemes = routeBayonetMapper.selectByExample(example);
-		return new PageInfo<> (routeBayonetSchemes);
-	}
+    /**
+     * 根据参数查询路径方案列表
+     * @param current 当前页
+     * @param pageSize 页大小
+     * @param userId 用户id
+     * @param status 数据状态
+     * @return 返回分页查询得到的路径方案数据
+     */
+    private PageInfo<RouteBayonetScheme> getRouteBayonetSchemePageInfo(Integer current,
+                                                                       Integer pageSize,
+                                                                       Integer userId,
+                                                                       Byte status) {
+        PageHelper.startPage(current, pageSize);
+        RouteBayonetSchemeExample example = new RouteBayonetSchemeExample();
+        RouteBayonetSchemeExample.Criteria criteria = example.createCriteria();
+        criteria.andDeletedEqualTo(status);
+        criteria.andUserIdEqualTo(userId);
+        List<RouteBayonetScheme> routeBayonetSchemes = routeBayonetMapper.selectByExample(example);
+        return new PageInfo<> (routeBayonetSchemes);
+    }
 
-	/**
-	 * 删除方案数据
-	 * @param id 方案id
-	 */
-	public void deleteById(Long id) {
-		routeBayonetMapper.deleteByPrimaryKey(id);
-		pointService.deleteByRid(id);
-	}
+    /**
+     * 删除方案数据
+     * @param id 方案id
+     */
+    public void deleteById(Long id) {
+        routeBayonetMapper.deleteByPrimaryKey(id);
+        pointService.deleteByRid(id);
+    }
 }

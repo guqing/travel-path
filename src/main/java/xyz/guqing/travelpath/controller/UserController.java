@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.entity.dto.MyUserDetails;
 import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.User;
-import xyz.guqing.travelpath.entity.params.LoginParam;
-import xyz.guqing.travelpath.entity.params.RegisterParam;
-import xyz.guqing.travelpath.entity.params.UserParam;
-import xyz.guqing.travelpath.entity.params.UserPasswordParam;
+import xyz.guqing.travelpath.entity.params.*;
 import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
 import xyz.guqing.travelpath.service.UserService;
 import xyz.guqing.travelpath.utils.IpUtil;
@@ -96,6 +93,12 @@ public class UserController {
             return Result.badArgument();
         }
         userService.updateUserInfo(userParam);
+        return Result.ok();
+    }
+
+    @PutMapping("/user/updateUserRole")
+    public Object updateUserRole(@RequestBody @Valid UserRoleParam userRoleParam) {
+        userService.updateUserRole(userRoleParam);
         return Result.ok();
     }
 

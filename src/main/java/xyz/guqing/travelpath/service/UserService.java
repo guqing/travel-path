@@ -18,6 +18,7 @@ import xyz.guqing.travelpath.entity.dto.UserDTO;
 import xyz.guqing.travelpath.entity.model.*;
 import xyz.guqing.travelpath.entity.params.RegisterParam;
 import xyz.guqing.travelpath.entity.params.UserParam;
+import xyz.guqing.travelpath.entity.params.UserRoleParam;
 import xyz.guqing.travelpath.entity.support.DeleteConstant;
 import xyz.guqing.travelpath.entity.support.UserStatusConstant;
 import xyz.guqing.travelpath.exception.UserServiceException;
@@ -255,5 +256,14 @@ public class UserService {
         criteria.andUsernameEqualTo(username);
 
         userMapper.updateByExampleSelective(user, example);
+    }
+
+    public void updateUserRole(UserRoleParam userRoleParam) {
+        User user = new User();
+        user.setId(userRoleParam.getId());
+        user.setRoleId(userRoleParam.getRoleId());
+        user.setRoleName(user.getRoleName());
+        user.setStatus(userRoleParam.getStatus());
+        userMapper.updateByPrimaryKeySelective(user);
     }
 }
