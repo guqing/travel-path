@@ -1,152 +1,222 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
-    <title>注册激活邮件</title>
+  <meta charset="utf-8" />
+  <title>注册激活邮件</title>
 </head>
 <body>
 <style type="text/css">
-    @media only screen and (max-width: 620px) {
-
-        .qmbox table[class=body] h1,
-        .qmbox table[class=body] h2,
-        .qmbox table[class=body] h3,
-        .qmbox table[class=body] h4 {
-            font-weight: 600 !important;
-        }
-
-        .qmbox table[class=body] h1 {
-            font-size: 24px !important;
-        }
-
-        .qmbox table[class=body] h2 {
-            font-size: 20px !important;
-        }
-
-        .qmbox table[class=body] h3 {
-            font-size: 16px !important;
-        }
-
-        .qmbox table[class=body] .lead {
-            font-size: 16px !important;
-            line-height: 24px !important;
-        }
-
-        .qmbox table[class=body] .container {
-            padding: 20px !important;
-            width: 100% !important;
-        }
-
-        .qmbox table[class=body] .btn table {
-            width: 100% !important;
-        }
-
-        .qmbox table[class=body] .btn a {
-            display: block !important;
-        }
-
-        .qmbox table[class=body] .header-padded,
-        .qmbox table[class=body] .body-padded {
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
+  @media only screen and (max-width: 620px) {
+    .qmbox table[class='body'] h1,
+    .qmbox table[class='body'] h2,
+    .qmbox table[class='body'] h3,
+    .qmbox table[class='body'] h4 {
+      font-weight: 600 !important;
     }
+
+    .qmbox table[class='body'] h1 {
+      font-size: 24px !important;
+    }
+
+    .qmbox table[class='body'] h2 {
+      font-size: 20px !important;
+    }
+
+    .qmbox table[class='body'] h3 {
+      font-size: 16px !important;
+    }
+
+    .qmbox table[class='body'] .lead {
+      font-size: 16px !important;
+      line-height: 24px !important;
+    }
+
+    .qmbox table[class='body'] .container {
+      padding: 20px !important;
+      width: 100% !important;
+    }
+
+    .qmbox table[class='body'] .btn table {
+      width: 100% !important;
+    }
+
+    .qmbox table[class='body'] .btn a {
+      display: block !important;
+    }
+
+    .qmbox table[class='body'] .header-padded,
+    .qmbox table[class='body'] .body-padded {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+  }
 </style>
 
-<table class="body"
-       style="border-collapse:separate !important;mso-table-lspace:0pt;mso-table-rspace:0pt;width:100%;background-color:#fff;"
-       width="100%" bgcolor="#ffffff">
-    <tr>
-        <td style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;vertical-align:top;"
-            valign="top"></td>
-        <td class="container"
-            style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;vertical-align:top;display:block;margin:0 auto !important;max-width:580px;padding:30px 30px 0px 30px;width:580px;"
-            width="580" valign="top">
-            <div class="content" style="display:block;margin:0 auto;max-width:580px;">
-                <div class="header"
-                     style="width:100%;padding-top:10px;padding-bottom:10px;margin-bottom:20px;border-bottom:1px solid #eee;">
-                    <table style="border-collapse:separate !important;mso-table-lspace:0pt;mso-table-rspace:0pt;width:100%;"
-                           width="100%">
-                        <tr>
-                            <td style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;vertical-align:top;"
-                                valign="top">
-                                <a href="#"
-                                   style="color:#0366d6;text-decoration:underline;">
-                                    <img th:src="@{logo_small.jpg}"
-                                         width="80" height="30"
-                                         style="-ms-interpolation-mode: bicubic; max-width: 100%;"/></a>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <a href="#"
-                   style="color:#0366d6;text-decoration:underline;">
-                    <img th:src="@{logo.jpg}"
-                         width="580" height="300" class="hero-img rounded"
-                         style="-ms-interpolation-mode: bicubic; max-width: 100%; display: block; height: auto; margin-bottom: 20px; border-radius: 4px;"/></a>
-                <h2 style="color:#111111 !important;font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-weight:500;line-height:1.25;margin:0 0 12px;font-size:28px;">
-                    欢迎注册车辆出行轨迹分析平台 TP Analysis
-                </h2>
-                <p style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;">
-                    恭喜你<code>@[[${username}]]</code>!&#x1F60A;你已成功注册平台账号，这是一封验证邮件,我们还需要你点击确认按钮以确保该邮件地址是你的。 如果并非你本人操作，请忽略该邮件。</p>
-
-                <p style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;">
-                    本平台还是一个测试版本，它并不完善，我们希望在你丰富的经验下能够让它有更多的可能性。如果你有好的建议，请联系TP Analysis技术支持人员</p>
-                <p style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;">
-                    Congratulations! <code>@[[${username}]]</code>! You have successfully registered your account on the
-                    platform. We also need you to click the confirm button to ensure that the email address is
-                    yours.Please ignore this message if it is not done by you.
-                </p>
-
-                <p style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;">
-                    Because this is a beta, not everything is perfect, yet 😀. With your help, we hope to make your
-                    experience with this platform the best one possible. To send us your feedback, please contact TP
-                    Analysis Support.
-                </p>
-
-                <p style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;">
-                    All
-                    the best,<br/>
-                    The TP Analysis Team</p>
-
-                <div style="border-collapse:collapse;border-radius:3px;text-align:center;display:block;border:solid 1px #009fdf;padding:10px 16px 14px 16px;margin:0 2px 0 auto;min-width:80px;background-color:#47A2EA;">
-                <a th:href="${activateUrl}"
-                   style="color:#3b5998;text-decoration:none;display:block;">
-                    <center>
-                        <font size="3">
-                            <span style="font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;white-space:nowrap;font-weight:bold;vertical-align:middle;color:#fdfdfd;font-size:16px;line-height:16px;">
-                                确认电子邮件
-                            </span>
-                        </font>
-                    </center>
+<table
+        class="body"
+        style="border-collapse:separate !important;mso-table-lspace:0pt;mso-table-rspace:0pt;width:100%;background-color:#fff;"
+        width="100%"
+        bgcolor="#ffffff"
+>
+  <tr>
+    <td
+            style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size:16px;vertical-align:top;"
+            valign="top"
+    ></td>
+    <td
+            class="container"
+            style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size:16px;vertical-align:top;display:block;margin:0 auto !important;max-width:580px;padding:30px 30px 0px 30px;width:580px;"
+            width="580"
+            valign="top"
+    >
+      <div
+              class="content"
+              style="display:block;margin:0 auto;max-width:580px;"
+      >
+        <div
+                class="header"
+                style="width:100%;padding-top:10px;padding-bottom:10px;margin-bottom:20px;border-bottom:1px solid #eee;"
+        >
+          <table
+                  style="border-collapse:separate !important;mso-table-lspace:0pt;mso-table-rspace:0pt;width:100%;"
+                  width="100%"
+          >
+            <tr>
+              <td
+                      style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size:16px;vertical-align:top;"
+                      valign="top"
+              >
+                <a
+                        href="#"
+                        style="color:#0366d6;text-decoration:underline;"
+                >
+                  <img src="https://www.guqing.xyz/upload/2019/12/travel_logo_small-048b24824bd84eccb6ebabeb60194794.jpg" alt="" width="80" height="30" style="-ms-interpolation-mode: bicubic; max-width: 100%;">
                 </a>
-            </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <a href="#" style="color:#0366d6;text-decoration:none;">
+          <img
+                  src="https://www.guqing.xyz/upload/2019/12/travel_logo-8fa06870eac54ce3a3a04700c3b9dc30.jpg"
+                  width="580"
+                  height="300"
+                  alt=""
+                  class="hero-img rounded"
+                  style="-ms-interpolation-mode: bicubic; max-width: 100%; display: block; height: auto; margin-bottom: 20px; border-radius: 4px;"
+          />
+        </a>
+        <h2
+                style="color:#111111 !important;font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-weight:500;line-height:1.25;margin:0 0 12px;font-size:28px;"
+        >
+          欢迎注册车辆出行轨迹分析平台 TP Analysis
+        </h2>
+        <p
+                style="font-family:Helvetica, Arial, sans-serif;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;"
+        >
+          恭喜你<code>@[[${username}]]</code>!&#x1F60A;你已成功注册平台账号，这是一封验证邮件,我们还需要你点击确认按钮以确保该邮件地址是你的。
+          如果并非你本人操作，请忽略该邮件。
+        </p>
 
-            <div class="footer" style="clear:both;width:100%;">
-                <hr class="footer-hr"
-                    style="height:0;overflow:visible;margin-top:30px;border:0;border-top:1px solid #eee;color:#999999;font-size:12px;line-height:18px;margin-bottom:30px;"/>
-                <div class="footer-links" style="color:#999999;font-size:12px;line-height:18px;">
-                    <p class="footer-text"
-                       style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-weight:normal;margin:0;margin-bottom:15px;color:#999999;font-size:12px;line-height:18px;">
-                        <a href="#"
-                           style="color:#999999;font-size:12px;line-height:18px;text-decoration:none;">Terms</a> ·
-                        <a href="#"
-                           style="color:#999999;font-size:12px;line-height:18px;text-decoration:none;">Privacy</a> ·
-                        <a href="http://localhost:8081/login" target="_blank"
-                           style="color:#999999;font-size:12px;line-height:18px;text-decoration:none;">Sign in to TP
-                            Analysis</a>
-                    </p>
-                </div>
-                <p class="footer-text"
-                   style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-weight:normal;margin:0;margin-bottom:15px;color:#999999;font-size:12px;line-height:18px;">
-                    TP Analysis,Inc.
-                    <p th:text="${#dates.format(createTime,'yyyy-MM-dd')}"/>
-            </div>
-            </div>
-        </td>
-        <td style="font-family:&#39;-apple-system&#39;, BlinkMacSystemFont, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif, &#39;Apple Color Emoji&#39;, &#39;Segoe UI Emoji&#39;, &#39;Segoe UI Symbol&#39;;font-size:16px;vertical-align:top;"
-            valign="top"></td>
-    </tr>
+        <p
+                style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;"
+        >
+          本平台还是一个测试版本，它并不完善，我们希望在你丰富的经验下能够让它有更多的可能性。如果你有好的建议，请联系TP
+          Analysis技术支持人员
+        </p>
+        <p
+                style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;"
+        >
+          Congratulations! <code>@[[${username}]]</code>! You have
+          successfully registered your account on the platform. We also need
+          you to click the confirm button to ensure that the email address
+          is yours.Please ignore this message if it is not done by you.
+        </p>
+
+        <p
+                style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;"
+        >
+          Because this is a beta, not everything is perfect, yet 😀. With
+          your help, we hope to make your experience with this platform the
+          best one possible. To send us your feedback, please contact TP
+          Analysis Support.
+        </p>
+
+        <p
+                style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size:16px;font-weight:normal;line-height:1.5;margin:0;margin-bottom:15px;"
+        >
+          All the best,<br />
+          The TP Analysis Team
+        </p>
+
+        <div
+                style="border-collapse:collapse;border-radius:3px;text-align:center;display:block;border:solid 1px #009fdf;padding:10px 16px 14px 16px;margin:0 2px 0 auto;min-width:80px;background-color:#47A2EA;"
+        >
+          <a
+                  th:href="${activateUrl}"
+                  style="color:#3b5998;text-decoration:none;display:block;"
+          >
+            <center>
+              <font size="3">
+                    <span
+                            style="font-family:Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;white-space:nowrap;font-weight:bold;vertical-align:middle;color:#fdfdfd;font-size:16px;line-height:16px;"
+                    >
+                      确认电子邮件
+                    </span>
+              </font>
+            </center>
+          </a>
+        </div>
+
+        <div class="footer" style="clear:both;width:100%;">
+          <hr
+                  class="footer-hr"
+                  style="height:0;overflow:visible;margin-top:30px;border:0;border-top:1px solid #eee;color:#999999;font-size:12px;line-height:18px;margin-bottom:30px;"
+          />
+          <div
+                  class="footer-links"
+                  style="color:#999999;font-size:12px;line-height:18px;"
+          >
+            <p
+                    class="footer-text"
+                    style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-weight:normal;margin:0;margin-bottom:15px;color:#999999;font-size:12px;line-height:18px;"
+            >
+              <a
+                      href="#"
+                      style="color:#999999;font-size:12px;line-height:18px;text-decoration:none;"
+              >Terms</a
+              >
+              ·
+              <a
+                      href="#"
+                      style="color:#999999;font-size:12px;line-height:18px;text-decoration:none;"
+              >Privacy</a
+              >
+              ·
+              <a
+                      href="http://localhost:8081/login"
+                      target="_blank"
+                      style="color:#999999;font-size:12px;line-height:18px;text-decoration:none;"
+              >Sign in to TP Analysis</a
+              >
+            </p>
+          </div>
+          <p
+                  class="footer-text"
+                  style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-weight:normal;margin:0;margin-bottom:15px;color:#999999;font-size:12px;line-height:18px;"
+          >
+            TP Analysis,Inc.
+          </p>
+
+          <p th:text="${#dates.format(createTime,'yyyy-MM-dd')}" />
+        </div>
+      </div>
+    </td>
+    <td
+            style="font-family:-apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;font-size:16px;vertical-align:top;"
+            valign="top"
+    ></td>
+  </tr>
 </table>
 </body>
 </html>
