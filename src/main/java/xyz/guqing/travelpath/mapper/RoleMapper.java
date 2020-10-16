@@ -1,30 +1,20 @@
 package xyz.guqing.travelpath.mapper;
 
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
-import xyz.guqing.travelpath.entity.model.Role;
-import xyz.guqing.travelpath.entity.model.RoleExample;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import xyz.guqing.travelpath.model.dos.RoleDO;
+import xyz.guqing.travelpath.model.entity.Role;
 
-public interface RoleMapper {
-    int countByExample(RoleExample example);
+import java.util.Optional;
 
-    int deleteByExample(RoleExample example);
-
-    int deleteByPrimaryKey(Integer id);
-
-    int insert(Role record);
-
-    int insertSelective(Role record);
-
-    List<Role> selectByExample(RoleExample example);
-
-    Role selectByPrimaryKey(Integer id);
-
-    int updateByExampleSelective(@Param("record") Role record, @Param("example") RoleExample example);
-
-    int updateByExample(@Param("record") Role record, @Param("example") RoleExample example);
-
-    int updateByPrimaryKeySelective(Role record);
-
-    int updateByPrimaryKey(Role record);
+/**
+ * @author guqing
+ * @date 2020-06-03
+ */
+public interface RoleMapper extends BaseMapper<Role> {
+    /**
+     * 根据id查询角色详情包括角色关联菜单
+     * @param id 角色id
+     * @return 返回角色详情
+     */
+    Optional<RoleDO> findById(Long id);
 }

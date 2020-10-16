@@ -1,160 +1,152 @@
 package xyz.guqing.travelpath.controller;
 
-import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.validation.BindingResult;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import xyz.guqing.travelpath.entity.dto.MyUserDetails;
-import xyz.guqing.travelpath.entity.dto.UserDTO;
-import xyz.guqing.travelpath.entity.model.User;
-import xyz.guqing.travelpath.entity.params.*;
-import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
+import xyz.guqing.travelpath.exception.BadRequestException;
+import xyz.guqing.travelpath.model.annotation.ControllerEndpoint;
+import xyz.guqing.travelpath.model.dto.UserDTO;
+import xyz.guqing.travelpath.model.entity.User;
+import xyz.guqing.travelpath.model.enums.UserStatusEnum;
+import xyz.guqing.travelpath.model.params.ChangePasswordParam;
+import xyz.guqing.travelpath.model.params.UserParam;
+import xyz.guqing.travelpath.model.params.UserProfileParam;
+import xyz.guqing.travelpath.model.params.UserQuery;
+import xyz.guqing.travelpath.model.support.*;
 import xyz.guqing.travelpath.service.UserService;
-import xyz.guqing.travelpath.utils.IpUtil;
-import xyz.guqing.travelpath.utils.JwtTokenUtil;
-import xyz.guqing.travelpath.utils.Result;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
-import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Objects;
+import java.util.List;
 
 /**
  * @author guqing
- * @date 2019/8/11
+ * @date 2020-05-30
  */
+@Slf4j
 @RestController
+@RequestMapping("/user")
 public class UserController {
-    private final MyUserDetailsServiceImpl userDetailsService;
-    private final JwtTokenUtil jwtTokenUtil;
     private final UserService userService;
 
     @Autowired
-    public UserController(MyUserDetailsServiceImpl userDetailsService,
-                          JwtTokenUtil jwtTokenUtil,
-                          UserService userService) {
-        this.userDetailsService = userDetailsService;
-        this.jwtTokenUtil = jwtTokenUtil;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping("/auth/login")
-    public Object login(@RequestBody @Valid LoginParam user, HttpServletRequest request) {
-        MyUserDetails userDetails = userDetailsService.loadUserByUsername(user.getUsername(), user.getLoginType());
-        if(Objects.isNull(userDetails)) {
-            return Result.fail(403, "用户不存在");
+    @GetMapping("/list")
+    @PreAuthorize("hasAuthority('user:view')")
+    public ResultEntity<PageInfo<UserDTO>> listUserByPage(UserQuery userQuery,
+                                                          PageQuery pageQuery) {
+        log.debug("用户列表查询参数: [{}]", userQuery);
+        PageInfo<UserDTO> users = userService.listByPage(userQuery, pageQuery);
+        return ResultEntity.ok(users);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('user:add')")
+    @ControllerEndpoint(operation = "新增用户", exceptionMessage = "新增用户失败")
+    public ResultEntity<String> addUser(@RequestBody @Validated(CreateCheck.class) UserParam userParam) {
+        userService.createUser(userParam);
+        return ResultEntity.ok();
+    }
+
+    @PutMapping
+    @PreAuthorize("hasAuthority('user:update')")
+    @ControllerEndpoint(operation = "修改用户", exceptionMessage = "修改用户失败")
+    public ResultEntity<String> updateUser(@RequestBody @Validated(UpdateCheck.class) UserParam userParam) {
+        userService.updateUser(userParam);
+        return ResultEntity.ok();
+    }
+
+    @PutMapping("profile")
+    @ControllerEndpoint(operation="修改个人信息", exceptionMessage = "修改个人信息失败")
+    public ResultEntity<String> updateProfile(@RequestBody @Valid UserProfileParam userParam) {
+        String username = SecurityUserHelper.getCurrentUsername();
+        if(!SecurityUserHelper.isCurrentUser(username)) {
+            throw new AccessDeniedException("无权修改别人的信息");
+        }
+        // 根据用户名查询
+        User user = userService.getByUsername(username);
+        // 使用参数更新 user
+        userParam.update(user);
+        // 更新
+        userService.updateById(user);
+        return ResultEntity.ok();
+    }
+
+    @PutMapping("avatar")
+    @ControllerEndpoint(exceptionMessage = "修改头像失败")
+    public ResultEntity<String> updateAvatar(@RequestParam String avatar) {
+        String username = SecurityUserHelper.getCurrentUsername();
+        userService.updateAvatar(username, avatar);
+        return ResultEntity.ok();
+    }
+
+    @PutMapping("password")
+    @ControllerEndpoint(exceptionMessage = "修改密码")
+    public ResultEntity<String> updatePassword(@RequestBody ChangePasswordParam passwordParam) {
+        String username = SecurityUserHelper.getCurrentUsername();
+        userService.updatePassword(username, passwordParam.getOldPassword(), passwordParam.getNewPassword());
+        return ResultEntity.ok();
+    }
+
+    @DeleteMapping
+    @PreAuthorize("hasAuthority('user:delete')")
+    @ControllerEndpoint(operation = "删除用户", exceptionMessage = "删除用户失败")
+    public ResultEntity<String> deleteUsers(@RequestBody List<String> usernameList) {
+        // 使用逻辑删除
+        userService.removeByUserNames(usernameList);
+        return ResultEntity.ok();
+    }
+
+    @GetMapping("/check/username")
+    public ResultEntity<Boolean> checkUsername(@RequestParam String username) {
+        boolean isPresent = userService.isPresentByUsername(username);
+        return ResultEntity.ok(isPresent);
+    }
+
+    @GetMapping("/check/email")
+    public ResultEntity<Boolean> checkEmail(String email) {
+        boolean isPresent = userService.isPresentByEmail(email);
+        return ResultEntity.ok(isPresent);
+    }
+
+    @GetMapping("/check/password")
+    public ResultEntity<Boolean> checkPassword(@RequestParam String password) {
+        String username = SecurityUserHelper.getCurrentUsername();
+        boolean isCorrect = userService.isCorrectByPassword(username, password);
+        return ResultEntity.ok(isCorrect);
+    }
+
+    @PutMapping("/reset/{username}")
+    @PreAuthorize("hasAuthority('user:reset')")
+    @ControllerEndpoint(operation = "重置用户密码", exceptionMessage = "重置用户密码失败")
+    public ResultEntity<String> resetPassword(@PathVariable String username) {
+        userService.resetPassword(username);
+        return ResultEntity.ok();
+    }
+
+    @PutMapping("/lock/{username}")
+    @PreAuthorize("hasAuthority('user:update')")
+    @ControllerEndpoint(operation = "锁定用户帐号", exceptionMessage = "锁定用户帐号失败")
+    public ResultEntity<String> lockUser(@PathVariable String username) {
+        if(username.equals(SecurityUserHelper.getCurrentUsername())) {
+            throw new BadRequestException("无法锁定当前登录帐号");
         }
 
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        boolean isPasswordEqual = bCryptPasswordEncoder.matches(user.getPassword(), userDetails.getPassword());;
-
-        if(isPasswordEqual) {
-            // 颁发token
-            String token = jwtTokenUtil.generateToken(userDetails);
-            // 更新用户最后登录时间和ip
-            String ip = IpUtil.getIpAddr(request);
-            userService.updateLoginTime(userDetails.getId(), ip);
-            return Result.ok(token);
-        }
-        return Result.fail(403, "认证失败，用户名或密码不正确");
+        userService.updateStatus(username, UserStatusEnum.DISABLE);
+        return ResultEntity.ok();
     }
 
-    @GetMapping("/user/info")
-    public Object getUserInfo(HttpServletRequest request) {
-        MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-        Integer userId = user.getId();
-        UserDTO userInfo = userService.getUserInfo(userId);
-        return Result.ok(userInfo);
-    }
-
-    @GetMapping("/user/baseInfo")
-    public Object getBaseInfo() {
-        MyUserDetails user = (MyUserDetails) SecurityUserHelper.getCurrentPrincipal();
-        Integer userId = user.getId();
-        UserDTO userInfo = userService.getBaseUserInfo(userId);
-        return Result.ok(userInfo);
-    }
-
-    @GetMapping("/user/list")
-    public Object list(@RequestParam(defaultValue = "1") Integer current,
-                       @RequestParam(defaultValue = "10") Integer pageSize) {
-        PageInfo<UserDTO> userList = userService.listUser(current, pageSize);
-        return Result.okList(userList);
-    }
-
-    @PutMapping("/user/updateInfo")
-    public Object updateUserInfo(@RequestBody UserParam userParam,
-                                 BindingResult result) {
-        if(result.hasErrors()) {
-            return Result.badArgument();
-        }
-        userService.updateUserInfo(userParam);
-        return Result.ok();
-    }
-
-    @PutMapping("/user/updateUserRole")
-    public Object updateUserRole(@RequestBody @Valid UserRoleParam userRoleParam) {
-        userService.updateUserRole(userRoleParam);
-        return Result.ok();
-    }
-
-    @PutMapping("/user/updatePassword")
-    public Object updatePassword(@RequestBody UserPasswordParam passwordParam) throws Exception{
-
-        // 去除新密码首尾空格
-        String newPassword = passwordParam.getNewPassword().trim();
-        boolean isExists = userService.isExistsWithIdAndPassword(passwordParam.getId(), passwordParam.getOldPassword());
-        if(!isExists) {
-            return Result.fail(402 ,"原始密码不正确");
-        }
-        userService.updatePassword(passwordParam.getId(), newPassword);
-        return Result.ok();
-    }
-
-    @GetMapping("/user/has-user")
-    public Object hasUser(String username) {
-        if(username == null) {
-            return Result.badArgument();
-        }
-        boolean isExists = userService.checkUserExistsByUsername(username);
-        return Result.ok(isExists);
-    }
-
-    @PostMapping("/auth/register")
-    public Object register(@RequestBody RegisterParam model,
-                           BindingResult result,
-                           HttpServletRequest request){
-        if(result.hasErrors()) {
-            return Result.badArgument();
-        }
-
-        boolean isExists = userService.checkUserExistsByUsername(model.getUsername());
-        if(isExists) {
-            return Result.fail(401, "用户名已经存在");
-        }
-
-        // 保存用户
-        userService.register(model, getServerPath(request));
-        return Result.ok(model);
-    }
-
-    @GetMapping("/user/activate")
-    public String activateAccount(String username) {
-        userService.activateAccount(username);
-        return "<h1 style='color:green;'>恭喜！邮箱验证成功</h1>";
-    }
-
-    /**
-     * 获取当前服务器基地址
-     * @param request request请求对象
-     * @return 返回服务器基地址
-     */
-    private String getServerPath(HttpServletRequest request) {
-        return request.getScheme() + "://"+request.getServerName()+":" +
-                request.getServerPort() + request.getContextPath() + "/";
+    @PutMapping("/unlock/{username}")
+    @PreAuthorize("hasAuthority('user:update')")
+    @ControllerEndpoint(operation = "解锁用户帐号", exceptionMessage = "解锁用户帐号失败")
+    public ResultEntity<String> unlockUser(@PathVariable String username) {
+        userService.updateStatus(username, UserStatusEnum.NORMAL);
+        return ResultEntity.ok();
     }
 }

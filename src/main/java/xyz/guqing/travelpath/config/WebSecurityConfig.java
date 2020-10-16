@@ -1,6 +1,7 @@
 package xyz.guqing.travelpath.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,43 +12,50 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import xyz.guqing.travelpath.filter.JwtTokenFilter;
-import xyz.guqing.travelpath.entity.properties.LoginProperties;
-import xyz.guqing.travelpath.entity.properties.MySecurityAutoConfiguration;
-import xyz.guqing.travelpath.security.AjaxAccessDeniedHandler;
-import xyz.guqing.travelpath.security.AjaxAuthenticationEntryPoint;
-import xyz.guqing.travelpath.security.AjaxAuthenticationFailureHandler;
-import xyz.guqing.travelpath.security.AjaxLogoutSuccessHandler;
-import xyz.guqing.travelpath.service.MyUserDetailsServiceImpl;
+import xyz.guqing.travelpath.security.filter.JwtTokenFilter;
+import xyz.guqing.travelpath.security.handler.MyAccessDeniedHandler;
+import xyz.guqing.travelpath.security.handler.MyAuthenticationEntryPoint;
+import xyz.guqing.travelpath.security.handler.MyLogoutSuccessHandler;
+import xyz.guqing.travelpath.security.properties.LoginProperties;
+import xyz.guqing.travelpath.security.properties.SecurityProperties;
+import xyz.guqing.travelpath.security.support.MyUserDetailsServiceImpl;
 
+/**
+ * @author guqing
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled=true)
+@EnableConfigurationProperties({SecurityProperties.class})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    /**
-     * 未登陆时返回 JSON 格式的数据给前端（否则为 html）
-     */
-    @Autowired
-    AjaxAuthenticationEntryPoint authenticationEntryPoint;
+    private MyAuthenticationEntryPoint authenticationEntryPoint;
+    private MyAccessDeniedHandler accessDeniedHandler;
+    private MyLogoutSuccessHandler logoutSuccessHandler;
+    private MyUserDetailsServiceImpl userDetailsService;
+    private final LoginProperties loginProperties;
 
-    /**
-     *  登录失败返回的 JSON 格式数据给前端（否则为 html）
-     */
-    @Autowired
-    AjaxAuthenticationFailureHandler authenticationFailureHandler;
+    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    AjaxAccessDeniedHandler accessDeniedHandler;
+    public AuthenticationManager getAuthenticationManager() {
+        return authenticationManager;
+    }
 
     @Autowired
-    AjaxLogoutSuccessHandler logoutSuccessHandler;
+    public WebSecurityConfig(SecurityProperties securityProperties,
+                             MyAuthenticationEntryPoint authenticationEntryPoint,
+                             MyAccessDeniedHandler accessDeniedHandler,
+                             MyLogoutSuccessHandler logoutSuccessHandler,
+                             MyUserDetailsServiceImpl userDetailsService) {
+        this.loginProperties = securityProperties.getLoginProperties();
+        // 未登陆时返回 JSON 格式的数据给前端（否则为 html）
+        this.authenticationEntryPoint = authenticationEntryPoint;
 
-    @Autowired
-    private MyUserDetailsServiceImpl userService;
-
-    @Autowired
-    private MySecurityAutoConfiguration securityAutoConfiguration;
+        this.accessDeniedHandler = accessDeniedHandler;
+        this.logoutSuccessHandler = logoutSuccessHandler;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Bean
     public JwtTokenFilter authenticationTokenFilterBean() throws Exception {
@@ -61,13 +69,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure( AuthenticationManagerBuilder auth ) throws Exception {
-        auth.userDetailsService( userService );
+        this.authenticationManager = authenticationManagerBean();
+        auth.userDetailsService( userDetailsService );
     }
 
     @Override
     protected void configure( HttpSecurity httpSecurity ) throws Exception {
-        LoginProperties loginProperties = securityAutoConfiguration.getLoginProperties();
-
         httpSecurity.cors().and().csrf().disable()
                 // 使用 JWT，关闭token
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -89,19 +96,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/*.png"
                 ).permitAll()
 
-                // 对登录注册要允许匿名访问
-                .antMatchers("/auth/login", "/auth/register", "/tile/**")
+                // 对登录登出注册要允许匿名访问
+                .antMatchers("/auth/**", loginProperties.getLogoutUrl())
                 .permitAll()
 
-                .anyRequest()
+                //.anyRequest()
                 // RBAC 动态 url 认证
-                .access("@rbacauthorityservice.hasPermission(request,authentication)")
+                //.access("@rbacauthorityservice.hasPermission(request,authentication)")
 
                 .and()
                 .logout().logoutUrl(loginProperties.getLogoutUrl())
                 .logoutSuccessHandler(logoutSuccessHandler)
                 .permitAll();
-
 
 
         // 无权访问
@@ -111,4 +117,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.headers().cacheControl();
     }
 
+    @Override
+    public UserDetailsService userDetailsServiceBean() throws Exception {
+        return super.userDetailsServiceBean();
+    }
 }

@@ -1,0 +1,32 @@
+server:
+  port: 8086
+spring:
+  datasource:
+    # 使用h2数据库
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:~/.travel-path/db/travelPath
+    schema: classpath:db/schema-h2.sql
+    data: classpath:db/data-h2.sql
+    initialization-mode: never
+    username: root
+    password: 123456
+  h2:
+    console:
+      settings:
+        web-allow-others: true
+      path: /h2-console
+      enabled: true
+justauth:
+  enabled: true
+  type:
+    github:
+      client-id: 2917d3df2590484f0b7f
+      client-secret: d47162aee0647f05d822e2507f6ccc5d98e95ded
+      redirect-uri: http://igry2v.natappfree.cc/auth/github/callback
+    weibo:
+      client-id: 227955467
+      client-secret: a64d03e26a6a8f769e5ebc7a697f8c18
+      redirect-uri: http://c7trbk.natappfree.cc/auth/weibo/callback
+logging:
+  level:
+    xyz.guqing.travelpath: debug

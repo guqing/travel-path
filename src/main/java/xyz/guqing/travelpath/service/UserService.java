@@ -1,269 +1,130 @@
 package xyz.guqing.travelpath.service;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
-import xyz.guqing.travelpath.entity.dto.PermissionDTO;
-import xyz.guqing.travelpath.entity.dto.RoleDTO;
-import xyz.guqing.travelpath.entity.dto.UserDTO;
-import xyz.guqing.travelpath.entity.model.*;
-import xyz.guqing.travelpath.entity.params.RegisterParam;
-import xyz.guqing.travelpath.entity.params.UserParam;
-import xyz.guqing.travelpath.entity.params.UserRoleParam;
-import xyz.guqing.travelpath.entity.support.DeleteConstant;
-import xyz.guqing.travelpath.entity.support.UserStatusConstant;
-import xyz.guqing.travelpath.exception.UserServiceException;
-import xyz.guqing.travelpath.mapper.UserMapper;
+import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.guqing.travelpath.model.bo.CurrentUser;
+import xyz.guqing.travelpath.model.dto.UserDTO;
+import xyz.guqing.travelpath.model.dto.UserInfoDTO;
+import xyz.guqing.travelpath.model.entity.User;
+import xyz.guqing.travelpath.model.enums.UserStatusEnum;
+import xyz.guqing.travelpath.model.params.UserParam;
+import xyz.guqing.travelpath.model.params.UserQuery;
+import xyz.guqing.travelpath.model.support.PageInfo;
+import xyz.guqing.travelpath.model.support.PageQuery;
 
-import java.util.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Optional;
 
 /**
+ * <p>
+ * 菜单表 服务类
+ * </p>
+ *
  * @author guqing
- * @date 2019/8/9
+ * @since 2020-05-21
  */
-@Service
-@CacheConfig(cacheNames = "userService")
-public class UserService {
-    private final UserMapper userMapper;
-    private final RoleService roleService;
-    private final PermissionService permissionService;
-    private final MailService mailService;
-
-    @Autowired
-    public UserService(UserMapper userMapper,
-                       RoleService roleService,
-                       PermissionService permissionService,
-                       MailService mailService) {
-        this.userMapper = userMapper;
-        this.roleService = roleService;
-        this.permissionService = permissionService;
-        this.mailService = mailService;
-    }
-
-    @Cacheable(key = "#username", unless = "#result==null")
-    public User getUserByUsername(String username, Integer loginType){
-        UserExample userExample = new UserExample();
-        UserExample.Criteria criteria = userExample.createCriteria();
-        criteria.andDeletedEqualTo(UserStatusConstant.NORMAL);
-        criteria.andStatusEqualTo(UserStatusConstant.NORMAL);
-        if(loginType == 0) {
-            criteria.andEmailEqualTo(username);
-        } else {
-            criteria.andUsernameEqualTo(username);
-        }
-        List<User> userList = userMapper.selectByExample(userExample);
-        if (CollectionUtils.isEmpty(userList)){
-            return null;
-        }
-        return userList.get(0);
-    }
-
+public interface UserService extends IService<User> {
     /**
-     * 获取用户信息
-     * @param userId 用户id
-     * @return 用户信息DTO对象
+     * 根据用户名查询用户信息
+     * @param username 用户名
+     * @return 如果查询到返回用户信息，否则抛出NotFoundException
      */
-    @Cacheable(unless = "#result==null")
-	public UserDTO getUserInfo(Integer userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        Role role = roleService.getRoleById(user.getRoleId());
-        List<PermissionDTO> permissionDtoList = permissionService.listPermissionByRoleId(role.getId());
-        return userDtoConverter(user, role, permissionDtoList);
-    }
+    CurrentUser loadUserByUsername(String username);
 
     /**
-     * 更新用户的最后登录时间
-     * @param userId 用户id
-     * @param ip 用户登录ip
+     * 分页查询用户列表
+     * @param userQuery 查询条件
+     * @param pageQuery 分页
+     * @return 返回分页查询结果
      */
-    public void updateLoginTime(Integer userId, String ip) {
-        User user = new User();
-        user.setId(userId);
-        user.setLastLoginTime(new Date());
-        user.setLastLoginIp(ip);
-        userMapper.updateByPrimaryKeySelective(user);
-    }
+    PageInfo<UserDTO> listByPage(UserQuery userQuery, PageQuery pageQuery);
 
     /**
-     * 查询用户列表
-     * @return 返回用户DTO列表
+     * 添加用户
+     * @param userParam 用户参数
      */
-    public PageInfo<UserDTO> listUser(Integer current, Integer pageSize) {
-        PageHelper.startPage(current, pageSize);
-        List<UserDTO> userList = new ArrayList<> ();
-
-        List<User> users = userMapper.selectByExample(null);
-        users.forEach(user -> {
-            // 查询角色,权限
-            Role role = roleService.getRoleById(user.getRoleId());
-            List<PermissionDTO> permissions = permissionService.listPermissionByRoleId(role.getId());
-            UserDTO userDTO = userDtoConverter(user, role, permissions);
-            userList.add(userDTO);
-        });
-
-        return new PageInfo<>(userList);
-    }
+    void createUser(UserParam userParam);
 
     /**
-     * 根据用户id查询用户的基本信息
-     * @param userId 用户id
-     * @return 返回用户基本信息不包含权限和角色
+     * 根据id用户id更新用户信息和用户角色关系
+     * @param userParam 用户信息
      */
-    public UserDTO getBaseUserInfo(Integer userId) {
-        User user = userMapper.selectByPrimaryKey(userId);
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
-        userDTO.setName(user.getNickname());
-        userDTO.setTelephone(user.getMobile());
-        userDTO.setLastLoginIp(null);
-        return userDTO;
-    }
+    void updateUser(UserParam userParam);
 
     /**
-     * 更新用户信息,需要根据id删除该key的缓存
-     * @param userParam 用户信息参数
+     * 修改用户头像
+     * @param username 用户名
+     * @param avatar 头像url
      */
-    @CacheEvict(key = "#userParam.id")
-    @Transactional(rollbackFor = UserServiceException.class)
-    public void updateUserInfo(UserParam userParam) {
-        User user = new User();
-        BeanUtils.copyProperties(userParam, user);
-        user.setMobile(userParam.getTelephone());
-        user.setNickname(userParam.getName());
-        user.setModifyTime(new Date());
-
-        userMapper.updateByPrimaryKeySelective(user);
-    }
-
-
-    private UserDTO userDtoConverter(User user, Role role, List<PermissionDTO> permissions) {
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
-        userDTO.setName(user.getNickname());
-        userDTO.setTelephone(user.getMobile());
-        userDTO.setRoleId(role.getName());
-
-        //设置角色和权限
-        RoleDTO roleDTO = new RoleDTO();
-        BeanUtils.copyProperties(role, roleDTO);
-        roleDTO.setPermissions(permissions);
-        userDTO.setRole(roleDTO);
-        return userDTO;
-    }
+    void updateAvatar(String username, String avatar);
 
     /**
-     * 根据id和密码查询用户，存在返回true，否则返回false
-     * @param id 用户id
-     * @param oldPassword 用户的密码
-     * @return 存在返回true，否则返回false
+     * 判断用户名是否存在
+     * @param username 用户名
+     * @return 用户名已经存在返回{@code true},否则返回{@code false}
      */
-    public boolean isExistsWithIdAndPassword(Integer id, String oldPassword) {
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        User user = userMapper.selectByPrimaryKey(id);
-        Optional<String> password = Optional.ofNullable(user).map(User::getPassword);
-        Assert.isTrue(password.isPresent(), "用户不存在");
-
-        return bCryptPasswordEncoder.matches(oldPassword, password.get());
-    }
+    boolean isPresentByUsername(String username);
 
     /**
-     * 修改密码
-     * @param id 用户id
-     * @param newPassword 新密码
+     * 判断邮箱是否已经被绑定
+     * @param email 邮箱地址
+     * @return 如果邮箱地址已经被绑定则返回{@code true},否则返回{@code false}
      */
-    @CacheEvict(key = "#id")
-    public void updatePassword(Integer id, String newPassword) {
-        User user = new User();
-        user.setId(id);
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String encodePassword = bCryptPasswordEncoder.encode(newPassword);
-        user.setPassword(encodePassword);
-        userMapper.updateByPrimaryKeySelective(user);
-    }
-
-    public boolean checkUserExistsByUsername(String username) {
-        UserExample userExample = new UserExample();
-        UserExample.Criteria criteria = userExample.createCriteria();
-        criteria.andUsernameEqualTo(username);
-        List<User> users = userMapper.selectByExample(userExample);
-        return !users.isEmpty();
-    }
+    boolean isPresentByEmail(String email);
 
     /**
-     * 用户注册:
-     * 1.保存用户到数据库
-     * 2.发送激活邮件
-     * @param model 用户信息
-     * @param serverPath 服务器基地址,发送邮件中的激活链接需要
+     * 判断用户密码是否正确
+     * @param username 用户名
+     * @param password 密码
+     * @return 如果正确返回{@code true},否则返回{@code false}
      */
-    @Transactional(rollbackFor = UserServiceException.class)
-    public void register(RegisterParam model, String serverPath) {
-        User user = new User();
-        // 补全用户信息
-        BeanUtils.copyProperties(model, user);
-        user.setModifyTime(new Date());
-        user.setCreateTime(new Date());
-        user.setDeleted(UserStatusConstant.NORMAL);
-        user.setStatus(UserStatusConstant.UNACTIVE);
-        // 设置默认角色和id，默认未普通用户
-        Role role = roleService.findDefaultRole();
-        user.setRoleId(role.getId());
-        user.setRoleName(role.getName());
-
-        // 对密码加密
-        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        String encodePassword = bCryptPasswordEncoder.encode(model.getPassword());
-        user.setPassword(encodePassword);
-
-        // 保存到数据库
-        userMapper.insertSelective(user);
-
-        Integer id = user.getId();
-
-        // 构建发送邮件所需的数据对象
-        Map<String, Object> userDTO = new HashMap<>();
-        userDTO.put("id", id);
-        userDTO.put("email", user.getEmail());
-        userDTO.put("username", user.getUsername());
-        String activateUrl = serverPath + "user/activate?username=" + user.getUsername();
-        userDTO.put("activateUrl", activateUrl);
-        userDTO.put("createTime", new Date());
-        // 发送激活邮件
-        mailService.sendRegisterMail(userDTO);
-    }
+    boolean isCorrectByPassword(@NotNull String username, @NotNull String password);
 
     /**
-     * 根据用户名激活账户
+     * 重置用户密码
      * @param username 用户名
      */
-    public void activateAccount(String username) {
-        // 修改用户账号状态
-        User user = new User();
-        user.setStatus(UserStatusConstant.NORMAL);
+    void resetPassword(@NotNull String username);
 
-        UserExample example = new UserExample();
-        UserExample.Criteria criteria = example.createCriteria();
-        criteria.andUsernameEqualTo(username);
+    /**
+     * 更新用户状态
+     * @param username 用户名
+     * @param status 用户状态
+     */
+    void updateStatus(@NotNull String username, UserStatusEnum status);
 
-        userMapper.updateByExampleSelective(user, example);
-    }
+    /**
+     * 根据用户名集合批量删除用户
+     * @param userNames 用户名集合
+     */
+    void removeByUserNames(List<String> userNames);
 
-    public void updateUserRole(UserRoleParam userRoleParam) {
-        User user = new User();
-        user.setId(userRoleParam.getId());
-        user.setRoleId(userRoleParam.getRoleId());
-        user.setRoleName(user.getRoleName());
-        user.setStatus(userRoleParam.getStatus());
-        userMapper.updateByPrimaryKeySelective(user);
-    }
+    /**
+     * 修改用户密码
+     * @param username 用户名
+     * @param oldPassword 原始密码
+     * @param newPassword 新密码
+     */
+    void updatePassword(String username, String oldPassword, String newPassword);
+
+    /**
+     * 根据用户名查询用户
+     * @param username 用户名
+     * @return 如果查询到返回用户信息,查询不到返回null
+     */
+    User getByUsername(String username);
+
+    /**
+     * 根据邮箱地址查询用户
+     * @param email 邮箱
+     * @return 返回查询到的用户信息Optional,可为空
+     */
+    Optional<User> getByEmail(String email);
+
+    /**
+     * 查询用户信息
+     * @param username 用户名
+     * @return 返回查询到的用户信息dto，用户不存在抛出异常
+     */
+    UserInfoDTO getUserInfo(String username);
 }

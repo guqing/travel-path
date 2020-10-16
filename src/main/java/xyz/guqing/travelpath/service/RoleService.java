@@ -1,119 +1,50 @@
 package xyz.guqing.travelpath.service;
-import	java.util.Optional;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import xyz.guqing.travelpath.entity.dto.PermissionDTO;
-import xyz.guqing.travelpath.entity.dto.RoleDTO;
-import xyz.guqing.travelpath.entity.model.Role;
-import xyz.guqing.travelpath.entity.model.RoleExample;
-import xyz.guqing.travelpath.mapper.RoleMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import xyz.guqing.travelpath.model.dto.RoleDTO;
+import xyz.guqing.travelpath.model.entity.Role;
+import xyz.guqing.travelpath.model.params.RoleQuery;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
- * 用户角色
- *
- * @author guqin
- * @date 2019-08-11 9:44
+ * @author guqing
+ * @date 2020-06-03
  */
-@Service
-@CacheConfig(cacheNames = "roleService")
-public class RoleService {
-    private RoleMapper roleMapper;
-    private PermissionService permissionService;
-    private RolePermissionService rolePermissionService;
-
-    @Autowired
-    public RoleService(RoleMapper roleMapper,
-                       PermissionService permissionService,
-                       RolePermissionService rolePermissionService) {
-        this.roleMapper = roleMapper;
-        this.permissionService = permissionService;
-        this.rolePermissionService = rolePermissionService;
-    }
-
-    public void save(RoleDTO role) {
-        // 保存角色信息
-        Role record = new Role();
-        BeanUtils.copyProperties(role, record);
-        record.setCreateTime(new Date());
-        record.setModifyTime(new Date());
-        roleMapper.insertSelective(record);
-
-        // 保存角色相关的权限
-        rolePermissionService.saveByBatch(record.getId(), role.getPermissionIds());
-    }
-
-    @CachePut(key = "#role.id", unless = "#role.id == null")
-    public void update(RoleDTO role) {
-        // 更新角色信息
-        Role record = new Role();
-        BeanUtils.copyProperties(role, record);
-        record.setCreateTime(null);
-        record.setModifyTime(new Date());
-        roleMapper.updateByPrimaryKeySelective(record);
-
-        // 删除角色相关权限信息
-        rolePermissionService.deleteByRoleId(role.getId());
-
-        // 保存角色相关权限信息
-        rolePermissionService.saveByBatch(record.getId(), role.getPermissionIds());
-    }
-
-    @Cacheable(unless = "#result==null")
-    public Role getRoleById(Integer roleId) {
-        return roleMapper.selectByPrimaryKey(roleId);
-    }
-
-    public PageInfo<RoleDTO> listRole(Integer current, Integer pageSize) {
-        PageHelper.startPage(current, pageSize);
-        List<Role> roles = roleMapper.selectByExample(null);
-
-        // 根绝角色查询权限
-        List<RoleDTO> roleList = new ArrayList<>();
-        for (Role role : roles) {
-            List<PermissionDTO> permissions = permissionService.listPermissionByRoleId(role.getId());
-
-            RoleDTO roleDTO = new RoleDTO();
-            BeanUtils.copyProperties(role, roleDTO);
-            roleDTO.setPermissions(permissions);
-            roleList.add(roleDTO);
-        }
-
-        return new PageInfo<>(roleList);
-    }
-
-    public void delete(Integer id) {
-        // 删除角色信息
-        roleMapper.deleteByPrimaryKey(id);
-        // 删除角色权限关联信息
-        rolePermissionService.deleteByRoleId(id);
-    }
+public interface RoleService extends IService<Role> {
+    /**
+     * 保存用户和角色关系
+     * @param userId 用户id
+     * @param roleIds 角色id集合
+     */
+    void saveUserRoles(Long userId, List<Long> roleIds);
 
     /**
-     * 查询系统默认角色，即普通用户
-     * @return 返回普通用户角色
+     * 根据条件查询角色信息
+     * @param roleQuery 查询条件
+     * @return 返回分页角色列表
      */
-    public Role findDefaultRole() {
-        RoleExample example = new RoleExample();
-        RoleExample.Criteria criteria = example.createCriteria();
-        criteria.andNameEqualTo("user");
-        List<Role> roles = roleMapper.selectByExample(example);
+    Page<Role> listBy(RoleQuery roleQuery);
 
-        if(CollectionUtils.isEmpty(roles)) {
-            return null;
-        }
-        return roles.get(0);
-    }
+    /**
+     * 创建或更新角色和角色关联的菜单信息
+     * @param role 角色信息
+     * @param menuIds 角色关联的菜单集合
+     */
+    void createOrUpdate(Role role, Set<Long> menuIds);
+
+    /**
+     * 根据角色id查询角色详情
+     * @param roleId 角色id
+     * @return 查询到返回角色详情否则返回{@code null}
+     */
+    RoleDTO getRoleById(Long roleId);
+
+    /**
+     * 删除角色
+     * @param roleIds 角色id集合
+     */
+    void deleteRoles(List<Long> roleIds);
 }
