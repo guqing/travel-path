@@ -66,13 +66,7 @@ public class UserLoginService {
         MyUserDetails userDetails = (MyUserDetails)authenticate.getPrincipal();
 
         String token = jwtTokenUtils.generateToken(userDetails.getId(), userDetails.getUsername());
-
-        AccessToken accessToken = new AccessToken(token);
-        long expirationTime = tokenProperties.getExpirationTime();
-        Date expiration = DateUtils.dateAfterSeconds(new Date(), (int) expirationTime);
-        accessToken.setExpiration(expiration);
-        accessToken.setTokenType(tokenProperties.getTokenPrefix().toLowerCase());
-        return accessToken;
+        return getAccessToken(token);
     }
 
     public SocialLoginDTO resolveLogin(String type, AuthCallback callback) {
@@ -108,9 +102,8 @@ public class UserLoginService {
      * @return 注册并登录成功返回令牌对象
      */
     @Transactional(rollbackFor = Exception.class)
-    public String socialSignLogin(BindUserParam registerUser) {
+    public AccessToken socialSignLogin(BindUserParam registerUser) {
         // 校验验证码
-
         Optional<User> optionalUser = userService.getByEmail(registerUser.getEmail());
         if(optionalUser.isPresent()) {
             // 用户存在，则抛出异常
@@ -127,8 +120,17 @@ public class UserLoginService {
         user.setAvatar(authUser.getAvatar());
         // 保存第三方绑定帐号
         userConnectionService.create(user.getId(), authUser);
-        // 生成token
-        return jwtTokenUtils.generateToken(user);
+        String token = jwtTokenUtils.generateToken(user);
+        return getAccessToken(token);
+    }
+
+    private AccessToken getAccessToken(String token) {
+        AccessToken accessToken = new AccessToken(token);
+        long expirationTime = tokenProperties.getExpirationTime();
+        Date expiration = DateUtils.dateAfterSeconds(new Date(), (int) expirationTime);
+        accessToken.setExpiration(expiration);
+        accessToken.setTokenType(tokenProperties.getTokenPrefix().toLowerCase());
+        return accessToken;
     }
 
     /**

@@ -15,4 +15,8 @@ import org.springframework.stereotype.Component;
 public class LoginProperties {
     private String loginUrl = "/auth/login";
     private String logoutUrl = "/auth/logout";
+    /**
+     * 社交登陆成功后跳转地址
+     */
+    private String socialRedirectUrl;
 }

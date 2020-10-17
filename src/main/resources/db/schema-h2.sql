@@ -159,7 +159,7 @@ create index USER_USERNAME
 
 create table USER_CONNECTION
 (
-    USER_NAME          VARCHAR(50) not null,
+    USER_ID          VARCHAR(50) not null,
     PROVIDER_NAME      VARCHAR(20) not null,
     PROVIDER_USER_ID   VARCHAR(50) not null,
     PROVIDER_USER_NAME VARCHAR(50),
@@ -167,12 +167,12 @@ create table USER_CONNECTION
     AVATAR             VARCHAR(512),
     LOCATION           VARCHAR(255),
     REMARK             VARCHAR(255),
-    primary key (USER_NAME, PROVIDER_NAME, PROVIDER_USER_ID),
-    constraint USERCONNECTIONRANK
-        unique (USER_NAME, PROVIDER_NAME, PROVIDER_USER_ID)
+    primary key (USER_ID, PROVIDER_NAME, PROVIDER_USER_ID),
+    constraint USER_CONNECTION_RANK
+        unique (USER_ID, PROVIDER_NAME, PROVIDER_USER_ID)
 );
 
-comment on column USER_CONNECTION.USER_NAME is '系统用户名';
+comment on column USER_CONNECTION.USER_ID is '系统用户ID';
 
 comment on column USER_CONNECTION.PROVIDER_NAME is '第三方平台名称';
 

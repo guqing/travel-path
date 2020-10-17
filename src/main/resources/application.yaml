@@ -20,13 +20,13 @@ justauth:
   enabled: true
   type:
     github:
-      client-id: 2917d3df2590484f0b7f
-      client-secret: d47162aee0647f05d822e2507f6ccc5d98e95ded
-      redirect-uri: http://igry2v.natappfree.cc/auth/github/callback
+      client-id:
+      client-secret:
+      redirect-uri:
     weibo:
-      client-id: 227955467
-      client-secret: a64d03e26a6a8f769e5ebc7a697f8c18
-      redirect-uri: http://c7trbk.natappfree.cc/auth/weibo/callback
+      client-id:
+      client-secret:
+      redirect-uri:
 logging:
   level:
     xyz.guqing.travelpath: debug
