@@ -34,6 +34,7 @@ import xyz.guqing.travelpath.utils.PageUtils;
 import xyz.guqing.travelpath.utils.ServiceUtils;
 import xyz.guqing.travelpath.utils.TravelPathUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -154,6 +155,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<String> permissionList = TravelPathUtils.commaSeparatedToList(permissions);
         userInfoDTO.setPermissions(permissionList);
         return userInfoDTO;
+    }
+
+    @Override
+    public void updateLastLoginTime(String username, LocalDateTime loginTime) {
+        LambdaUpdateWrapper<User> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.set(User::getLastLoginTime, loginTime).eq(User::getUsername, username);
+        update(updateWrapper);
     }
 
     private UserInfoDTO convertTo(CurrentUser currentUser) {

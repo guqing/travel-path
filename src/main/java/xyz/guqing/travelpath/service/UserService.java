@@ -12,6 +12,7 @@ import xyz.guqing.travelpath.model.support.PageInfo;
 import xyz.guqing.travelpath.model.support.PageQuery;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,4 +128,11 @@ public interface UserService extends IService<User> {
      * @return 返回查询到的用户信息dto，用户不存在抛出异常
      */
     UserInfoDTO getUserInfo(String username);
+
+    /**
+     * 更新最后登录时间
+     * @param username 用户名
+     * @param loginTime 最后登录时间
+     */
+    void updateLastLoginTime(String username, LocalDateTime loginTime);
 }

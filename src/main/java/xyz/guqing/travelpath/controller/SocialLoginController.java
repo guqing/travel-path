@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import xyz.guqing.travelpath.event.UserLoginEvent;
 import xyz.guqing.travelpath.model.constant.StringConstant;
 import xyz.guqing.travelpath.model.dto.SocialLoginDTO;
 import xyz.guqing.travelpath.model.params.BindUserParam;

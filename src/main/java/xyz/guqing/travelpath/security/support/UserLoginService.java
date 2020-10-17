@@ -7,6 +7,7 @@ import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.AuthRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import xyz.guqing.travelpath.config.WebSecurityConfig;
+import xyz.guqing.travelpath.event.UserLoginEvent;
 import xyz.guqing.travelpath.exception.AlreadyExistsException;
 import xyz.guqing.travelpath.exception.AuthenticationException;
 import xyz.guqing.travelpath.exception.BindSocialAccountException;
@@ -46,9 +48,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserLoginService {
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
-
+    private final ApplicationContext applicationContext;
     private final AuthRequestFactory factory;
     private final UserService userService;
     private final UserConnectionService userConnectionService;
@@ -66,6 +66,8 @@ public class UserLoginService {
         MyUserDetails userDetails = (MyUserDetails)authenticate.getPrincipal();
 
         String token = jwtTokenUtils.generateToken(userDetails.getId(), userDetails.getUsername());
+        // 推送登录成功时间
+        applicationContext.publishEvent(new UserLoginEvent(this, userDetails.getUsername()));
         return getAccessToken(token);
     }
 
@@ -84,6 +86,9 @@ public class UserLoginService {
         User user = userService.getById(userConnection.getUserId());
         socialLoginDTO.setIsBind(true);
         socialLoginDTO.setAccessToken(jwtTokenUtils.generateToken(user));
+
+        // 发送登录成功时间
+        applicationContext.publishEvent(new UserLoginEvent(this, user.getUsername()));
         return socialLoginDTO;
     }
 
@@ -121,6 +126,8 @@ public class UserLoginService {
         // 保存第三方绑定帐号
         userConnectionService.create(user.getId(), authUser);
         String token = jwtTokenUtils.generateToken(user);
+        // 发送登录成功事件
+        applicationContext.publishEvent(new UserLoginEvent(this, user.getUsername()));
         return getAccessToken(token);
     }
 
