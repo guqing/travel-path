@@ -267,7 +267,7 @@ create table ACTION_LOG
         primary key,
     USERNAME    VARCHAR(50),
     OPERATION   TEXT,
-    TIME        DECIMAL(11),
+    EXECUTION_TIME  DECIMAL(11),
     METHOD      TEXT,
     PARAMS      TEXT,
     IP          VARCHAR(64),
@@ -281,7 +281,7 @@ comment on column ACTION_LOG.USERNAME is '操作用户';
 
 comment on column ACTION_LOG.OPERATION is '操作内容';
 
-comment on column ACTION_LOG.TIME is '耗时';
+comment on column ACTION_LOG.EXECUTION_TIME is '耗时';
 
 comment on column ACTION_LOG.METHOD is '操作方法';
 

@@ -56,29 +56,29 @@
         LEFT JOIN role r ON (r.id = ur.role_id)
         WHERE
         u.deleted=0
-        <if test="username != null and username != ''">
-            AND u.username = #{username}
+        <if test="userQuery.username != null and userQuery.username != ''">
+            AND u.username = #{userQuery.username}
         </if>
-        <if test="groupId != null and groupId != ''">
-            AND g.id = #{groupId}
+        <if test="userQuery.groupId != null and userQuery.groupId != ''">
+            AND g.id = #{userQuery.groupId}
         </if>
-        <if test="gender != null and gender != ''">
-            AND u.gender = #{gender}
+        <if test="userQuery.gender != null and userQuery.gender != ''">
+            AND u.gender = #{userQuery.gender}
         </if>
-        <if test="status != null and status != ''">
-            AND u.status = #{status}
+        <if test="userQuery.status != null and userQuery.status != ''">
+            AND u.status = #{userQuery.status}
         </if>
-        <if test="mobile != null and mobile != ''">
-            AND u.mobile = #{mobile}
+        <if test="userQuery.mobile != null and userQuery.mobile != ''">
+            AND u.mobile = #{userQuery.mobile}
         </if>
-        <if test="groupName != null and groupName != ''">
-            AND g.group_name like CONCAT('%',#{groupName},'%')
+        <if test="userQuery.groupName != null and userQuery.groupName != ''">
+            AND g.group_name like CONCAT('%',#{userQuery.groupName},'%')
         </if>
-        <if test="createTimeFrom != null">
-            And u.create_time &gt; #{createTimeFrom}
+        <if test="userQuery.createTimeFrom != null">
+            And u.create_time &gt; #{userQuery.createTimeFrom}
         </if>
-        <if test="createTimeTo!= null">
-            And u.create_time &lt; #{createTimeTo}
+        <if test="userQuery.createTimeTo!= null">
+            And u.create_time &lt; #{userQuery.createTimeTo}
         </if>
         group by u.username,u.id,u.email,u.mobile,u.status,u.create_time,u.gender,
         u.group_id,u.last_login_time,u.modify_time,u.description,
