@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class UserLoginLog {
 
     private static final long serialVersionUID = 1L;
-
+    private Long id;
     /**
      * 用户名
      */
