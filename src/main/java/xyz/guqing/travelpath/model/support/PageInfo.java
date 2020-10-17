@@ -44,6 +44,16 @@ public class PageInfo<DTO> {
         return pageInfo;
     }
 
+    public static <T, DTO> PageInfo<DTO> convertFrom(@NonNull IPage<T> page, List<DTO> list) {
+        PageInfo<DTO> pageInfo = new PageInfo<>();
+        pageInfo.setTotal(page.getTotal());
+        pageInfo.setPages(page.getPages());
+        pageInfo.setCurrent(page.getCurrent());
+        pageInfo.setPageSize(page.getSize());
+        pageInfo.setList(list);
+        return pageInfo;
+    }
+
     public static <T, DTO> PageInfo<DTO> convertFrom(List<T> list, Function<T, DTO> function) {
         Assert.notNull(list, "The parameter of PageInfo can not be null.");
         PageInfo<DTO> pageInfo = getDtoPageInfo(function, list);

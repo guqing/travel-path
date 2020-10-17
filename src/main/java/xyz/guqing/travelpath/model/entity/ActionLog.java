@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 public class ActionLog {
 
     private static final long serialVersionUID = 1L;
-
+    private Long id;
     /**
      * 操作用户
      */

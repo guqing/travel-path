@@ -57,19 +57,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public PageInfo<UserDTO> listByPage(UserQuery userQuery, PageQuery pageQuery) {
         // 查询
-        Page<UserDO> userByPage = this.baseMapper.findUserBy(PageUtils.convert(pageQuery), userQuery);
-        List<UserDTO> userDtoList = ServiceUtils.convertToList(userByPage.getRecords(), user -> {
+        Page<UserDO> userPage = this.baseMapper.findUserBy(PageUtils.convert(pageQuery), userQuery);
+        List<UserDTO> userDtoList = ServiceUtils.convertToList(userPage.getRecords(), user -> {
             UserDTO userDTO = new UserDTO().convertFrom(user);
             userDTO.setRoleIds(TravelPathUtils.commaSeparatedToList(user.getRoleId()));
             userDTO.setRoleNames(TravelPathUtils.commaSeparatedToList(user.getRoleName()));
             return userDTO;
         });
-        PageInfo<UserDTO> pageInfo = new PageInfo<>();
-        pageInfo.setCurrent(userByPage.getCurrent());
-        pageInfo.setPageSize(userByPage.getPages());
-        pageInfo.setList(userDtoList);
-        pageInfo.setPages(userByPage.getPages());
-        return pageInfo;
+        return PageInfo.convertFrom(userPage, userDtoList);
     }
 
     @Override
