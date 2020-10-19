@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.model.entity;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,4 +29,7 @@ public class PresetPlan extends BaseEntity{
      * 方案描述
      */
     private String description;
+
+    @TableLogic
+    private Integer deleted;
 }

@@ -89,9 +89,6 @@ public class User extends BaseEntity {
      */
     private Integer status;
 
-    /**
-     * 删除状态：0未删除，1已删除
-     */
     @TableLogic
     private Integer deleted;
 }

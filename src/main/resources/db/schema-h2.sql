@@ -316,17 +316,16 @@ comment on column SETTING_OPTION.CREATE_TIME is '创建时间';
 
 comment on column SETTING_OPTION.MODIFY_TIME is '修改时间';
 
-# 预布设卡口方案
 create table preset_plan (
     id bigint not null primary key auto_increment,
     count int default 0 comment '卡口数量',
     name varchar(150) not null comment '方案名称',
     description varchar(255) comment '备注',
+    deleted int default 0 comment '逻辑删除',
     create_time datetime not null,
     modify_time datetime not null
 );
 
-# 预设卡口
 create table preset_node(
     id bigint not null primary key auto_increment,
     preset_id bigint not null comment '所属预设卡口方案',

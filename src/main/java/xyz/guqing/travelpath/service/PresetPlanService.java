@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.lang.Nullable;
 import xyz.guqing.travelpath.model.dos.PresetPlanDO;
 import xyz.guqing.travelpath.model.entity.PresetPlan;
+import xyz.guqing.travelpath.model.params.PresetPlanParam;
 import xyz.guqing.travelpath.model.support.PageQuery;
 
 /**
@@ -29,4 +30,10 @@ public interface PresetPlanService extends IService<PresetPlan> {
      * @return 返回详情dto
      */
     PresetPlanDO getDetailById(Long id);
+
+    /**
+     * 添加方案
+     * @param presetPlanParam 方案参数
+     */
+    void createOrUpdate(PresetPlanParam presetPlanParam);
 }

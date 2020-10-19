@@ -5,14 +5,22 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import xyz.guqing.travelpath.mapper.PresetNodeMapper;
 import xyz.guqing.travelpath.mapper.PresetPlanMapper;
 import xyz.guqing.travelpath.model.dos.PresetPlanDO;
 import xyz.guqing.travelpath.model.dto.PresetPlanDTO;
+import xyz.guqing.travelpath.model.entity.PresetNode;
 import xyz.guqing.travelpath.model.entity.PresetPlan;
+import xyz.guqing.travelpath.model.params.PresetPlanParam;
 import xyz.guqing.travelpath.model.support.PageQuery;
+import xyz.guqing.travelpath.service.PresetNodeService;
 import xyz.guqing.travelpath.service.PresetPlanService;
 import xyz.guqing.travelpath.utils.PageUtils;
+
+import java.util.List;
 
 /**
  * <p>
@@ -22,7 +30,10 @@ import xyz.guqing.travelpath.utils.PageUtils;
  * @date 2020-10-19
  */
 @Service
+@AllArgsConstructor
 public class PresetPlanServiceImpl extends ServiceImpl<PresetPlanMapper, PresetPlan> implements PresetPlanService {
+    private final PresetNodeService presetNodeService;
+
     @Override
     public Page<PresetPlan> listByPage(String name, PageQuery pageQuery) {
         if(StringUtils.isNotBlank(name)) {
@@ -35,5 +46,14 @@ public class PresetPlanServiceImpl extends ServiceImpl<PresetPlanMapper, PresetP
     @Override
     public PresetPlanDO getDetailById(Long id) {
         return this.baseMapper.getDetailById(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createOrUpdate(PresetPlanParam presetPlanParam) {
+        PresetPlan presetPlan = presetPlanParam.convertTo();
+        save(presetPlan);
+        List<PresetNode> checkpoints = presetPlanParam.getCheckpoints();
+        presetNodeService.createOrUpdate(presetPlan.getId(), checkpoints);
     }
 }
