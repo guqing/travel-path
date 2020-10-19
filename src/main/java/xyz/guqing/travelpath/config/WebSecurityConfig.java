@@ -75,6 +75,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure( HttpSecurity httpSecurity ) throws Exception {
+        // 解决h2数据库控制台因X-Frame-Options访问被拒绝问题
+        httpSecurity.headers().frameOptions().disable();
         httpSecurity.cors().and().csrf().disable()
                 // 使用 JWT，关闭token
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

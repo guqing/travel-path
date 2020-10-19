@@ -17,11 +17,6 @@ public interface CreekConstant {
     String ORDER_ASC = "ascending";
 
     /**
-     * 验证码 key前缀
-     */
-    String CAPTCHA_PREFIX = "violet:verify:captcha:";
-
-    /**
      * 验证码有效期
      */
     Long CAPTCHA_EXPIRE = 300L;

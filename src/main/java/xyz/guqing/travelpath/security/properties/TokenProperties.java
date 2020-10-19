@@ -24,7 +24,7 @@ public class TokenProperties {
     /**
      *  JWT密码
      */
-    private String secret = "HappyLandSecret123456";
+    private String secret = "Secret123456";
     /**
      * Token前缀
      */
