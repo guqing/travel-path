@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="xyz.guqing.travelpath.mapper.PresetPlanMapper">
+    <resultMap id="baseResultMap" type="xyz.guqing.travelpath.model.dos.PresetPlanDO">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="createTime" column="create_time"/>
+        <!-- 多表关联映射 -->
+        <collection property="presetNodes" javaType="java.util.List" ofType="xyz.guqing.travelpath.model.entity.PresetNode">
+            <id column="id" property="id"/>
+            <result column="lat" property="lat"/>
+            <result column="lng" property="lng"/>
+        </collection>
+    </resultMap>
+
+    <select id="getDetailById" resultMap="baseResultMap">
+        select * from preset_plan pp left join preset_node pn on pn.preset_id=pp.id where pp.id=#{id}
+    </select>
+</mapper>

@@ -3,6 +3,7 @@ package xyz.guqing.travelpath.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.lang.Nullable;
+import xyz.guqing.travelpath.model.dos.PresetPlanDO;
 import xyz.guqing.travelpath.model.entity.PresetPlan;
 import xyz.guqing.travelpath.model.support.PageQuery;
 
@@ -21,4 +22,11 @@ public interface PresetPlanService extends IService<PresetPlan> {
      * @return 返回分页结果
      */
     Page<PresetPlan> listByPage(@Nullable String name, PageQuery pageQuery);
+
+    /**
+     * 根据id查询详情
+     * @param id 方案id
+     * @return 返回详情dto
+     */
+    PresetPlanDO getDetailById(Long id);
 }

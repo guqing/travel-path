@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import xyz.guqing.travelpath.mapper.PresetPlanMapper;
+import xyz.guqing.travelpath.model.dos.PresetPlanDO;
+import xyz.guqing.travelpath.model.dto.PresetPlanDTO;
 import xyz.guqing.travelpath.model.entity.PresetPlan;
 import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.service.PresetPlanService;
@@ -28,5 +30,10 @@ public class PresetPlanServiceImpl extends ServiceImpl<PresetPlanMapper, PresetP
             return page(PageUtils.convert(pageQuery), queryWrapper);
         }
         return page(PageUtils.convert(pageQuery));
+    }
+
+    @Override
+    public PresetPlanDO getDetailById(Long id) {
+        return this.baseMapper.getDetailById(id);
     }
 }
