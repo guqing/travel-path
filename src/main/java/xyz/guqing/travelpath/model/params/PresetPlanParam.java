@@ -15,6 +15,7 @@ import java.util.List;
  */
 @Data
 public class PresetPlanParam implements InputConverter<PresetPlan> {
+    private Long id;
     @NotBlank(message = "方案名称不能为空")
     private String name;
     private String description;

@@ -12,6 +12,7 @@ import xyz.guqing.travelpath.model.support.ResultEntity;
 import xyz.guqing.travelpath.service.PresetPlanService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author guqing
@@ -40,9 +41,15 @@ public class PresetPlanController {
         return ResultEntity.ok(presetPlanDTO);
     }
 
-    @PostMapping
-    public ResultEntity create(@RequestBody @Valid PresetPlanParam presetPlanParam) {
+    @PostMapping("/create-update")
+    public ResultEntity createOrUpdate(@RequestBody @Valid PresetPlanParam presetPlanParam) {
         presetPlanService.createOrUpdate(presetPlanParam);
+        return ResultEntity.ok();
+    }
+
+    @DeleteMapping
+    public ResultEntity delete(@RequestBody List<Long> ids) {
+        presetPlanService.removeByIds(ids);
         return ResultEntity.ok();
     }
 }
