@@ -36,6 +36,7 @@ public class PresetPlanController {
     public ResultEntity getById(@PathVariable Long id) {
         PresetPlanDO presetPlanDO = presetPlanService.getDetailById(id);
         PresetPlanDTO presetPlanDTO = new PresetPlanDTO().convertFrom(presetPlanDO);
+        presetPlanDTO.setCheckpoints(presetPlanDO.getPresetNodes());
         return ResultEntity.ok(presetPlanDTO);
     }
 

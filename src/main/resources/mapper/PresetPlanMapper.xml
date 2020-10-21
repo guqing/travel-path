@@ -4,17 +4,18 @@
     <resultMap id="baseResultMap" type="xyz.guqing.travelpath.model.dos.PresetPlanDO">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
+        <result property="count" column="count"/>
         <result property="description" column="description"/>
         <result property="createTime" column="create_time"/>
         <!-- 多表关联映射 -->
         <collection property="presetNodes" javaType="java.util.List" ofType="xyz.guqing.travelpath.model.entity.PresetNode">
-            <id column="id" property="id"/>
+            <id column="node_id" property="id"/>
             <result column="lat" property="lat"/>
             <result column="lng" property="lng"/>
         </collection>
     </resultMap>
 
     <select id="getDetailById" resultMap="baseResultMap">
-        select * from preset_plan pp left join preset_node pn on pn.preset_id=pp.id where pp.id=#{id}
+        select pp.id,pp.name,pp.count,pp.description,pp.create_time,pn.id node_id,pn.lat,pn.lng from preset_plan pp left join preset_node pn on pn.preset_id=pp.id where pp.id=#{id}
     </select>
 </mapper>
