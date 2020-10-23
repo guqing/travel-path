@@ -17,6 +17,9 @@ import lombok.experimental.Accessors;
 @TableName("preset_plan")
 public class PresetPlan extends BaseEntity{
     private static final long serialVersionUID = 1L;
+
+    private Long userId;
+
     /**
      * 方案包含的卡口数量
      */
