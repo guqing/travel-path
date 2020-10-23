@@ -17,6 +17,7 @@ import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.service.PresetNodeService;
 import xyz.guqing.travelpath.service.PresetPlanService;
 import xyz.guqing.travelpath.utils.PageUtils;
+import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
 import java.util.List;
 
@@ -50,7 +51,12 @@ public class PresetPlanServiceImpl extends ServiceImpl<PresetPlanMapper, PresetP
     @Transactional(rollbackFor = Exception.class)
     public void createOrUpdate(PresetPlanParam presetPlanParam) {
         PresetPlan presetPlan = presetPlanParam.convertTo();
+
+        Long currentUserId = SecurityUserHelper.getCurrentUserId();
+        presetPlan.setUserId(currentUserId);
+
         saveOrUpdate(presetPlan);
+
         List<PresetNode> checkpoints = presetPlanParam.getCheckpoints();
         presetNodeService.createOrUpdate(presetPlan.getId(), checkpoints);
     }

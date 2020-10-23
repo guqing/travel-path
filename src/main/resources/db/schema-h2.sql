@@ -318,6 +318,7 @@ comment on column SETTING_OPTION.MODIFY_TIME is '修改时间';
 
 create table preset_plan (
     id bigint not null primary key auto_increment,
+    user_id bigint not null,
     count int default 0 comment '卡口数量',
     name varchar(150) not null comment '方案名称',
     description varchar(255) comment '备注',
@@ -335,6 +336,7 @@ create table preset_node(
 
 create table deploy_plan (
     id bigint not null primary key auto_increment,
+    user_id bigint not null,
     count int default 0 comment '卡口数量',
     name varchar(150) not null comment '方案名称',
     description varchar(255) comment '备注',
@@ -343,7 +345,7 @@ create table deploy_plan (
     modify_time datetime not null
 );
 
-create table preset_node(
+create table deploy_node(
     deploy_id bigint not null,
     preset_node_id bigint not null comment '卡口坐标id'
 );
