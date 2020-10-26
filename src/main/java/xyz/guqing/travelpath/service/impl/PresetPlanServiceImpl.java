@@ -44,7 +44,7 @@ public class PresetPlanServiceImpl extends ServiceImpl<PresetPlanMapper, PresetP
 
     @Override
     public PresetPlanDO getDetailById(Long id) {
-        return this.baseMapper.getDetailById(id);
+        return this.baseMapper.findDetailById(id);
     }
 
     @Override

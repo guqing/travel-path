@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import xyz.guqing.travelpath.mapper.DeployPlanMapper;
+import xyz.guqing.travelpath.model.dos.DeployPlanDO;
+import xyz.guqing.travelpath.model.dto.DeployPlanDTO;
 import xyz.guqing.travelpath.model.entity.DeployPlan;
 import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.service.DeployPlanService;
@@ -26,5 +28,10 @@ public class DeployPlanServiceImpl extends ServiceImpl<DeployPlanMapper, DeployP
             queryWrapper.like(DeployPlan::getName, name);
         }
         return page(PageUtils.convert(pageQuery), queryWrapper);
+    }
+
+    @Override
+    public DeployPlanDO getDetailById(Long id) {
+        return this.baseMapper.findDetailById(id);
     }
 }

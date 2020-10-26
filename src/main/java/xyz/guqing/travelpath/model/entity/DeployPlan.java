@@ -1,6 +1,7 @@
 package xyz.guqing.travelpath.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -9,6 +10,7 @@ import lombok.EqualsAndHashCode;
  * @date 2020-10-22
  */
 @Data
+@TableName("deploy_plan")
 @EqualsAndHashCode(callSuper = true)
 public class DeployPlan extends BaseEntity{
     private Long userId;

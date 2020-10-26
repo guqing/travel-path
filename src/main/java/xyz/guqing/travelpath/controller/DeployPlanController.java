@@ -3,6 +3,8 @@ package xyz.guqing.travelpath.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import xyz.guqing.travelpath.model.dos.DeployPlanDO;
+import xyz.guqing.travelpath.model.dto.DeployPlanDTO;
 import xyz.guqing.travelpath.model.entity.DeployPlan;
 import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.model.support.ResultEntity;
@@ -30,7 +32,8 @@ public class DeployPlanController {
 
     @GetMapping("/{id:\\d+}")
     public ResultEntity getById(@PathVariable Long id) {
-        return ResultEntity.ok();
+        DeployPlanDO deployPlanDo= deployPlanService.getDetailById(id);
+        return ResultEntity.ok(new DeployPlanDTO().convertFrom(deployPlanDo));
     }
 
     @PostMapping("/create-update")

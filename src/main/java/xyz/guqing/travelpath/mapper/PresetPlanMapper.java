@@ -17,5 +17,5 @@ public interface PresetPlanMapper extends BaseMapper<PresetPlan> {
      * @param id 预设卡口方案id
      * @return 返回详情do
      */
-    PresetPlanDO getDetailById(Long id);
+    PresetPlanDO findDetailById(Long id);
 }

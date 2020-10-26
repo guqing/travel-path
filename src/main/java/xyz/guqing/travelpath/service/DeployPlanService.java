@@ -3,6 +3,7 @@ package xyz.guqing.travelpath.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.lang.Nullable;
+import xyz.guqing.travelpath.model.dos.DeployPlanDO;
 import xyz.guqing.travelpath.model.entity.DeployPlan;
 import xyz.guqing.travelpath.model.support.PageQuery;
 
@@ -20,4 +21,11 @@ public interface DeployPlanService extends IService<DeployPlan> {
      * @return 返回方案数据
      */
     Page<DeployPlan> listByPage(Long currentUserId, @Nullable String name, PageQuery pageQuery);
+
+    /**
+     * 根据id查询方案详情
+     * @param id 方案id
+     * @return 返回详情
+     */
+    DeployPlanDO getDetailById(Long id);
 }

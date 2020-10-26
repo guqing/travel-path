@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="xyz.guqing.travelpath.mapper.PresetPlanMapper">
-    <resultMap id="baseResultMap" type="xyz.guqing.travelpath.model.dos.PresetPlanDO">
+<mapper namespace="xyz.guqing.travelpath.mapper.DeployPlanMapper">
+    <resultMap id="baseResultMap" type="xyz.guqing.travelpath.model.dos.DeployPlanDO">
         <id property="id" column="id"/>
         <result property="name" column="name"/>
         <result property="count" column="count"/>
@@ -16,6 +16,17 @@
     </resultMap>
 
     <select id="findDetailById" resultMap="baseResultMap">
-        select pp.id,pp.name,pp.count,pp.description,pp.create_time,pn.id node_id,pn.lat,pn.lng from preset_plan pp left join preset_node pn on pn.preset_id=pp.id where pp.id=#{id}
+        select dp.id,
+           dp.name,
+           dp.count,
+           dp.description,
+           dp.create_time,
+           pn.id node_id,
+           pn.lat,
+           pn.lng
+        from deploy_plan dp
+                left join deploy_node dn on dn.deploy_id = dp.id
+                 left join preset_node pn on pn.preset_id = dp.preset_node_id
+        where dp.id =#{id}
     </select>
 </mapper>
