@@ -8,11 +8,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import xyz.guqing.travelpath.mapper.DeployPlanMapper;
 import xyz.guqing.travelpath.model.dos.DeployPlanDO;
-import xyz.guqing.travelpath.model.dto.DeployPlanDTO;
 import xyz.guqing.travelpath.model.entity.DeployPlan;
+import xyz.guqing.travelpath.model.entity.DeployPlanNode;
+import xyz.guqing.travelpath.model.params.DeployPlanParam;
 import xyz.guqing.travelpath.model.support.PageQuery;
+import xyz.guqing.travelpath.service.DeployNodeService;
 import xyz.guqing.travelpath.service.DeployPlanService;
 import xyz.guqing.travelpath.utils.PageUtils;
+import xyz.guqing.travelpath.utils.SecurityUserHelper;
+
+import java.util.List;
 
 /**
  * @author guqing
@@ -20,6 +25,12 @@ import xyz.guqing.travelpath.utils.PageUtils;
  */
 @Service
 public class DeployPlanServiceImpl extends ServiceImpl<DeployPlanMapper, DeployPlan> implements DeployPlanService {
+    private final DeployNodeService deployNodeService;
+
+    public DeployPlanServiceImpl(DeployNodeService deployNodeService) {
+        this.deployNodeService = deployNodeService;
+    }
+
     @Override
     public Page<DeployPlan> listByPage(Long currentUserId, String name, PageQuery pageQuery) {
         LambdaQueryWrapper<DeployPlan> queryWrapper = Wrappers.lambdaQuery();
@@ -33,5 +44,16 @@ public class DeployPlanServiceImpl extends ServiceImpl<DeployPlanMapper, DeployP
     @Override
     public DeployPlanDO getDetailById(Long id) {
         return this.baseMapper.findDetailById(id);
+    }
+
+    @Override
+    public void createOrUpdate(DeployPlanParam deployPlanParam) {
+        DeployPlan deployPlan = deployPlanParam.convertTo();
+
+        Long currentUserId = SecurityUserHelper.getCurrentUserId();
+        deployPlan.setUserId(currentUserId);
+        saveOrUpdate(deployPlan);
+
+        deployNodeService.createOrUpdate(deployPlan.getId(), deployPlanParam.getNodeIds());
     }
 }

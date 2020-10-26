@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.lang.Nullable;
 import xyz.guqing.travelpath.model.dos.DeployPlanDO;
 import xyz.guqing.travelpath.model.entity.DeployPlan;
+import xyz.guqing.travelpath.model.params.DeployPlanParam;
 import xyz.guqing.travelpath.model.support.PageQuery;
 
 /**
@@ -28,4 +29,10 @@ public interface DeployPlanService extends IService<DeployPlan> {
      * @return 返回详情
      */
     DeployPlanDO getDetailById(Long id);
+
+    /**
+     * 根据参数创建或更新方案
+     * @param deployPlanParam 布设卡口方案
+     */
+    void createOrUpdate(DeployPlanParam deployPlanParam);
 }

@@ -6,11 +6,13 @@ import org.springframework.web.bind.annotation.*;
 import xyz.guqing.travelpath.model.dos.DeployPlanDO;
 import xyz.guqing.travelpath.model.dto.DeployPlanDTO;
 import xyz.guqing.travelpath.model.entity.DeployPlan;
+import xyz.guqing.travelpath.model.params.DeployPlanParam;
 import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.model.support.ResultEntity;
 import xyz.guqing.travelpath.service.DeployPlanService;
 import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -37,7 +39,8 @@ public class DeployPlanController {
     }
 
     @PostMapping("/create-update")
-    public ResultEntity createOrUpdate() {
+    public ResultEntity createOrUpdate(@RequestBody @Valid DeployPlanParam deployPlanParam) {
+        deployPlanService.createOrUpdate(deployPlanParam);
         return ResultEntity.ok();
     }
 
