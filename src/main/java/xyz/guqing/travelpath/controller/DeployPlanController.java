@@ -46,6 +46,7 @@ public class DeployPlanController {
 
     @DeleteMapping
     public ResultEntity delete(@RequestBody List<Long> ids) {
+        deployPlanService.removeByIds(ids);
         return ResultEntity.ok();
     }
 }
