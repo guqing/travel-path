@@ -346,6 +346,8 @@ create table deploy_plan (
 );
 
 create table deploy_node(
+    id bigint not null primary key auto_increment,
     deploy_id bigint not null,
-    preset_node_id bigint not null comment '卡口坐标id'
+    lat double not null comment '纬度',
+    lng double not null comment '经度'
 );

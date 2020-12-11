@@ -17,7 +17,10 @@ import lombok.experimental.Accessors;
 public class PresetNode {
     @TableId(type = IdType.AUTO)
     private Long id;
+
     private Long presetId;
+
     private Double lat;
+
     private Double lng;
 }

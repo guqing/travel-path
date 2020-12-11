@@ -38,8 +38,16 @@ public class DeployPlanController {
         return ResultEntity.ok(new DeployPlanDTO().convertFrom(deployPlanDo));
     }
 
-    @PostMapping("/create-update")
-    public ResultEntity createOrUpdate(@RequestBody @Valid DeployPlanParam deployPlanParam) {
+    @PostMapping
+    public ResultEntity create(@RequestBody @Valid DeployPlanParam deployPlanParam) {
+        deployPlanService.createOrUpdate(deployPlanParam);
+        return ResultEntity.ok();
+    }
+
+    @PutMapping("/{id:\\d+}")
+    public ResultEntity update(@PathVariable Long id,
+                               @RequestBody @Valid DeployPlanParam deployPlanParam) {
+        deployPlanParam.setId(id);
         deployPlanService.createOrUpdate(deployPlanParam);
         return ResultEntity.ok();
     }
