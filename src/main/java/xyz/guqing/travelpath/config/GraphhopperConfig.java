@@ -48,13 +48,19 @@ public class GraphhopperConfig {
         return graphHopper;
     }
 
+    @Bean
     public EncodingManager encodingManager() {
         return new EncodingManager.Builder()
                 .setEnableInstructions(true)
                 .add(new OSMMaxSpeedParser())
                 .add(new OSMMaxWidthParser())
                 .add(new OSMTollParser())
-                .add(new CarFlagEncoder())
+                .add(carFlagEncoder())
                 .build();
+    }
+
+    @Bean
+    public CarFlagEncoder carFlagEncoder() {
+        return new CarFlagEncoder();
     }
 }
