@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import xyz.guqing.travelpath.model.constant.CreekConstant;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
 import xyz.guqing.travelpath.model.properties.ThreadPoolProperties;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ThreadFactory;
@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @EnableConfigurationProperties(ThreadPoolProperties.class)
 public class ThreadPoolConfig {
 
-    @Bean(CreekConstant.ASYNC_POOL)
+    @Bean(TravelPathConstant.ASYNC_POOL)
     public ThreadPoolExecutor coreThreadPoolExecutor(ThreadPoolProperties poolProperties) {
 
         // 创建线程阻塞队列

@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "travel.graphhopper")
 public class GraphHopperProperties {
-    private String dataFile;
+    private String dataFile = "data.osm";
     private String graphLocation = "graph-cache";
     private String flagEncoders = "car";
 }

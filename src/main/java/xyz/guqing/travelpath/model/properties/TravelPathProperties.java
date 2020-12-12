@@ -2,6 +2,7 @@ package xyz.guqing.travelpath.model.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,7 +16,7 @@ import java.nio.file.Paths;
 @Data
 @ConfigurationProperties(prefix = "travel")
 public class TravelPathProperties {
-    private String home = "~/.travel-path";
+    private String home = TravelPathConstant.USER_HOME + "/.travel-path";
     private final GraphHopperProperties graphHopper = new GraphHopperProperties();
     private final Path path = Paths.get(home);
 
