@@ -36,7 +36,9 @@ public class GraphhopperConfig {
         graphHopper.setGraphHopperLocation(travelPathProperties.getGraphLocation());
         // see docs/core/profiles.md to learn more about profiles
         graphHopper.setProfiles(
-                new Profile("car").setVehicle("car").setWeighting("shortest")
+                new Profile("car")
+                        .setVehicle("car")
+                        .setWeighting("shortest")
         );
         // this enables speed mode for the profile we call "car" here
         graphHopper.getCHPreparationHandler().setCHProfiles(
