@@ -30,11 +30,10 @@ public class GraphhopperConfig {
 
     @Bean
     public GraphHopper graphHopper() {
-        Path graphPath = Paths.get(travelPathProperties.getHome());
         GraphHopper graphHopper = new GraphHopperOSM();
-        graphHopper.setDataReaderFile(graphPath.resolve("shenzheng.osm").toString());
+        graphHopper.setDataReaderFile(travelPathProperties.getGraphhopperDataFile());
         graphHopper.setEncodingManager(encodingManager());
-        graphHopper.setGraphHopperLocation(graphPath.resolve("graph-cache").toString());
+        graphHopper.setGraphHopperLocation(travelPathProperties.getGraphLocation());
         // see docs/core/profiles.md to learn more about profiles
         graphHopper.setProfiles(
                 new Profile("car").setVehicle("car").setWeighting("shortest")
@@ -43,7 +42,6 @@ public class GraphhopperConfig {
         graphHopper.getCHPreparationHandler().setCHProfiles(
                 new CHProfile("car")
         );
-        System.out.println(graphHopper.getCHPreparationHandler());
         graphHopper.importOrLoad();
         return graphHopper;
     }
