@@ -54,10 +54,6 @@ public class DeployPlanServiceImpl extends ServiceImpl<DeployPlanMapper, DeployP
         deployPlan.setUserId(currentUserId);
         saveOrUpdate(deployPlan);
 
-        List<DeployPlanNode> checkpoints = deployPlanParam.getCheckpoints();
-        checkpoints.forEach(deployPlanNode -> {
-            deployPlanNode.setDeployId(deployPlan.getId());
-        });
-        deployNodeService.saveBatch(checkpoints);
+        deployNodeService.createOrUpdate(deployPlan.getId(), deployPlanParam.getCheckpoints());
     }
 }

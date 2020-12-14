@@ -8,7 +8,7 @@
         <result property="description" column="description"/>
         <result property="createTime" column="create_time"/>
         <!-- 多表关联映射 -->
-        <collection property="presetNodes" javaType="java.util.List" ofType="xyz.guqing.travelpath.model.entity.PresetNode">
+        <collection property="deployPlanNodes" javaType="java.util.List" ofType="xyz.guqing.travelpath.model.entity.DeployPlanNode">
             <id column="node_id" property="id"/>
             <result column="lat" property="lat"/>
             <result column="lng" property="lng"/>
@@ -21,12 +21,11 @@
            dp.count,
            dp.description,
            dp.create_time,
-           pn.id node_id,
-           pn.lat,
-           pn.lng
+           dn.id as node_id,
+           dn.lat,
+           dn.lng
         from deploy_plan dp
                 left join deploy_node dn on dn.deploy_id = dp.id
-                 left join preset_node pn on pn.preset_id = dp.preset_node_id
         where dp.id =#{id}
     </select>
 </mapper>

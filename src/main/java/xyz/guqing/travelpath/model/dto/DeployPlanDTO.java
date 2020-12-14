@@ -1,8 +1,9 @@
 package xyz.guqing.travelpath.model.dto;
 
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import xyz.guqing.travelpath.model.dos.DeployPlanDO;
-import xyz.guqing.travelpath.model.entity.PresetNode;
+import xyz.guqing.travelpath.model.entity.DeployPlanNode;
 import xyz.guqing.travelpath.model.support.OutputConverter;
 
 import java.time.LocalDateTime;
@@ -31,11 +32,12 @@ public class DeployPlanDTO implements OutputConverter<DeployPlanDTO, DeployPlanD
     /**
      * 卡口位置
      */
-    private List<PresetNode> checkpoints;
+    private List<DeployPlanNode> checkpoints;
 
     @Override
     public <T extends DeployPlanDTO> T convertFrom(DeployPlanDO deployPlanDO) {
-        this.checkpoints = deployPlanDO.getPresetNodes();
+        this.checkpoints = deployPlanDO.getDeployPlanNodes();
+        BeanUtils.copyProperties(deployPlanDO, this);
         return (T)this;
     }
 }
