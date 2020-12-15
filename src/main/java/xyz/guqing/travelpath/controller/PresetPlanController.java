@@ -2,6 +2,7 @@ package xyz.guqing.travelpath.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.bind.annotation.*;
+import xyz.guqing.travelpath.exception.NotFoundException;
 import xyz.guqing.travelpath.model.dos.PresetPlanDO;
 import xyz.guqing.travelpath.model.dto.PresetPlanDTO;
 import xyz.guqing.travelpath.model.entity.PresetPlan;
@@ -36,8 +37,10 @@ public class PresetPlanController {
     @GetMapping("/{id:\\d+}")
     public ResultEntity getById(@PathVariable Long id) {
         PresetPlanDO presetPlanDO = presetPlanService.getDetailById(id);
+        if(presetPlanDO == null) {
+            throw new NotFoundException("数据不存在");
+        }
         PresetPlanDTO presetPlanDTO = new PresetPlanDTO().convertFrom(presetPlanDO);
-        presetPlanDTO.setCheckpoints(presetPlanDO.getPresetNodes());
         return ResultEntity.ok(presetPlanDTO);
     }
 

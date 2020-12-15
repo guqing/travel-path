@@ -98,9 +98,8 @@ public class ResultEntity<T> {
         return fail(ResultEntityEnum.ACCESS_DENIED.getCode(), message);
     }
 
-    public static ResultEntity<String> dataNotFound(String data) {
-        return fail(ResultEntityEnum.USER_RESOURCE_EXCEPTION.getCode(),
-                ResultEntityEnum.USER_RESOURCE_EXCEPTION.getDesc(), data);
+    public static ResultEntity<String> dataNotFound(String message) {
+        return fail(ResultEntityEnum.BAD_ARGUMENT.getCode(),message);
     }
 
     public static ResultEntity<String> dataAlreadyExists() {

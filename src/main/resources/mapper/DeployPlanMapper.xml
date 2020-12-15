@@ -3,6 +3,7 @@
 <mapper namespace="xyz.guqing.travelpath.mapper.DeployPlanMapper">
     <resultMap id="baseResultMap" type="xyz.guqing.travelpath.model.dos.DeployPlanDO">
         <id property="id" column="id"/>
+        <result property="presetId" column="preset_id"/>
         <result property="name" column="name"/>
         <result property="count" column="count"/>
         <result property="description" column="description"/>
@@ -17,6 +18,7 @@
 
     <select id="findDetailById" resultMap="baseResultMap">
         select dp.id,
+           dp.preset_id,
            dp.name,
            dp.count,
            dp.description,

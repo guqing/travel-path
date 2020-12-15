@@ -20,6 +20,9 @@ import java.util.List;
 public class DeployPlanParam implements InputConverter<DeployPlan> {
     private Long id;
 
+    @NotNull(message = "所属预设卡口方案不能为空")
+    private Long presetId;
+
     @NotBlank(message = "方案名称不能为空")
     private String name;
 

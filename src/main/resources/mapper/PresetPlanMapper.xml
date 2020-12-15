@@ -16,6 +16,16 @@
     </resultMap>
 
     <select id="findDetailById" resultMap="baseResultMap">
-        select pp.id,pp.name,pp.count,pp.description,pp.create_time,pn.id node_id,pn.lat,pn.lng from preset_plan pp left join preset_node pn on pn.preset_id=pp.id where pp.id=#{id}
+        select pp.id,
+               pp.name,
+               pp.count,
+               pp.description,
+               pp.create_time,
+               pn.id node_id,
+               pn.lat,
+               pn.lng
+        from preset_plan pp
+                 left join preset_node pn on pn.preset_id = pp.id
+        where pp.id =#{id}
     </select>
 </mapper>

@@ -15,10 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import xyz.guqing.travelpath.exception.AuthenticationException;
-import xyz.guqing.travelpath.exception.BadRequestException;
-import xyz.guqing.travelpath.exception.BindSocialAccountException;
-import xyz.guqing.travelpath.exception.ForbiddenException;
+import xyz.guqing.travelpath.exception.*;
 import xyz.guqing.travelpath.model.support.ResultEntity;
 
 import java.util.HashMap;
@@ -35,28 +32,28 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResultEntity<String> handleForbiddenException(ForbiddenException e) {
-        log.error("无权访问,{}", e);
+        log.error("无权访问,{0}", e);
         return ResultEntity.accessDenied("没有权限访问该资源");
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResultEntity<String> handleAccessDeniedException(AccessDeniedException e) {
-        log.error("无权访问,{}", e);
+        log.error("无权访问,{0}", e);
         return ResultEntity.accessDenied("操作被拒绝，无权访问该资源");
     }
 
     @ExceptionHandler(value = BadCredentialsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResultEntity<String> handleBadCredentialsException(BadCredentialsException e) {
-        log.error("登录失败,{}", e);
+        log.error("登录失败,{0}", e);
         return ResultEntity.authorizedFailed("用户名或密码错误");
     }
 
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResultEntity<String> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
-        log.error("不支持的媒体类型异常,{}", e);
+        log.error("不支持的媒体类型异常,{0}", e);
         return ResultEntity.unSupportedMediaType();
     }
 
@@ -71,7 +68,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindSocialAccountException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ResultEntity<String> handleBindSocialAccountException(BindSocialAccountException e) {
-        log.error("绑定社交帐号出错:{}", e);
+        log.error("绑定社交帐号出错:{0}", e);
         return ResultEntity.badArgument(e.getMessage());
     }
 
@@ -87,6 +84,20 @@ public class GlobalExceptionHandler {
     public ResultEntity<String> handleAuthFailException(AuthenticationException e) {
         log.error("认证失败，错误信息：{0}", e);
         return ResultEntity.authorizedFailed("认证失败:" + e.getMessage());
+    }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResultEntity<String> handleAuthFailException(UnauthorizedException e) {
+        log.error("未登录，错误信息：{0}", e);
+        return ResultEntity.unauthorized();
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResultEntity<String> handleAuthFailException(NotFoundException e) {
+        log.error("用户请求数据不存在，错误信息：{0}", e);
+        return ResultEntity.dataNotFound(e.getMessage());
     }
 
     /**

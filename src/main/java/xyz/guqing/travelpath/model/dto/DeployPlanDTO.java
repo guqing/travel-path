@@ -17,6 +17,8 @@ import java.util.List;
 public class DeployPlanDTO implements OutputConverter<DeployPlanDTO, DeployPlanDO> {
     private Long id;
 
+    private Long presetId;
+
     private Integer count;
     /**
      * 方案名称

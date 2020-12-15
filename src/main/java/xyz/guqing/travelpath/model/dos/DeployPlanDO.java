@@ -18,6 +18,7 @@ import java.util.List;
 @Data
 public class DeployPlanDO {
     private Long id;
+    private Long presetId;
     private String name;
     private String description;
     private Integer count;

@@ -1,6 +1,7 @@
 package xyz.guqing.travelpath.model.dto;
 
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import xyz.guqing.travelpath.model.dos.PresetPlanDO;
 import xyz.guqing.travelpath.model.entity.PresetNode;
 import xyz.guqing.travelpath.model.support.OutputConverter;
@@ -32,4 +33,11 @@ public class PresetPlanDTO implements OutputConverter<PresetPlanDTO, PresetPlanD
      * 卡口位置
      */
     private List<PresetNode> checkpoints;
+
+    @Override
+    public <T extends PresetPlanDTO> T convertFrom(PresetPlanDO presetPlanDO) {
+        BeanUtils.copyProperties(presetPlanDO, this);
+        this.checkpoints = presetPlanDO.getPresetNodes();
+        return (T)this;
+    }
 }

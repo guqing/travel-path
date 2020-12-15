@@ -14,6 +14,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class DeployPlan extends BaseEntity{
     private Long userId;
+    private Long presetId;
     private String name;
     private String description;
     private Integer count;
