@@ -41,8 +41,16 @@ public class PresetPlanController {
         return ResultEntity.ok(presetPlanDTO);
     }
 
-    @PostMapping("/create-update")
-    public ResultEntity createOrUpdate(@RequestBody @Valid PresetPlanParam presetPlanParam) {
+    @PostMapping
+    public ResultEntity createBy(@RequestBody @Valid PresetPlanParam presetPlanParam) {
+        presetPlanService.createOrUpdate(presetPlanParam);
+        return ResultEntity.ok();
+    }
+
+    @PutMapping("/{id:\\d+}")
+    public ResultEntity updateBy(@PathVariable Long id,
+                                 @RequestBody @Valid PresetPlanParam presetPlanParam) {
+        presetPlanParam.setId(id);
         presetPlanService.createOrUpdate(presetPlanParam);
         return ResultEntity.ok();
     }
