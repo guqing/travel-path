@@ -3,7 +3,7 @@ package xyz.guqing.travelpath.utils;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
-import xyz.guqing.travelpath.model.constant.CreekConstant;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
 import xyz.guqing.travelpath.model.support.PageQuery;
 
 /**
@@ -20,7 +20,7 @@ public class PageUtils {
         String sortField = pageQuery.getField();
         if(StringUtils.isNotBlank(sortField)) {
             OrderItem orderItem = new OrderItem();
-            orderItem.setAsc(CreekConstant.ORDER_ASC.equalsIgnoreCase(pageQuery.getOrder()));
+            orderItem.setAsc(TravelPathConstant.ORDER_ASC.equalsIgnoreCase(pageQuery.getOrder()));
             // 驼峰转下划线
             String underscoreField = TravelPathUtils.camelToUnderscore(sortField);
             orderItem.setColumn(underscoreField);

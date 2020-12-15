@@ -15,7 +15,7 @@ import xyz.guqing.travelpath.exception.NotFoundException;
 import xyz.guqing.travelpath.mapper.UserMapper;
 import xyz.guqing.travelpath.mapper.UserRoleMapper;
 import xyz.guqing.travelpath.model.bo.CurrentUser;
-import xyz.guqing.travelpath.model.constant.CreekConstant;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
 import xyz.guqing.travelpath.model.dos.UserDO;
 import xyz.guqing.travelpath.model.dto.UserDTO;
 import xyz.guqing.travelpath.model.dto.UserInfoDTO;
@@ -192,7 +192,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(user == null) {
             throw new NotFoundException("用户不存在");
         }
-        String defaultPassword = passwordEncoder.encode(CreekConstant.DEFAULT_PASSWORD);
+        String defaultPassword = passwordEncoder.encode(TravelPathConstant.DEFAULT_PASSWORD);
         user.setPassword(defaultPassword);
 
         updateById(user);

@@ -21,7 +21,7 @@ import xyz.guqing.travelpath.exception.AuthenticationException;
 import xyz.guqing.travelpath.exception.BindSocialAccountException;
 import xyz.guqing.travelpath.exception.NotFoundException;
 import xyz.guqing.travelpath.model.bo.MyUserDetails;
-import xyz.guqing.travelpath.model.constant.CreekConstant;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
 import xyz.guqing.travelpath.model.dto.SocialLoginDTO;
 import xyz.guqing.travelpath.model.entity.User;
 import xyz.guqing.travelpath.model.entity.UserConnection;
@@ -153,7 +153,7 @@ public class UserLoginService {
         UserRole userRole = new UserRole();
         userRole.setUserId(user.getId());
         // 注册用户角色 ID
-        userRole.setRoleId(CreekConstant.REGISTER_ROLE_ID);
+        userRole.setRoleId(TravelPathConstant.REGISTER_ROLE_ID);
         userRoleService.save(userRole);
         return user;
     }

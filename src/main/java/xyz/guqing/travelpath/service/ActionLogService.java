@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.springframework.scheduling.annotation.Async;
-import xyz.guqing.travelpath.model.constant.CreekConstant;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
 import xyz.guqing.travelpath.model.entity.ActionLog;
 import xyz.guqing.travelpath.model.params.ActionLogQuery;
 import xyz.guqing.travelpath.model.support.PageQuery;
@@ -28,7 +28,7 @@ public interface ActionLogService extends IService<ActionLog> {
      * @param username  操作用户
      * @param start     开始时间
      */
-    @Async(CreekConstant.ASYNC_POOL)
+    @Async(TravelPathConstant.ASYNC_POOL)
     void saveLog(ProceedingJoinPoint point, Method method, String ip, String operation, String username, long start);
 
     /**

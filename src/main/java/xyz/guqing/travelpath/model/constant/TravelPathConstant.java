@@ -5,7 +5,7 @@ package xyz.guqing.travelpath.model.constant;
  *
  * @author guqing
  */
-public interface CreekConstant {
+public interface TravelPathConstant {
 
     /**
      * 排序规则：降序
@@ -30,6 +30,8 @@ public interface CreekConstant {
      * Java默认临时目录
      */
     String JAVA_TEMP_DIR = "java.io.tmpdir";
+
+    String USER_HOME = System.getProperties().getProperty("user.home");
 
     /**
      * 注册用户角色ID

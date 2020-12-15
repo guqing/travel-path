@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.lionsoul.ip2region.DataBlock;
 import org.lionsoul.ip2region.DbConfig;
 import org.lionsoul.ip2region.DbSearcher;
-import xyz.guqing.travelpath.model.constant.CreekConstant;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class RegionAddressUtils {
         String dbPath = RegionAddressUtils.class.getResource("/ip2region/ip2region.db").getPath();
         File file = new File(dbPath);
         if (!file.exists()) {
-            String tmpDir = System.getProperties().getProperty(CreekConstant.JAVA_TEMP_DIR);
+            String tmpDir = System.getProperties().getProperty(TravelPathConstant.JAVA_TEMP_DIR);
             dbPath = tmpDir + "/ip2region.db";
             file = new File(dbPath);
             InputStream resourceAsStream = RegionAddressUtils.class.getClassLoader()

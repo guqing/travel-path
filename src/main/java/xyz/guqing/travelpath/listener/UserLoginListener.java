@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import xyz.guqing.travelpath.event.UserLoginEvent;
-import xyz.guqing.travelpath.model.constant.CreekConstant;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
 import xyz.guqing.travelpath.model.entity.UserLoginLog;
 import xyz.guqing.travelpath.service.UserLoginLogService;
 import xyz.guqing.travelpath.service.UserService;
@@ -32,7 +32,7 @@ public class UserLoginListener implements ApplicationListener<UserLoginEvent> {
     }
 
     @Override
-    @Async(CreekConstant.ASYNC_POOL)
+    @Async(TravelPathConstant.ASYNC_POOL)
     public void onApplicationEvent(@NonNull UserLoginEvent userLoginEvent) {
         // 更新最后登录时间
         userService.updateLastLoginTime(userLoginEvent.getUsername(), LocalDateTime.now());
