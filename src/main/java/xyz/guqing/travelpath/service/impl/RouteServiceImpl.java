@@ -16,17 +16,16 @@ import com.graphhopper.util.details.PathDetailsBuilderFactory;
 import com.graphhopper.util.shapes.GHPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import xyz.guqing.travelpath.model.enums.TopSisPropertyEnum;
 import xyz.guqing.travelpath.route.MyPathMerger;
 import xyz.guqing.travelpath.route.PathHelper;
 import xyz.guqing.travelpath.route.RoutePath;
 import xyz.guqing.travelpath.service.RouteService;
+import xyz.guqing.travelpath.service.UserSettingOptionService;
 import xyz.guqing.travelpath.utils.CartesianUtils;
 import xyz.guqing.travelpath.utils.TopSis;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.graphhopper.util.Parameters.Details.AVERAGE_SPEED;
@@ -43,6 +42,7 @@ public class RouteServiceImpl implements RouteService {
     private final GraphHopper graphHopper;
     private final CarFlagEncoder carFlagEncoder;
     private final EncodingManager encodingManager;
+    private final UserSettingOptionService userSettingOptionService;
 
     @Override
     public List<RoutePath> route(List<GHPoint> points) {
@@ -68,7 +68,7 @@ public class RouteServiceImpl implements RouteService {
             RoutePath routePath = myPathMerger.pathMerger(subPathList);
             pathList.add(routePath);
         }
-        return pathList;
+        return topSis(pathList);
     }
 
     private List<RoutePath> topSis(List<RoutePath> pathList) {
@@ -89,8 +89,8 @@ public class RouteServiceImpl implements RouteService {
             // 成本型
             matrix[i][5] = routePath.getUTurnCount();
         }
-
-        double[] weights = {0.2, 0.2, 0.2, 0.1, 0.2, 0.1};
+        // 按顺序: distance,time,averageSpeed,regularTurn,sharpTurn,uTurn
+        double[] weights = calcTopSisWeights();
         // 计算
         int[] attributeType = {1, 0, 1, 0, 0, 0};
         double[] degrees = TopSis.decisionAttributes(matrix, weights, attributeType);
@@ -101,7 +101,25 @@ public class RouteServiceImpl implements RouteService {
         }
 
         return pathList.stream()
-                .sorted(Comparator.comparing(RoutePath::getDecisionValue))
+                .sorted(Comparator.comparing(RoutePath::getDecisionValue, Comparator.reverseOrder()))
                 .collect(Collectors.toList());
+    }
+
+    private double[] calcTopSisWeights() {
+        double[] weights = new double[6];
+        Double distance = userSettingOptionService.getByPropertyOrDefault(TopSisPropertyEnum.DISTANCE, Double.class);
+        Double time = userSettingOptionService.getByPropertyOrDefault(TopSisPropertyEnum.TIME, Double.class);
+        Double averageSpeed = userSettingOptionService.getByPropertyOrDefault(TopSisPropertyEnum.AVERAGE_SPEED, Double.class);
+        Double regularTurn = userSettingOptionService.getByPropertyOrDefault(TopSisPropertyEnum.REGULAR_TURN, Double.class);
+        Double sharpTurn = userSettingOptionService.getByPropertyOrDefault(TopSisPropertyEnum.SHARP_TURN, Double.class);
+        Double uTurn = userSettingOptionService.getByPropertyOrDefault(TopSisPropertyEnum.U_TURN, Double.class);
+
+        weights[0] = distance;
+        weights[1] = time;
+        weights[2] = averageSpeed;
+        weights[3] = regularTurn;
+        weights[4] = sharpTurn;
+        weights[5] = uTurn;
+        return weights;
     }
 }

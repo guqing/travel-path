@@ -309,13 +309,13 @@ create table user_setting_option
     MODIFY_TIME  DATETIME     not null
 );
 
-comment on column SETTING_OPTION.OPTION_KEY is 'key名称';
+comment on column user_setting_option.OPTION_KEY is 'key名称';
 
-comment on column SETTING_OPTION.OPTION_VALUE is '值';
+comment on column user_setting_option.OPTION_VALUE is '值';
 
-comment on column SETTING_OPTION.CREATE_TIME is '创建时间';
+comment on column user_setting_option.CREATE_TIME is '创建时间';
 
-comment on column SETTING_OPTION.MODIFY_TIME is '修改时间';
+comment on column user_setting_option.MODIFY_TIME is '修改时间';
 
 create table preset_plan (
     id bigint not null primary key auto_increment,
