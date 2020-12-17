@@ -58,6 +58,11 @@ public class TopSis {
         ROW = matrixI.length;
         COLUMN = matrixI[0].length;
 
+        if(ROW == 1) {
+            // 快速返回
+            return new double[]{1};
+        }
+
         if (debug) {
             showMatrix1(matrixI);
         }

@@ -57,7 +57,6 @@ public class RouteServiceImpl implements RouteService {
         alternativeRoute.setMaxWeightFactor(1.6);
 
         List<List<Path>> pathsList = PathHelper.calcAlternativePaths(alternativeRoute, snaps);
-        System.out.println(pathsList);
         MyPathMerger myPathMerger = new MyPathMerger(queryGraph, weighting, encodingManager)
                 .setPathDetailsBuilders(new PathDetailsBuilderFactory(), Collections.singletonList(AVERAGE_SPEED));
 
