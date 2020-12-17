@@ -10,6 +10,7 @@ import java.text.DecimalFormat;
 public class TopSis {
     private static int ROW = 0;
     private static int COLUMN = 6;
+    private static final boolean debug = false;
 
     public static void showMatrix1(double[][] matrix) {
         int i, j;
@@ -57,7 +58,9 @@ public class TopSis {
         ROW = matrixI.length;
         COLUMN = matrixI[0].length;
 
-        // showMatrix1(matrixI);
+        if (debug) {
+            showMatrix1(matrixI);
+        }
 
         // Step 1 : Generate R// Step 1 : Generate R
         double[][] matrixR = new double[ROW][COLUMN];
@@ -68,10 +71,17 @@ public class TopSis {
                 for (k = 0; k < ROW; k++) {
                     sum += matrixI[k][j] * matrixI[k][j];
                 }
-                matrixR[i][j] = matrixI[i][j] / Math.sqrt(sum);
+                if (sum == 0) {
+                    matrixR[i][j] = 0.0;
+                } else {
+                    matrixR[i][j] = matrixI[i][j] / Math.sqrt(sum);
+                }
             }
         }
-        // showMatrix1(matrixR);
+
+        if (debug) {
+            showMatrix1(matrixR);
+        }
 
         // Step 2 : Generate V
         double[][] matrixV = new double[ROW][COLUMN];
@@ -80,7 +90,10 @@ public class TopSis {
                 matrixV[i][j] = matrixR[i][j] * weight[j];
             }
         }
-        // showMatrix1(matrixV);
+
+        if (debug) {
+            showMatrix1(matrixV);
+        }
 
         // Step 3 : Generate A+ and A-
         double[] positiveA = new double[COLUMN];
@@ -113,17 +126,18 @@ public class TopSis {
             negativeA[j] = negativeMin;
         }
 
-        /*
-        System.out.println("positive_A:");
-        for (j = 0; j < COLUMN; j++) {
-            System.out.println(positiveA[j]);
-        }*/
+        if (debug) {
+            System.out.println("positive_A:");
+            for (j = 0; j < COLUMN; j++) {
+                System.out.println(positiveA[j]);
+            }
 
-        /*
-        System.out.println("Negative_A:");
-        for (j = 0; j < COLUMN; j++) {
-            System.out.println(negativeA[j]);
-        }*/
+
+            System.out.println("Negative_A:");
+            for (j = 0; j < COLUMN; j++) {
+                System.out.println(negativeA[j]);
+            }
+        }
 
         // Step 4 : Compute Euclid distance
         double[] positiveS = new double[ROW];
@@ -144,17 +158,17 @@ public class TopSis {
             negativeS[i] = Math.sqrt(negativeSum);
         }
 
-        /*
-        System.out.println("positive_S:");
-        for (i = 0; i < ROW; i++) {
-            System.out.println(positiveS[i]);
-        }*/
+        if (debug) {
+            System.out.println("positive_S:");
+            for (i = 0; i < ROW; i++) {
+                System.out.println(positiveS[i]);
+            }
 
-        /*
-        System.out.println("Negative_S:");
-        for (i = 0; i < ROW; i++) {
-            System.out.println(negativeS[i]);
-        }*/
+            System.out.println("Negative_S:");
+            for (i = 0; i < ROW; i++) {
+                System.out.println(negativeS[i]);
+            }
+        }
 
         // Step 5 : Compute the relative approach degree with Ideal Solution
         double[] degreeC = new double[ROW];
@@ -162,10 +176,12 @@ public class TopSis {
             degreeC[i] = negativeS[i] / (positiveS[i] + negativeS[i]);
         }
 
-        /*System.out.println("Degree_C:");
-        for (i = 0; i < ROW; i++) {
-            System.out.println(degreeC[i]);
-        }*/
+        if (debug) {
+            System.out.println("Degree_C:");
+            for (i = 0; i < ROW; i++) {
+                System.out.println(degreeC[i]);
+            }
+        }
         return degreeC;
     }
 }
