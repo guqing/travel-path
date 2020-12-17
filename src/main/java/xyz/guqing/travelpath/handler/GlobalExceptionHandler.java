@@ -1,5 +1,6 @@
 package xyz.guqing.travelpath.handler;
 
+import com.graphhopper.util.exceptions.ConnectionNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,13 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(value = ConnectionNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResultEntity<String> handleForbiddenException(ConnectionNotFoundException e) {
+        log.error("路径规划失败,{0}", e);
+        return ResultEntity.badArgument("卡口序列之间不存在连通道路,规划失败");
+    }
+
     @ExceptionHandler(value = ForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResultEntity<String> handleForbiddenException(ForbiddenException e) {

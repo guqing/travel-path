@@ -296,10 +296,11 @@ comment on column ACTION_LOG.CREATE_TIME is '创建时间';
 create index ACTION_LOG_CREATE_TIME
     on ACTION_LOG (CREATE_TIME);
 
-create table SETTING_OPTION
+create table user_setting_option
 (
     ID           BIGINT auto_increment
         primary key,
+    user_id bigint not null,
     OPTION_KEY   VARCHAR(100) not null
         constraint SETTING_OPTION_OPTION_KEY_UINDEX
             unique,
