@@ -357,7 +357,6 @@ create table deploy_node(
 create table route(
     id bigint not null primary key auto_increment,
     car_number varchar(30) not null,
-    checkpoint_sequence_id bigint not null,
     points text not null comment '轨迹坐标点lat lng序列',
     distance double not null default 0 comment '距离ms',
     time double not null default 0 comment '时间ms',
@@ -371,6 +370,7 @@ create table route(
 
 create table route_check_point_sequence(
     id bigint not null primary key auto_increment,
+    route_id bigint not null,
     index int not null,
     lat double not null comment '纬度',
     lng double not null comment '经度',

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.guqing.travelpath.model.params.RouteParam;
 import xyz.guqing.travelpath.model.params.RouteQuery;
 import xyz.guqing.travelpath.model.support.ResultEntity;
 import xyz.guqing.travelpath.route.RoutePath;
@@ -31,5 +32,11 @@ public class RouteController {
         List<GHPoint> ghPoints = routeQuery.convertTo();
         List<RoutePath> routes = routeService.route(ghPoints);
         return ResultEntity.ok(routes);
+    }
+
+    @PostMapping("/save")
+    public ResultEntity<String> create(@RequestBody @Valid RouteParam routeParam) {
+        routeService.createBy(routeParam);
+        return ResultEntity.ok();
     }
 }

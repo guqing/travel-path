@@ -1,5 +1,7 @@
 package xyz.guqing.travelpath.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.graphhopper.GraphHopper;
 import com.graphhopper.routing.AlternativeRoute;
 import com.graphhopper.routing.Path;
@@ -16,9 +18,16 @@ import com.graphhopper.util.details.PathDetailsBuilderFactory;
 import com.graphhopper.util.shapes.GHPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import xyz.guqing.travelpath.mapper.RouteCheckPointSequenceMapper;
+import xyz.guqing.travelpath.mapper.RouteMapper;
+import xyz.guqing.travelpath.model.entity.Route;
+import xyz.guqing.travelpath.model.entity.RouteCheckPointSequence;
 import xyz.guqing.travelpath.model.enums.TopSisPropertyEnum;
+import xyz.guqing.travelpath.model.params.RouteParam;
 import xyz.guqing.travelpath.route.MyPathMerger;
 import xyz.guqing.travelpath.route.PathHelper;
+import xyz.guqing.travelpath.route.Point;
 import xyz.guqing.travelpath.route.RoutePath;
 import xyz.guqing.travelpath.service.RouteService;
 import xyz.guqing.travelpath.service.UserSettingOptionService;
@@ -38,11 +47,12 @@ import static com.graphhopper.util.Parameters.Details.AVERAGE_SPEED;
  */
 @Service
 @RequiredArgsConstructor
-public class RouteServiceImpl implements RouteService {
+public class RouteServiceImpl extends ServiceImpl<RouteMapper, Route> implements RouteService {
     private final GraphHopper graphHopper;
     private final CarFlagEncoder carFlagEncoder;
     private final EncodingManager encodingManager;
     private final UserSettingOptionService userSettingOptionService;
+    private final RouteCheckPointSequenceMapper routeCheckPointSequenceMapper;
 
     @Override
     public List<RoutePath> route(List<GHPoint> points) {
@@ -68,6 +78,28 @@ public class RouteServiceImpl implements RouteService {
             pathList.add(routePath);
         }
         return topSis(pathList);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void createBy(RouteParam routeParam) {
+        Route route = routeParam.convertTo();
+        String pointString = JSONObject.toJSONString(route.getPoints());
+        route.setPoints(pointString);
+        save(route);
+        Long routeId = route.getId();
+
+        List<Point> checkpoints = routeParam.getCheckpoints();
+        for (int i = 0; i < checkpoints.size(); i++) {
+            Point point = checkpoints.get(i);
+            RouteCheckPointSequence routeCheckPointSequence = new RouteCheckPointSequence()
+                    .setIndex(i)
+                    .setRouteId(routeId)
+                    .setLat(point.getLat())
+                    .setLng(point.getLng());
+            // 插入
+            routeCheckPointSequenceMapper.insert(routeCheckPointSequence);
+        }
     }
 
     private List<RoutePath> topSis(List<RoutePath> pathList) {

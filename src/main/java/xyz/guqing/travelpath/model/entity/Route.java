@@ -22,11 +22,6 @@ public class Route extends BaseEntity {
     private String carNumber;
 
     /**
-     * 车牌途径卡口序列
-     */
-    private Long checkpointSequenceId;
-
-    /**
      * 轨迹坐标点json字符串
      */
     private String points;
