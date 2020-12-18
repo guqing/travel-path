@@ -1,13 +1,15 @@
 package xyz.guqing.travelpath.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.graphhopper.util.shapes.GHPoint;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import xyz.guqing.travelpath.model.dto.RouteDTO;
+import xyz.guqing.travelpath.model.entity.Route;
 import xyz.guqing.travelpath.model.params.RouteParam;
 import xyz.guqing.travelpath.model.params.RouteQuery;
+import xyz.guqing.travelpath.model.support.PageInfo;
+import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.model.support.ResultEntity;
 import xyz.guqing.travelpath.route.RoutePath;
 import xyz.guqing.travelpath.service.RouteService;
@@ -38,5 +40,11 @@ public class RouteController {
     public ResultEntity<String> create(@RequestBody @Valid RouteParam routeParam) {
         routeService.createBy(routeParam);
         return ResultEntity.ok();
+    }
+
+    @GetMapping
+    public ResultEntity<PageInfo<RouteDTO>> list(PageQuery pageQuery) {
+        Page<Route> routes = routeService.listBy(pageQuery);
+        return ResultEntity.okList(routes, route -> new RouteDTO().convertFrom(route));
     }
 }

@@ -356,6 +356,7 @@ create table deploy_node(
 
 create table route(
     id bigint not null primary key auto_increment,
+    user_id bigint not null,
     car_number varchar(30) not null,
     points text not null comment '轨迹坐标点lat lng序列',
     distance double not null default 0 comment '距离ms',

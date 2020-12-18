@@ -1,6 +1,9 @@
 package xyz.guqing.travelpath.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.graphhopper.GraphHopper;
 import com.graphhopper.routing.AlternativeRoute;
@@ -25,6 +28,7 @@ import xyz.guqing.travelpath.model.entity.Route;
 import xyz.guqing.travelpath.model.entity.RouteCheckPointSequence;
 import xyz.guqing.travelpath.model.enums.TopSisPropertyEnum;
 import xyz.guqing.travelpath.model.params.RouteParam;
+import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.route.MyPathMerger;
 import xyz.guqing.travelpath.route.PathHelper;
 import xyz.guqing.travelpath.route.Point;
@@ -32,6 +36,8 @@ import xyz.guqing.travelpath.route.RoutePath;
 import xyz.guqing.travelpath.service.RouteService;
 import xyz.guqing.travelpath.service.UserSettingOptionService;
 import xyz.guqing.travelpath.utils.CartesianUtils;
+import xyz.guqing.travelpath.utils.PageUtils;
+import xyz.guqing.travelpath.utils.SecurityUserHelper;
 import xyz.guqing.travelpath.utils.TopSis;
 
 import java.util.*;
@@ -84,6 +90,7 @@ public class RouteServiceImpl extends ServiceImpl<RouteMapper, Route> implements
     @Transactional(rollbackFor = Exception.class)
     public void createBy(RouteParam routeParam) {
         Route route = routeParam.convertTo();
+        route.setUserId(SecurityUserHelper.getCurrentUserId());
         String pointString = JSONObject.toJSONString(route.getPoints());
         route.setPoints(pointString);
         save(route);
@@ -100,6 +107,19 @@ public class RouteServiceImpl extends ServiceImpl<RouteMapper, Route> implements
             // 插入
             routeCheckPointSequenceMapper.insert(routeCheckPointSequence);
         }
+    }
+
+    @Override
+    public Page<Route> listBy(PageQuery pageQuery) {
+        LambdaQueryWrapper<Route> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Route::getUserId, SecurityUserHelper.getCurrentUserId());
+        Page<Route> page = page(PageUtils.convert(pageQuery), queryWrapper);
+
+        List<Route> collect = page.getRecords().stream()
+                .peek(route -> route.setPoints(null))
+                .collect(Collectors.toList());
+        page.setRecords(collect);
+        return page;
     }
 
     private List<RoutePath> topSis(List<RoutePath> pathList) {

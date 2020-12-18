@@ -16,6 +16,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("route")
 public class Route extends BaseEntity {
+    private Long userId;
     /**
      * 车牌号
      */
