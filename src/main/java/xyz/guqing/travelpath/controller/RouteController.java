@@ -47,4 +47,10 @@ public class RouteController {
         Page<Route> routes = routeService.listBy(pageQuery);
         return ResultEntity.okList(routes, route -> new RouteDTO().convertFrom(route));
     }
+
+    @GetMapping("/{id:\\d+}")
+    public ResultEntity<RouteDTO> getBy(@PathVariable Long id) {
+        RouteDTO routeDTO = routeService.getDetailById(id);
+        return ResultEntity.ok(routeDTO);
+    }
 }

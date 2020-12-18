@@ -1,6 +1,8 @@
 package xyz.guqing.travelpath.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import xyz.guqing.travelpath.mapper.RouteCheckPointSequenceMapper;
 import xyz.guqing.travelpath.mapper.RouteMapper;
+import xyz.guqing.travelpath.model.dto.RouteDTO;
 import xyz.guqing.travelpath.model.entity.Route;
 import xyz.guqing.travelpath.model.entity.RouteCheckPointSequence;
 import xyz.guqing.travelpath.model.enums.TopSisPropertyEnum;
@@ -91,7 +94,7 @@ public class RouteServiceImpl extends ServiceImpl<RouteMapper, Route> implements
     public void createBy(RouteParam routeParam) {
         Route route = routeParam.convertTo();
         route.setUserId(SecurityUserHelper.getCurrentUserId());
-        String pointString = JSONObject.toJSONString(route.getPoints());
+        String pointString = JSONObject.toJSONString(routeParam.getPoints());
         route.setPoints(pointString);
         save(route);
         Long routeId = route.getId();
@@ -120,6 +123,29 @@ public class RouteServiceImpl extends ServiceImpl<RouteMapper, Route> implements
                 .collect(Collectors.toList());
         page.setRecords(collect);
         return page;
+    }
+
+    @Override
+    public RouteDTO getDetailById(Long id) {
+        Route route = getById(id);
+        // 查询轨迹对应的卡口序列
+        LambdaQueryWrapper<RouteCheckPointSequence> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(RouteCheckPointSequence::getRouteId, id)
+                .orderByAsc(RouteCheckPointSequence::getIndex);
+        // 转换
+        List<Point> checkpoints = routeCheckPointSequenceMapper.selectList(queryWrapper)
+                .stream().map(checkpoint -> {
+                    Point point = new Point();
+                    point.setLat(checkpoint.getLat());
+                    point.setLng(checkpoint.getLng());
+                    return point;
+                }).collect(Collectors.toList());
+
+        RouteDTO routeDTO = new RouteDTO().convertFrom(route);
+        routeDTO.setCheckpoints(checkpoints);
+        List<Point> points = JSONObject.parseArray(route.getPoints(), Point.class);
+        routeDTO.setPoints(points);
+        return routeDTO;
     }
 
     private List<RoutePath> topSis(List<RoutePath> pathList) {
