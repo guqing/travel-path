@@ -353,3 +353,27 @@ create table deploy_node(
     lat double not null comment '纬度',
     lng double not null comment '经度'
 );
+
+create table route(
+    id bigint not null primary key auto_increment,
+    car_number varchar(30) not null,
+    checkpoint_sequence_id bigint not null,
+    points text not null comment '轨迹坐标点lat lng序列',
+    distance double not null default 0 comment '距离ms',
+    time double not null default 0 comment '时间ms',
+    average_speed double not null default 0 comment '平均速度km/h',
+    regular_turn_count double not null default 0 comment '转弯次数',
+    sharp_turn_count double not null default 0 comment '急转弯次数',
+    u_turn_count double not null default 0 comment '掉头次数',
+    create_time datetime not null,
+    modify_time datetime not null
+);
+
+create table route_check_point_sequence(
+    id bigint not null primary key auto_increment,
+    index int not null,
+    lat double not null comment '纬度',
+    lng double not null comment '经度',
+    create_time datetime not null,
+    modify_time datetime not null
+);
