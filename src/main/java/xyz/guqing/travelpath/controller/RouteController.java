@@ -53,4 +53,10 @@ public class RouteController {
         RouteDTO routeDTO = routeService.getDetailById(id);
         return ResultEntity.ok(routeDTO);
     }
+
+    @DeleteMapping("/{id:\\d+}")
+    public ResultEntity<String> deletePermanentlyById(@PathVariable Long id) {
+        routeService.removeById(id);
+        return ResultEntity.ok();
+    }
 }
