@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 
 /**
  * 系统操作日志服务类
+ *
  * @author guqing
  * @date 2020-06-01
  */
@@ -33,9 +34,18 @@ public interface ActionLogService extends IService<ActionLog> {
 
     /**
      * 根据条件查询日志
-     * @param logQuery 查询条件
+     *
+     * @param logQuery  查询条件
      * @param pageQuery 分页
      * @return 返回分页查询结果
      */
     IPage<ActionLog> listBy(ActionLogQuery logQuery, PageQuery pageQuery);
+
+    /**
+     * 查询用户的操作日志
+     *
+     * @param pageQuery 分页条件
+     * @return 返回分页列表
+     */
+    IPage<ActionLog> listByUser(PageQuery pageQuery);
 }

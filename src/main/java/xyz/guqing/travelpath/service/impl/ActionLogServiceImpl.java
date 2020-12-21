@@ -17,7 +17,9 @@ import xyz.guqing.travelpath.model.entity.ActionLog;
 import xyz.guqing.travelpath.model.params.ActionLogQuery;
 import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.service.ActionLogService;
+import xyz.guqing.travelpath.utils.PageUtils;
 import xyz.guqing.travelpath.utils.RegionAddressUtils;
+import xyz.guqing.travelpath.utils.SecurityUserHelper;
 
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -93,6 +95,14 @@ public class ActionLogServiceImpl extends ServiceImpl<ActionLogMapper, ActionLog
         // 按照创建时间降序排列，最近的显示在最前面
         queryWrapper.orderByDesc(ActionLog::getCreateTime);
         return page(new Page<>(current, pageSize), queryWrapper);
+    }
+
+    @Override
+    public IPage<ActionLog> listByUser(PageQuery pageQuery) {
+        LambdaQueryWrapper<ActionLog> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(ActionLog::getUsername, SecurityUserHelper.getCurrentUsername())
+                .orderByDesc(ActionLog::getCreateTime);
+        return page(PageUtils.convert(pageQuery), queryWrapper);
     }
 
     private StringBuilder handleParams(StringBuilder params, Object[] args, List paramNames) {

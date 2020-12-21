@@ -25,7 +25,13 @@ public class ActionLogController {
 
     @GetMapping
     public ResultEntity<PageInfo<ActionLogDTO>> list(ActionLogQuery actionLogQuery, PageQuery pageQuery) {
-        IPage<ActionLog> actionLogPage = actionLogService.listBy(actionLogQuery,pageQuery);
+        IPage<ActionLog> actionLogPage = actionLogService.listBy(actionLogQuery, pageQuery);
+        return ResultEntity.okList(actionLogPage, actionLog -> new ActionLogDTO().convertFrom(actionLog));
+    }
+
+    @GetMapping("/user")
+    public ResultEntity<PageInfo<ActionLogDTO>> listByUser(PageQuery pageQuery) {
+        IPage<ActionLog> actionLogPage = actionLogService.listByUser(pageQuery);
         return ResultEntity.okList(actionLogPage, actionLog -> new ActionLogDTO().convertFrom(actionLog));
     }
 }
