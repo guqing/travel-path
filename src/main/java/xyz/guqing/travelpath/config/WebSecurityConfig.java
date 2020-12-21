@@ -30,10 +30,10 @@ import xyz.guqing.travelpath.security.support.MyUserDetailsServiceImpl;
 @EnableGlobalMethodSecurity(prePostEnabled=true)
 @EnableConfigurationProperties({SecurityProperties.class})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private MyAuthenticationEntryPoint authenticationEntryPoint;
-    private MyAccessDeniedHandler accessDeniedHandler;
-    private MyLogoutSuccessHandler logoutSuccessHandler;
-    private MyUserDetailsServiceImpl userDetailsService;
+    private final MyAuthenticationEntryPoint authenticationEntryPoint;
+    private final MyAccessDeniedHandler accessDeniedHandler;
+    private final MyLogoutSuccessHandler logoutSuccessHandler;
+    private final MyUserDetailsServiceImpl userDetailsService;
     private final LoginProperties loginProperties;
 
     private AuthenticationManager authenticationManager;
@@ -89,6 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 允许对于网站静态资源的无授权访问
                 .antMatchers(HttpMethod.GET,
                         "/",
+                        "/files/static/**",
                         "/*.html",
                         "/favicon.ico",
                         "/**/*.html",
@@ -101,11 +102,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 对登录登出注册要允许匿名访问
                 .antMatchers("/auth/**", loginProperties.getLogoutUrl())
                 .permitAll()
-
-                //.anyRequest()
-                // RBAC 动态 url 认证
-                //.access("@rbacauthorityservice.hasPermission(request,authentication)")
-
                 .and()
                 .logout().logoutUrl(loginProperties.getLogoutUrl())
                 .logoutSuccessHandler(logoutSuccessHandler)

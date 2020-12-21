@@ -1,6 +1,8 @@
 package xyz.guqing.travelpath.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
@@ -10,8 +12,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import xyz.guqing.travelpath.converter.StringToLocalDateTimeConverter;
+import xyz.guqing.travelpath.model.constant.TravelPathConstant;
+import xyz.guqing.travelpath.model.properties.TravelPathProperties;
 
 
 /**
@@ -19,10 +25,24 @@ import xyz.guqing.travelpath.converter.StringToLocalDateTimeConverter;
  * @date 2020-07-16
  */
 @Configuration
+@EnableConfigurationProperties(TravelPathProperties.class)
 public class MyWebMvcConfigure implements WebMvcConfigurer {
+    @Autowired
+    private TravelPathProperties travelPathProperties;
+    private static final String FILE_PROTOCOL = "file:///";
+
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new StringToLocalDateTimeConverter());
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/");
+        // 映射到磁盘需要指定文件协议
+        registry.addResourceHandler("/files/static/**")
+                .addResourceLocations(FILE_PROTOCOL + travelPathProperties.getUploadLocation());
     }
 
     @Bean

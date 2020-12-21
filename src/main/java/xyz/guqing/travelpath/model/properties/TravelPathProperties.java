@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 @ConfigurationProperties(prefix = "travel")
 public class TravelPathProperties {
     private String home = TravelPathConstant.USER_HOME + "/.travel-path";
+    private String uploadLocation = home + "/upload/";
     private final GraphHopperProperties graphHopper = new GraphHopperProperties();
     private final Path path = Paths.get(home);
 
