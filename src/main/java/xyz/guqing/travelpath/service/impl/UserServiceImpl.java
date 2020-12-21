@@ -5,12 +5,16 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.jsonwebtoken.lang.Assert;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.exception.BadArgumentException;
+import xyz.guqing.travelpath.exception.FileOperationException;
 import xyz.guqing.travelpath.exception.NotFoundException;
 import xyz.guqing.travelpath.mapper.UserMapper;
 import xyz.guqing.travelpath.mapper.UserRoleMapper;
@@ -25,6 +29,7 @@ import xyz.guqing.travelpath.model.enums.GenderEnum;
 import xyz.guqing.travelpath.model.enums.UserStatusEnum;
 import xyz.guqing.travelpath.model.params.UserParam;
 import xyz.guqing.travelpath.model.params.UserQuery;
+import xyz.guqing.travelpath.model.properties.TravelPathProperties;
 import xyz.guqing.travelpath.model.support.PageInfo;
 import xyz.guqing.travelpath.model.support.PageQuery;
 import xyz.guqing.travelpath.service.MenuService;
@@ -34,10 +39,16 @@ import xyz.guqing.travelpath.utils.PageUtils;
 import xyz.guqing.travelpath.utils.ServiceUtils;
 import xyz.guqing.travelpath.utils.TravelPathUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * <p>
@@ -54,6 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final MenuService menuService;
     private final UserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
+    private final TravelPathProperties travelPathProperties;
 
     @Override
     public PageInfo<UserDTO> listByPage(UserQuery userQuery, PageQuery pageQuery) {
@@ -92,7 +104,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = userParam.convertTo();
         // 加密密码
         String password = user.getPassword();
-        if(password != null) {
+        if (password != null) {
             user.setPassword(passwordEncoder.encode(password));
         }
 
@@ -164,9 +176,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         update(updateWrapper);
     }
 
+    @Override
+    public String uploadAvatar(MultipartFile file) {
+        try {
+            return transferFileToDisc(file);
+        } catch (IOException e) {
+            throw new FileOperationException(e.getMessage(), e);
+        }
+    }
+
+    private String transferFileToDisc(MultipartFile file) throws IOException {
+        String originalFilename = file.getOriginalFilename();
+        if (StringUtils.isBlank(originalFilename)) {
+            throw new BadArgumentException("文件名称不能为空");
+        }
+
+        int suffixIndex = originalFilename.lastIndexOf(".");
+        if (suffixIndex == -1) {
+            throw new BadArgumentException("图片后缀不合法或为空");
+        }
+
+        String fileSuffix = originalFilename.substring(suffixIndex);
+        String filename = UUID.randomUUID().toString().replace("-", "");
+
+        String hashDirPath = hashBreak(filename);
+        Path path = Paths.get(travelPathProperties.getUploadLocation(), hashDirPath);
+        // 目录不存在则创建
+        if (!Files.exists(path)) {
+            Files.createDirectories(path);
+        }
+
+        Path transferPath = path.resolve(filename + fileSuffix);
+        file.transferTo(transferPath);
+
+        return String.format("%s/%s/%s/%s", travelPathProperties.getServerUrl(),
+                travelPathProperties.getUploadMappingUri(), hashDirPath, filename + fileSuffix);
+    }
+
+    private String hashBreak(String filename) {
+        int hashcode = filename.hashCode();
+        int dir1 = hashcode & 0xf;
+        int dir2 = (hashcode & 0xf0) >> 4;
+        return dir1 + TravelPathConstant.FILE_SEPARATOR + dir2;
+    }
+
     private UserInfoDTO convertTo(CurrentUser currentUser) {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
-        BeanUtils.copyProperties(currentUser,userInfoDTO);
+        BeanUtils.copyProperties(currentUser, userInfoDTO);
         userInfoDTO.setRoleIds(TravelPathUtils.commaSeparatedToList(currentUser.getRoleId()));
         userInfoDTO.setRoleNames(TravelPathUtils.commaSeparatedToList(currentUser.getRoleName()));
         return userInfoDTO;
@@ -189,7 +245,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     public void resetPassword(String username) {
         User user = getByUsername(username);
-        if(user == null) {
+        if (user == null) {
             throw new NotFoundException("用户不存在");
         }
         String defaultPassword = passwordEncoder.encode(TravelPathConstant.DEFAULT_PASSWORD);
@@ -202,7 +258,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional(rollbackFor = Exception.class)
     public void updateStatus(String username, UserStatusEnum status) {
         User user = getByUsername(username);
-        if(user == null) {
+        if (user == null) {
             throw new NotFoundException("用户不存在");
         }
         user.setStatus(status.getValue());
@@ -220,7 +276,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public void updatePassword(String username, String oldPassword, String newPassword) {
         boolean correctByPassword = isCorrectByPassword(username, oldPassword);
-        if(!correctByPassword) {
+        if (!correctByPassword) {
             throw new BadArgumentException("原始密码不正确");
         }
         // 修改密码

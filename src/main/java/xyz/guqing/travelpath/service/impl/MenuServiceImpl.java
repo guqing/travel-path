@@ -44,7 +44,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
         if(CollectionUtils.isEmpty(userMenus)) {
             return Collections.emptyList();
         }
-        System.out.println(userMenus);
         return userMenus;
     }
 

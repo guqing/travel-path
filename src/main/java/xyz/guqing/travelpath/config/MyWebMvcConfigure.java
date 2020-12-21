@@ -41,7 +41,7 @@ public class MyWebMvcConfigure implements WebMvcConfigurer {
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/");
         // 映射到磁盘需要指定文件协议
-        registry.addResourceHandler("/files/static/**")
+        registry.addResourceHandler(travelPathProperties.getUploadMappingUri() + "/**")
                 .addResourceLocations(FILE_PROTOCOL + travelPathProperties.getUploadLocation());
     }
 

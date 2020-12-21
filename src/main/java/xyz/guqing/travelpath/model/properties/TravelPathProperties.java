@@ -16,10 +16,16 @@ import java.nio.file.Paths;
 @Data
 @ConfigurationProperties(prefix = "travel")
 public class TravelPathProperties {
+    private final GraphHopperProperties graphHopper = new GraphHopperProperties();
     private String home = TravelPathConstant.USER_HOME + "/.travel-path";
     private String uploadLocation = home + "/upload/";
-    private final GraphHopperProperties graphHopper = new GraphHopperProperties();
     private final Path path = Paths.get(home);
+    private String serverUrl = "http://127.0.0.1:8080";
+    /**
+     * 上传文件访问路径映射
+     * 访问uploadMappingUri时映射到磁盘uploadLocation
+     */
+    private String uploadMappingUri = "files/static";
 
     public String getGraphLocation() {
         Path resolve = path.resolve(graphHopper.getGraphLocation());

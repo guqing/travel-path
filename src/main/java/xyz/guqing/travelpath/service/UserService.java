@@ -1,6 +1,7 @@
 package xyz.guqing.travelpath.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.model.bo.CurrentUser;
 import xyz.guqing.travelpath.model.dto.UserDTO;
 import xyz.guqing.travelpath.model.dto.UserInfoDTO;
@@ -135,4 +136,11 @@ public interface UserService extends IService<User> {
      * @param loginTime 最后登录时间
      */
     void updateLastLoginTime(String username, LocalDateTime loginTime);
+
+    /**
+     * 上传头像
+     * @param file MultipartFile object
+     * @return 返回头像url
+     */
+    String uploadAvatar(MultipartFile file);
 }

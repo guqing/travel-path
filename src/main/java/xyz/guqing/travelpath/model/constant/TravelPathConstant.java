@@ -1,5 +1,7 @@
 package xyz.guqing.travelpath.model.constant;
 
+import java.io.File;
+
 /**
  * 系统常量类
  *
@@ -39,4 +41,6 @@ public interface TravelPathConstant {
     Long REGISTER_ROLE_ID = 1L;
 
     String DEFAULT_PASSWORD = "123456";
+
+    String FILE_SEPARATOR = File.separator;
 }

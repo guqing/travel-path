@@ -6,6 +6,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import xyz.guqing.travelpath.exception.BadRequestException;
 import xyz.guqing.travelpath.model.annotation.ControllerEndpoint;
 import xyz.guqing.travelpath.model.dto.UserDTO;
@@ -84,6 +85,12 @@ public class UserController {
         String username = SecurityUserHelper.getCurrentUsername();
         userService.updateAvatar(username, avatar);
         return ResultEntity.ok();
+    }
+
+    @PostMapping("/avatar/upload")
+    public ResultEntity<String> uploadAvatar(@RequestParam MultipartFile file) {
+        String url = userService.uploadAvatar(file);
+        return ResultEntity.ok(url);
     }
 
     @PutMapping("password")

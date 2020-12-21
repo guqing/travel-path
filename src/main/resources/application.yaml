@@ -16,6 +16,8 @@ spring:
         web-allow-others: true
       path: /h2-console
       enabled: true
+travel:
+  serverUrl: http://localhost:8086
 justauth:
   enabled: true
   type:
