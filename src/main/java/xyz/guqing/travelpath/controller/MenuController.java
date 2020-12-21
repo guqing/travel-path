@@ -41,7 +41,6 @@ public class MenuController {
     }
 
     @GetMapping("router")
-    @PreAuthorize("hasAuthority('menu:view')")
     public ResultEntity<List<MenuDTO>> getRouterList() {
         String username = SecurityUserHelper.getCurrentUsername();
         List<Menu> menus = menuService.listUserMenus(username);
