@@ -10,9 +10,9 @@
     </parent>
     <groupId>xyz.guqing</groupId>
     <artifactId>travel-path</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>travel-path</name>
-    <description>Demo project for Spring Boot</description>
+    <description>车辆出现轨迹分析平台</description>
 
     <properties>
         <java.version>11</java.version>

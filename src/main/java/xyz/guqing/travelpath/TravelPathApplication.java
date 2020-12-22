@@ -13,6 +13,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TravelPathApplication {
 
     public static void main(String[] args) {
+        // Customize the spring config location
+        System.setProperty("spring.config.additional-location",
+                "file:${user.home}/.travel-path/,file:${user.home}/travel-path-dev/");
         SpringApplication.run(TravelPathApplication.class, args);
     }
 
