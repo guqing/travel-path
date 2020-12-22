@@ -35,11 +35,12 @@ public class PresetPlanServiceImpl extends ServiceImpl<PresetPlanMapper, PresetP
 
     @Override
     public Page<PresetPlan> listByPage(String name, PageQuery pageQuery) {
+        LambdaQueryWrapper<PresetPlan> queryWrapper = Wrappers.lambdaQuery();
         if(StringUtils.isNotBlank(name)) {
-            LambdaQueryWrapper<PresetPlan> queryWrapper = Wrappers.lambdaQuery();
             return page(PageUtils.convert(pageQuery), queryWrapper);
         }
-        return page(PageUtils.convert(pageQuery));
+        queryWrapper.eq(PresetPlan::getUserId, SecurityUserHelper.getCurrentUserId());
+        return page(PageUtils.convert(pageQuery), queryWrapper);
     }
 
     @Override

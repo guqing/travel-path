@@ -1,5 +1,5 @@
 server:
-  port: 8086
+  port: 8080
 spring:
   datasource:
     # 使用h2数据库
@@ -31,4 +31,6 @@ justauth:
       redirect-uri:
 logging:
   level:
-    xyz.guqing.travelpath: debug
+    xyz.guqing.travelpath: INFO
+  file:
+    path: ${user.home}/.travel-path/logs
