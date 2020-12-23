@@ -301,9 +301,7 @@ create table user_setting_option
     id           bigint auto_increment
         primary key,
     user_id bigint not null,
-    option_key   VARCHAR(100) not null
-        constraint setting_option_option_key_uindex
-            unique,
+    option_key   VARCHAR(100) not null,
     option_value VARCHAR(100) not null,
     create_time  datetime     not null,
     modify_time  datetime     not null

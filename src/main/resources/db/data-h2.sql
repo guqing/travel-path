@@ -1,4 +1,4 @@
-INSERT INTO menu (id, parent_id, title, name, path, redirect, component, icon, keep_alive, hidden, perms, type, sort_index, create_time, modify_time) VALUES (1, 0, '仪表盘', 'dashboard', '/dashboard/workplace', null, 'dashboard/Workplace', 'dashboard', 1, 0, null, '0', 2, '2020-05-28 20:44:36.000000', '2020-05-28 20:44:41.000000');
+INSERT INTO menu (id, parent_id, title, name, path, redirect, component, icon, keep_alive, hidden, perms, type, sort_index, create_time, modify_time) VALUES (1, 0, '仪表盘', 'dashboard', '/dashboard', null, 'dashboard/Workplace', 'dashboard', 1, 0, null, '0', 2, '2020-05-28 20:44:36.000000', '2020-05-28 20:44:41.000000');
 INSERT INTO menu (id, parent_id, title, name, path, redirect, component, icon, keep_alive, hidden, perms, type, sort_index, create_time, modify_time) VALUES (9, 0, '系统管理', 'RAM', '/ram', '/ram/user', 'RouteView', 'safety-certificate', 1, 0, '', '0', 9, '2020-05-31 12:00:02.000000', '2020-05-31 12:00:04.000000');
 INSERT INTO menu (id, parent_id, title, name, path, redirect, component, icon, keep_alive, hidden, perms, type, sort_index, create_time, modify_time) VALUES (10, 9, '用户管理', 'user', '/ram/user', null, 'user/UserList', null, 1, 0, 'user:view', '0', 10, '2020-05-31 11:57:50.000000', '2020-05-31 11:57:52.000000');
 INSERT INTO menu (id, parent_id, title, name, path, redirect, component, icon, keep_alive, hidden, perms, type, sort_index, create_time, modify_time) VALUES (11, 9, '角色管理', 'role', '/ram/role', null, 'role/RoleList', null, 1, 0, 'role:view', '0', 11, '2020-06-04 14:47:58.000000', '2020-06-04 14:48:01.000000');
@@ -54,6 +54,10 @@ INSERT INTO role_menu (role_id, menu_id) VALUES (2, 24);
 INSERT INTO role_menu (role_id, menu_id) VALUES (2, 25);
 INSERT INTO role_menu (role_id, menu_id) VALUES (2, 26);
 INSERT INTO role_menu (role_id, menu_id) VALUES (2, 27);
+INSERT INTO role_menu (role_id, menu_id) VALUES (2, 30);
+INSERT INTO role_menu (role_id, menu_id) VALUES (2, 31);
+INSERT INTO role_menu (role_id, menu_id) VALUES (2, 32);
+INSERT INTO role_menu (role_id, menu_id) VALUES (2, 33);
 INSERT INTO role_menu (role_id, menu_id) VALUES (2, 34);
 INSERT INTO role_menu (role_id, menu_id) VALUES (2, 35);
 
