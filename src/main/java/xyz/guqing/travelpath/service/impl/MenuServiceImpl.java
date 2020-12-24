@@ -13,6 +13,7 @@ import xyz.guqing.travelpath.model.bo.VueRouter;
 import xyz.guqing.travelpath.model.dto.MenuTree;
 import xyz.guqing.travelpath.model.entity.Menu;
 import xyz.guqing.travelpath.model.enums.MenuType;
+import xyz.guqing.travelpath.model.params.MenuQuery;
 import xyz.guqing.travelpath.service.MenuService;
 import xyz.guqing.travelpath.utils.TreeUtil;
 
@@ -48,13 +49,16 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     }
 
     @Override
-    public List<MenuTree> listTreeMenus(Menu menu) {
+    public List<MenuTree> listTreeMenus(MenuQuery menuQuery) {
         LambdaQueryWrapper<Menu> queryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.isNotBlank(menuQuery.getTitle())) {
+            queryWrapper.like(Menu::getTitle, menuQuery.getTitle());
+        }
         queryWrapper.orderByAsc(Menu::getSortIndex);
         List<Menu> menus = baseMapper.selectList(queryWrapper);
 
         List<MenuTree> menuTrees = convertTo(menus);
-        if (StringUtils.equals(menu.getType(), MenuType.BUTTON.getValue())) {
+        if (StringUtils.equals(menuQuery.getType(), MenuType.BUTTON.getValue())) {
            return menuTrees;
         } else {
             return TreeUtil.build(menuTrees);

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import xyz.guqing.travelpath.model.bo.VueRouter;
 import xyz.guqing.travelpath.model.dto.MenuTree;
 import xyz.guqing.travelpath.model.entity.Menu;
+import xyz.guqing.travelpath.model.params.MenuQuery;
 
 import java.util.List;
 
@@ -40,10 +41,10 @@ public interface MenuService extends IService<Menu> {
 
     /**
      * 根据条件查询菜单树
-     * @param menu 查询条件
+     * @param menuQuery 查询条件
      * @return 返回查询到的菜单树
      */
-    List<MenuTree> listTreeMenus(Menu menu);
+    List<MenuTree> listTreeMenus(MenuQuery menuQuery);
 
     /**
      * 根据id集合批量递归删除菜单

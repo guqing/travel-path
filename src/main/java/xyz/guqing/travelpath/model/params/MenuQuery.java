@@ -12,4 +12,5 @@ import xyz.guqing.travelpath.model.support.InputConverter;
 public class MenuQuery implements InputConverter<Menu> {
     private Long orderIndex;
     private String type;
+    private String title;
 }
