@@ -48,7 +48,7 @@ public class UserGroupController {
     @DeleteMapping
     @PreAuthorize("hasAuthority('group:delete')")
     @ControllerEndpoint(operation = "删除用户组", exceptionMessage = "删除用户组失败")
-    public ResultEntity<String> delete(List<Long> groupIds) {
+    public ResultEntity<String> delete(@RequestBody List<Long> groupIds) {
         userGroupService.removeByIds(groupIds);
         return ResultEntity.ok();
     }
